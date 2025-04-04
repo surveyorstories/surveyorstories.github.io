@@ -5,7 +5,10 @@ function HomePage() {
   return (
     <>
       <Head></Head>
-      <IntroContent buttonLink='resurvey/groundtruthingnotice' />{' '}
+      <IntroContent
+        buttonLink='resurvey/groundtruthingnotice'
+        nineTwoLink='resurvey/ninetwonotice'
+      />
     </>
   )
 }

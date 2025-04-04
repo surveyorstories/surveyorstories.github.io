@@ -471,7 +471,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
               <p>తేది: ${formatDate(sanitizeString(printedDate)) || '_____________'}</p>
             </div>
             <div class="right-footer">
-              <p>గ్రామ సర్వేయర్ సంతకం</p>
+              <p>గ్రామ సర్వేయర్</p>
             </div>
           </div>
         `

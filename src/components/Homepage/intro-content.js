@@ -4,18 +4,18 @@ import Layout from '@theme/Layout'
 import Link from '@docusaurus/Link'
 import { FaTelegram, FaYoutube, FaGithub } from 'react-icons/fa'
 
-const IntroContent = ({ buttonLink }) => {
+const IntroContent = ({ buttonLink, nineTwoLink }) => {
   return (
     <Layout title='Resurvey Notice Generator' description='Generate Resurvey Notices with ease.'>
       <header className='header'>
         <div className='container mx-auto px-4 py-6 text-center'>
           <h1 className='text-3xl font-bold text-blue-800'>Resurvey Notice Generator</h1>
           <p className='mb-4 text-gray-600'>
-            Ground Truthing Notice Generation and Ground Validation Notice Generation for Resurvey.
+            Ground Truthing Notice Ground Validation and Nine Two Notice Generation for Resurvey.
           </p>
-          <div>
+          <div className='space-x-4'>
             <Button to={buttonLink}>GT & GV Notice Generation</Button>
-            {/* <Button to='resurvey/ninetwonotice'>9(2) Notice Generation</Button> */}
+            <Button to={nineTwoLink}>9(2) Notice Generation</Button>
           </div>
         </div>
       </header>

@@ -132,7 +132,7 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
                   style={{ textAlign: 'justify', wordBreak: 'break-all' }}
                 >
                   1) సహాయ సంచాలకులు, సర్వే మరియు భూమి రికార్డ్ల వారు జారీ చేసిన 6 (1) నోటిఫికేషన్
-                  ఆర్‌.సి నెం {notificationNumber || '_______________'} తేది:{' '}
+                  ఆర్‌.సి నెం {notificationNumber || '_______________'} తేది: {' '}
                   {formatDate(notificationDate) || '____________'} మరియు ఆంధ్రప్రదేశ్ సర్వే మరియు
                   సరిహద్దుల చట్టం, 1923 కు సంబంధించి{' '}
                   {districts.find((d) => d.value === districtName)?.te || '____________________'}{' '}
@@ -176,8 +176,8 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
                 </p>
               </div>
               {noticeType === 'GT Notice' ? (
-                <div className='right-column' style={{ paddingLeft: '2.2rem', width: '200px' }}>
-                  <p className='body-footer-text telugu-text text-right'>గ్రామ సర్వేయర్ సంతకం</p>
+                <div className='right-column' style={{ paddingLeft: '4.5rem', width: '200px' }}>
+                  <p className='body-footer-text telugu-text text-right'>గ్రామ సర్వేయర్</p>
                 </div>
               ) : (
                 <div className='right-column'>
