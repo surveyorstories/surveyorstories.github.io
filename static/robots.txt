@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://surveyorstories.github.io/sitemap.xml
