@@ -84,6 +84,11 @@ const config = {
             const items = await defaultCreateSitemapItems(rest)
             return items.filter((item) => !item.url.includes('/page/'))
           }
+        },
+
+        gtag: {
+          trackingID: 'G-JXGYS5GKJV',
+          anonymizeIP: true
         }
       })
     ]
