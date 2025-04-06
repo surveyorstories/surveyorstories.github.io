@@ -14,6 +14,9 @@ import {
   decodeHTMLEntities
 } from '../lib/sanitize'
 // Add to your imports at the top
+import NoticeTable from './NoticeTable_ninetwo'
+import ReactDOMServer from 'react-dom/server'
+
 interface PreviewSectionProps {
   districtName: string
   mandalName: string
@@ -29,7 +32,7 @@ interface PreviewSectionProps {
   mapping: Record<string, string>
   officerName: string
   officerDesignation: string
-  noticeType?: string;
+  noticeType?: string
 }
 
 const PreviewSection: React.FC<PreviewSectionProps> = ({
@@ -83,24 +86,24 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
   // Group data based on noticeType
   if (noticeType === 'landparcel') {
     // Group by Land Parcel Number
-    const landParcelField = 'LPM Number';
-    const landParcelGroups: Record<string, string[][]> = {};
+    const landParcelField = 'LPM Number'
+    const landParcelGroups: Record<string, string[][]> = {}
 
     if (landParcelField in indexMapping) {
       data.forEach((row) => {
-        const landParcelNo = row[indexMapping[landParcelField]] || 'Unknown';
+        const landParcelNo = row[indexMapping[landParcelField]] || 'Unknown'
         if (!landParcelGroups[landParcelNo]) {
-          landParcelGroups[landParcelNo] = [];
+          landParcelGroups[landParcelNo] = []
         }
-        landParcelGroups[landParcelNo].push(row);
-      });
+        landParcelGroups[landParcelNo].push(row)
+      })
 
       notices = Object.entries(landParcelGroups).map(([landParcelNo, rows]) => ({
         khataNo: `Land Parcel: ${landParcelNo}`, // Use khataNo field to store Land Parcel info
         rows,
         mapping: indexMapping,
         fields
-      }));
+      }))
     } else {
       // Fallback if LPM Number mapping is not found
       notices = [
@@ -110,29 +113,29 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           mapping: indexMapping,
           fields
         }
-      ];
-      console.warn('LPM Number field mapping not found, using all data');
+      ]
+      console.warn('LPM Number field mapping not found, using all data')
     }
   } else {
     // Original Khata No grouping
-    const hasKhataNo = 'Khata No' in indexMapping;
+    const hasKhataNo = 'Khata No' in indexMapping
 
     if (hasKhataNo) {
-      const khataGroups: Record<string, string[][]> = {};
+      const khataGroups: Record<string, string[][]> = {}
       data.forEach((row) => {
-        const khataNo = row[indexMapping['Khata No']] || 'Unknown';
+        const khataNo = row[indexMapping['Khata No']] || 'Unknown'
         if (!khataGroups[khataNo]) {
-          khataGroups[khataNo] = [];
+          khataGroups[khataNo] = []
         }
-        khataGroups[khataNo].push(row);
-      });
+        khataGroups[khataNo].push(row)
+      })
 
       notices = Object.entries(khataGroups).map(([khataNo, rows]) => ({
         khataNo,
         rows,
         mapping: indexMapping,
         fields
-      }));
+      }))
     } else {
       notices = [
         {
@@ -141,7 +144,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           mapping: indexMapping,
           fields
         }
-      ];
+      ]
     }
   }
 
@@ -221,13 +224,12 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           margin: 0;
           padding: 0;
         }
-             .table-header {
+        .table-header {
           border: 1px solid black;
           padding: 3px;
           text-align: center;
           font-weight: bold;
         }
-
         .table-cell {
             border: 1px solid black;
             padding: 3px;
@@ -313,21 +315,21 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         header.className = 'header telugu-text'
         header.style.marginTop = '0'
         header.style.paddingTop = '0'
-        header.innerHTML = createSafeHTML(
-          `<h1 style="font-size: 12pt; margin-top: 0;">ఫారం - 31 </h1>
-           <h1 style="font-size: 12pt; margin-bottom: 6px;">ఆంధ్రప్రదేశ్ సర్వే మరియు సరిహద్దుల చట్టం, 1923 లోని 9(2) సెక్షన్ ప్రకారము నోటీసు</h1>`
-        )
+        header.innerHTML = createSafeHTML(`
+          <h1 style="font-size: 12pt; margin-top: 0;">ఫారం - 31 </h1>
+          <h2 style="font-size: 12pt; margin-bottom: 6px;">ఆంధ్రప్రదేశ్ సర్వే మరియు సరిహద్దుల చట్టం, 1923 లోని 9(2) సెక్షన్ ప్రకారము నోటీసు</h2>
+        `)
         noticeDiv.appendChild(header)
 
         // Add content paragraph
         const content = document.createElement('div')
         content.className = 'content telugu-text'
         content.innerHTML = createSafeHTML(`
-          <p class="pattadar" ">
-                  శ్రీ/శ్రీమతి ${notice.rows[0][notice.mapping['Pattadar Name']] || '_________________________'} /
-                  ${notice.rows[0][notice.mapping['Relation Name']] || '____________________'} (
-                  ${notice.rows[0][notice.mapping['Khata No']] || '___________'}) గారికి
-                </p>
+          <p class="pattadar">
+            శ్రీ/శ్రీమతి ${notice.rows[0][notice.mapping['Pattadar Name']] || '_________________________'} /
+            ${notice.rows[0][notice.mapping['Relation Name']] || '____________________'} (
+            ${notice.rows[0][notice.mapping['Khata No']] || '___________'}) గారికి
+          </p>
           
           <p style="font-size: 8pt; line-height: 1; word-break: break-all">
              &nbsp;సదరు చట్టం 9(1) వ సెక్షన్ ప్రకారము ఈ క్రింద సంతకము చేసిన సమర్ధ సర్వే అధికారి
@@ -336,13 +338,13 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
                   &emsp; ఈ క్రింది జాబితా నందు తెలిపిన భూముల సరిహద్దుల నిర్ణయం మరియు కొలత సమయము నందు
                   ఏవిధమైన తగాదాలు నాకు తెలియపరచనందున, సదరు చట్టం లోని 10(1) సెక్షన్ ననుసరించి,
                   అభ్యంతరములు ఏమియు లేవని భావించి నేను ఇందుమూలముగా ఈ భూమి యొక్క సర్వే పటములలో
-                  పొందుపరచబడిన సరిహద్దులు తగాదాలు లేనట్లుగాను, అవిసరిగా వున్నవని నిర్ధారించి
-                  రికార్డులులు తయారు చేసియున్నాను.
+                  పొందుపరచబడిన సరిహద్దులు తగాదాలు లేనట్లుగాను, అవిసరిగా వున్నవని నిర్ధారించి రికార్డులు
+                  తయారు చేసియున్నాను.
                   <br />
-                  &emsp;సదరు సర్వే రిజిస్టర్ లో నమోదు కాబడిన భూముల వివరములను ఈ క్రింది తెలిపిన
-                  జాబితా లో తెలియపరచడమైనది. ఈ జాబితా పై ఏవిధమైన అభ్యంతరములు ఉన్నచో వాటిని ఈ నోటీసు
-                  జారీ అయిన తేది నుండి 21 దినములలో మండల రెవిన్యూ కార్యాలయము లో వుండు అప్పీలు సర్వే
-                  అధికారి గారికి తగిన నమూనా పత్రములో అప్పీలు సమర్పించుకోవచ్చును. ప్రత్యేక విషయములో
+                  &emsp;సదరు సర్వే రిజిస్టర్ లో నమోదు కాబడిన భూముల వివరములను ఈ క్రింది తెలిపిన జాబితా లో
+                  తెలియపరచడమైనది. ఈ జాబితా పై ఏవిధమైన అభ్యంతరములు ఉన్నచో వాటిని ఈ నోటీసు జారీ అయిన తేది
+                  నుండి 21 దినములలో మండల రెవిన్యూ కార్యాలయము లో వుండు అప్పీలు సర్వే అధికారి గారికి తగిన
+                  నమూనా పత్రములో అప్పీలు సమర్పించుకోవచ్చును. ప్రత్యేక విషయములో
                   తప్ప, ప్రతి సర్వే పటమునకు సాధారముగా 50/- రూ. రుసుము దరఖాస్తుతో జతపరచి సర్వే పటము
                   కాపీలను పొందవచ్చును.
                   <br />
@@ -353,9 +355,10 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           <div style="display: flex; justify-content: space-between; width: 100%; font-size: 8pt; line-height: 1; word-break: break-all;">
                               <span>
                                 జిల్లా:
-                                ${districts.find((d) => d.value === districtName)?.te ||
-          '____________________'
-          }
+                                ${
+                                  districts.find((d) => d.value === districtName)?.te ||
+                                  '____________________'
+                                }
                               </span>
                               <span>మండలం: ${sanitizeString(mandalName) || '_____________'} </span>
                               <span>గ్రామం: ${sanitizeString(villageName) || '_____________'} </span>
@@ -363,86 +366,58 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         `)
         noticeDiv.appendChild(content)
 
-        // Generate table HTML directly instead of using React component
-        // Create a temporary DOM element for decoding HTML entities
-        function decodeHTMLEntitiesCompletely(str) {
-          if (!str) return ''
-
-          // Method 1: Using a textarea element (most reliable for all HTML entities)
-          const textarea = document.createElement('textarea')
-          textarea.innerHTML = str
-          const decoded = textarea.value
-
-          // Method 2: As a fallback, also handle common entities manually
-          return decoded
-            .replace(/&amp;/g, '&')
-            .replace(/&lt;/g, '<')
-            .replace(/&gt;/g, '>')
-            .replace(/&quot;/g, '"')
-            .replace(/&#39;/g, "'")
-            .replace(/&apos;/g, "'")
-        }
-
-        // Complete sanitization function
-        function sanitizeString(str) {
-          if (!str) return ''
-
-          // Step 1: First decode all HTML entities completely
-          const decodedStr = decodeHTMLEntitiesCompletely(str)
-
-          // Step 2: Remove unwanted special characters
-          // Modify this regex to include any special characters you want to remove
-          return decodedStr.replace(/["'`]/g, '').trim()
-        }
-
-        // ----- Now, generate the table using the sanitization function -----
-
-        const hasSubdivision = 'Sub Division No' in notice.mapping
-        const tableHtml = `
-  <table class="khata-table mt-1 w-full border-collapse" style="width: 100%; border-collapse: collapse; font-size: 8pt; line-height: 1; word-break: break-all">
-    <thead>
-      <tr>
-        <th colspan="1" class="table-header">ప్రస్తుత రీ సర్వే</th>
-        <th colspan="${hasSubdivision ? '4' : '3'}" class="table-header">రికార్డ్స్ అఫ్ రైట్స్ ప్రకారం</th>
-        <th colspan="2" class="table-header">ప్రస్తుత రీ సర్వే ప్రకారము</th>
-        <th rowspan="3" class="table-header">రిమార్కులు</th>
-      </tr>
-      <tr>
-        <th rowspan="2" class="table-header">ల్యాండ్ పార్సెల్ నెంబర్</th>
-        <th rowspan="2" class="table-header">${hasSubdivision ? 'సర్వే నెంబరు' : 'సర్వే నెంబరు-సబ్ డివిజన్'}</th>
-        ${hasSubdivision ? '<th rowspan="2" class="table-header">సబ్ డివిజన్ నెం లేదా లెటర్</th>' : ''}
-        <th colspan="2" class="table-header">విస్తీర్ణము</th>
-        <th colspan="2" class="table-header">విస్తీర్ణము</th>
-      </tr>
-      <tr>
-        <th class="table-header">ఎ. సెంట్లు</th>
-        <th class="table-header">హె.ఏర్లు. చ.మీ</th>
-        <th class="table-header">ఎ. సెంట్లు</th>
-        <th class="table-header">హె.ఏర్లు. చ.మీ</th>
-      </tr>
-    </thead>
-    <tbody style="font-size: 8pt; line-height: 1; word-break: break-all">
-      ${notice.rows
-            .map(
-              (row) => `
-        <tr style="font-size: 8pt; line-height: 1; word-break: break-all">
-          <td class="table-cell">${sanitizeString(row[notice.mapping['LPM Number']] || '')}</td>
-          <td class="table-cell">${sanitizeString(row[notice.mapping['Survey No']] || '')}</td>
-          ${hasSubdivision ? `<td class="table-cell">${sanitizeString(row[notice.mapping['Sub Division No']] || '')}</td>` : ''}
-          <td class="table-cell">${sanitizeString(row[notice.mapping['Old extent (Acres)']] || '')}</td>
-          <td class="table-cell">${sanitizeString(row[notice.mapping['Old extent (Hect)']] || '')}</td>
-          <td class="table-cell">${sanitizeString(row[notice.mapping['Resurvey extent (Acres)']] || '')}</td>
-          <td class="table-cell">${sanitizeString(row[notice.mapping['Resurvey extent (Hect)']] || '')}</td>
-          <td class="table-cell">${sanitizeString(row[notice.mapping['Remark']] || '')}</td>
-        </tr>
-      `
-            )
-            .join('')}
-    </tbody>
-  </table>
-`
-
+        // Create a container for the NoticeTable component
         const tableContainer = document.createElement('div')
+
+        // Convert mapping to fields format expected by NoticeTable
+        const fields: { en: string; te: string; mappedIndex: number }[] = [
+          {
+            en: 'LPM Number',
+            te: 'ల్యాండ్ పార్సెల్ నెంబర్',
+            mappedIndex: notice.mapping['LPM Number']
+          },
+          { en: 'Survey No', te: 'సర్వే నెంబరు', mappedIndex: notice.mapping['Survey No'] },
+          ...(notice.mapping['Sub Division No']
+            ? [
+                {
+                  en: 'Sub Division No',
+                  te: 'సబ్ డివిజన్ నెం లేదా లెటర్',
+                  mappedIndex: notice.mapping['Sub Division No']
+                }
+              ]
+            : []),
+          {
+            en: 'Old extent (Acres)',
+            te: 'ఎ. సెంట్లు',
+            mappedIndex: notice.mapping['Old extent (Acres)']
+          },
+          {
+            en: 'Old extent (Hect)',
+            te: 'హె.ఏర్లు. చ.మీ',
+            mappedIndex: notice.mapping['Old extent (Hect)']
+          },
+          {
+            en: 'Resurvey extent (Acres)',
+            te: 'ఎ. సెంట్లు',
+            mappedIndex: notice.mapping['Resurvey extent (Acres)']
+          },
+          {
+            en: 'Resurvey extent (Hect)',
+            te: 'హె.ఏర్లు. చ.మీ',
+            mappedIndex: notice.mapping['Resurvey extent (Hect)']
+          },
+          { en: 'Remark', te: 'రిమార్కులు', mappedIndex: notice.mapping['Remark'] }
+        ]
+
+        // Render the NoticeTable component to a string
+        const tableHtml = ReactDOMServer.renderToStaticMarkup(
+          <NoticeTable
+            fields={fields}
+            rows={notice.rows}
+            hasSubdivision={'Sub Division No' in notice.mapping}
+          />
+        )
+
         tableContainer.innerHTML = createSafeHTML(tableHtml)
         noticeDiv.appendChild(tableContainer)
 
@@ -463,10 +438,11 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
              <div class="right-footer">
               <p class='body-footer-text telugu-text mb-0 mt-5 text-left'>
                 సర్వే అధికారి
-                ${officerDesignation
-            ? ` (${officerDesignations.find((d) => d.value === officerDesignation)?.te || officerDesignation})`
-            : ''
-          }
+                ${
+                  officerDesignation
+                    ? ` (${officerDesignations.find((d) => d.value === officerDesignation)?.te || officerDesignation})`
+                    : ''
+                }
               </p>
             </div>
           </div>

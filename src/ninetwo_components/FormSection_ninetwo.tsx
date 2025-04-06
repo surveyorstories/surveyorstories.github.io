@@ -16,6 +16,7 @@ import {
 import { districts } from '../data/districts'
 import { sanitizeString, sanitizeCSVData } from '../lib/sanitize'
 import { toast } from '../components/ui/use-toast'
+import Papa from 'papaparse' // Add this import for CSV parsing
 
 interface FormSectionProps {
   onFileUpload: (headers: string[], data: string[][]) => void
@@ -121,12 +122,16 @@ const FormSection: React.FC<FormSectionProps> = ({
     const reader = new FileReader()
     reader.onload = (e) => {
       const content = e.target?.result as string
-      const rows = content.split('\n').map((row) => row.split(',').map((cell) => cell.trim()))
 
-      if (rows.length > 1) {
+      // Use PapaParse to parse the CSV content
+      const parsed = Papa.parse<string[]>(content, {
+        skipEmptyLines: true
+      })
+
+      if (parsed.data.length > 1) {
         // Sanitize headers and data to prevent XSS attacks
-        const headers = rows[0].map(header => sanitizeString(header))
-        const rawData = rows.slice(1).filter((row) => row.some((cell) => cell.trim() !== ''))
+        const headers = parsed.data[0].map((header) => sanitizeString(header))
+        const rawData = parsed.data.slice(1)
         const data = sanitizeCSVData(rawData)
         onFileUpload(headers, data)
       }
@@ -155,15 +160,15 @@ const FormSection: React.FC<FormSectionProps> = ({
               <RadioGroup
                 value={noticeType}
                 onValueChange={setNoticeType}
-                className="flex space-x-6"
+                className='flex space-x-6'
               >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="khata" id="khata" />
-                  <Label htmlFor="khata">Khata Wise</Label>
+                <div className='flex items-center space-x-2'>
+                  <RadioGroupItem value='khata' id='khata' />
+                  <Label htmlFor='khata'>Khata Wise</Label>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="landparcel" id="landparcel" />
-                  <Label htmlFor="landparcel">Land Parcel Wise</Label>
+                <div className='flex items-center space-x-2'>
+                  <RadioGroupItem value='landparcel' id='landparcel' />
+                  <Label htmlFor='landparcel'>Land Parcel Wise</Label>
                 </div>
               </RadioGroup>
             </div>
@@ -237,7 +242,6 @@ const FormSection: React.FC<FormSectionProps> = ({
                   className='form-input'
                 />
               </div>
-
             </div>
 
             {/* <h2 className='text-2xl font-medium'>Notice Details</h2>
@@ -334,9 +338,9 @@ const FormSection: React.FC<FormSectionProps> = ({
             <div className='pt-4'>
               <h2 className='mb-4 text-2xl font-medium'>Upload CSV File</h2>
               <div
-                className={`rounded-lg border-2 border-dashed p-6 text-center transition-all  ${isDragging
-                  ? 'border-primary bg-primary/5'
-                  : 'border-gray-300 hover:border-primary/50'
+                className={`rounded-lg border-2 border-dashed p-6 text-center transition-all ${isDragging
+                    ? 'border-primary bg-primary/5'
+                    : 'border-gray-300 hover:border-primary/50'
                   }`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
@@ -357,21 +361,18 @@ const FormSection: React.FC<FormSectionProps> = ({
                   <motion.div
                     className='rounded-full bg-primary/10 px-4 py-0.5'
                     animate={{
-                      scale: fileName ? 1 : [1, 1.1, 1],
-
+                      scale: fileName ? 1 : [1, 1.1, 1]
                     }}
                     transition={{
                       duration: 1.5,
-                      ease: "easeInOut",
+                      ease: 'easeInOut',
                       repeat: fileName ? 0 : Infinity
                     }}
                   >
                     <Upload className='h-6 w-6 text-primary' />
                   </motion.div>
 
-
-
-                  <span className='text-sm text-gray-500 '>
+                  <span className='text-sm text-gray-500'>
                     {fileName ? fileName : 'Drag & drop or click to upload CSV file'}
                   </span>
                   {/* <Button
