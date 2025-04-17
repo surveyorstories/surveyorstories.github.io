@@ -24,6 +24,7 @@ function Index() {
   const [officerDesignation, setOfficerDesignation] = useState('')
   // Add new state for notice type
   const [noticeType, setNoticeType] = useState('khata')
+  const [formNumber, setFormNumber] = useState('') // <-- Add this line
 
   // CSV data state
   const [headers, setHeaders] = useState<string[]>([])
@@ -99,6 +100,8 @@ function Index() {
               // Pass the new notice type props
               noticeType={noticeType}
               setNoticeType={setNoticeType}
+              formNumber={formNumber}           // <-- Add this line
+              setFormNumber={setFormNumber}     // <-- Add this line
             />
 
             <MappingTable
@@ -125,6 +128,7 @@ function Index() {
               officerDesignation={officerDesignation}
               // Make sure this is passed
               noticeType={noticeType}
+              formNumber={formNumber}           // <-- Add this line
             />
           </div>
         </div>

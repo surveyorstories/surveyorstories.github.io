@@ -35,6 +35,22 @@ export const officerDesignations = [
 ]
 
 // Update the FormSectionProps interface to include noticeMode
+// Update formNumbers to include custom option
+export const formNumbers = {
+  'GT Notice': [
+    { value: '14', display: 'Form 14', te: 'ఫారం - 14' },
+    { value: '15', display: 'Form 15', te: 'ఫారం - 15' },
+    { value: '19', display: 'Form 19', te: 'ఫారం - 19' },
+    { value: 'custom', display: 'Custom Form Number', te: 'కస్టమ్ ఫారం నంబర్' }
+  ],
+  'GV Notice': [
+    { value: '26', display: 'Form 26', te: 'ఫారం - 26' },
+    { value: '32', display: 'Form 32', te: 'ఫారం - 32' },
+    { value: 'custom', display: 'Custom Form Number', te: 'కస్టమ్ ఫారం నంబర్' }
+  ]
+}
+
+// Update the FormSectionProps interface to include noticeMode
 interface FormSectionProps {
   onFileUpload: (headers: string[], data: string[][]) => void
   districtName: string
@@ -61,6 +77,8 @@ interface FormSectionProps {
   setOfficerDesignation: (value: string) => void
   noticeMode?: string
   setNoticeMode?: (mode: string) => void
+  formNumber: string
+  setFormNumber: (value: string) => void
 }
 
 const FormSection: React.FC<FormSectionProps> = ({
@@ -88,10 +106,13 @@ const FormSection: React.FC<FormSectionProps> = ({
   printedDate,
   setPrintedDate,
   noticeMode = 'khata',
-  setNoticeMode = () => { }
+  setNoticeMode = () => { },
+  formNumber,           // <-- Add this line
+  setFormNumber         // <-- Add this line
 }) => {
   const [isDragging, setIsDragging] = useState(false)
   const [fileName, setFileName] = useState<string | null>(null)
+  const [isCustomForm, setIsCustomForm] = useState(false)
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -201,6 +222,8 @@ const FormSection: React.FC<FormSectionProps> = ({
                 </div>
               </div>
             </div>
+
+
 
             <h2 className='text-2xl font-medium'>Village Details</h2>
             <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
@@ -322,6 +345,53 @@ const FormSection: React.FC<FormSectionProps> = ({
                   onChange={(e) => setPrintedDate(e.target.value)}
                 />
               </div>
+
+              {/* Replace the existing Form Number Dropdown section with this updated version */}
+              <div className='space-y-2'>
+                <Label htmlFor='formNumber'>Choice of Form Number</Label>
+                <Select
+                  value={formNumber}
+                  onValueChange={(value) => {
+                    if (value === 'custom') {
+                      setIsCustomForm(true)
+                    } else {
+                      setIsCustomForm(false)
+                      setFormNumber(value)
+                    }
+                  }}
+                >
+                  <SelectTrigger className='form-input'>
+                    <SelectValue placeholder='Select form number'>
+                      {isCustomForm ? formNumber : formNumbers[noticeType]?.find(f => f.value === formNumber)?.display}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(formNumbers[noticeType] || []).map((form) => (
+                      <SelectItem key={form.value} value={form.value}>
+                        {form.display} - {form.te}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                {isCustomForm && (
+                  <div className='mt-2'>
+                    <Input
+                      type='number'
+                      min='1'
+                      placeholder='Enter custom form number'
+                      value={formNumber}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, '')
+                        setFormNumber(value)
+                      }}
+                      className='form-input'
+                    />
+                  </div>
+                )}
+              </div>
+              {/* --- End Form Number Dropdown --- */}
+
             </div>
 
             <div className='pt-4'>

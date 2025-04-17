@@ -42,6 +42,10 @@ interface FormSectionProps {
   setOfficerDesignation: (value: string) => void
   noticeType?: string
   setNoticeType?: (value: string) => void
+  formNumber: string
+  setFormNumber: (value: string) => void
+
+
 }
 
 // Officer designation options with both English and Telugu values
@@ -60,6 +64,13 @@ export const officerDesignations = [
   },
   { value: 'Tahsildhar', display: 'Tahsildhar', te: 'తహశీల్దార్' }
 ]
+
+export const formNumbers = [{ value: '31', display: 'Form 31', te: 'ఫారం - 31' },
+{ value: '34', display: 'Form 34', te: 'ఫారం - 34' },
+{ value: 'custom', display: 'Custom Form Number', te: 'కస్టమ్ ఫారం నంబర్' }
+  // { value: '30', display: 'Form 30', te: 'ఫారం - 30' }
+]
+
 
 const FormSection: React.FC<FormSectionProps> = ({
   onFileUpload,
@@ -81,13 +92,18 @@ const FormSection: React.FC<FormSectionProps> = ({
   setPrintedDate,
   officerName,
   setOfficerName,
+  formNumber,           // <-- Add this line
+  setFormNumber,
   officerDesignation,
   setOfficerDesignation,
   noticeType = 'khata',
+
+
   setNoticeType = () => { }
 }) => {
   const [isDragging, setIsDragging] = useState(false)
   const [fileName, setFileName] = useState<string | null>(null)
+  const [isCustomForm, setIsCustomForm] = useState(false)
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -242,6 +258,53 @@ const FormSection: React.FC<FormSectionProps> = ({
                   className='form-input'
                 />
               </div>
+
+              {/* --- Add Form Number Dropdown here --- */}
+              <div className='space-y-2'>
+                <Label htmlFor='formNumber'>Choice of Form Number</Label>
+                <Select
+                  value={formNumber}
+                  onValueChange={(value) => {
+                    if (value === 'custom') {
+                      setIsCustomForm(true)
+                    } else {
+                      setIsCustomForm(false)
+                      setFormNumber(value)
+                    }
+                  }}
+                >
+                  <SelectTrigger className='form-input'>
+                    <SelectValue placeholder='Select form number'>
+                      {isCustomForm ? formNumber : formNumbers[noticeType]?.find(f => f.value === formNumber)?.display}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {formNumbers.map((form) => (
+                      <SelectItem key={form.value} value={form.value}>
+                        {form.display} - {form.te}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {isCustomForm && (
+                  <div className='mt-2'>
+                    <Input
+                      type='number'
+                      min='1'
+                      placeholder='Enter custom form number'
+                      value={formNumber}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, '')
+                        setFormNumber(value)
+                      }}
+                      className='form-input'
+                    />
+                  </div>
+                )}
+
+              </div>
+              {/* --- End Form Number Dropdown --- */}
+
             </div>
 
             {/* <h2 className='text-2xl font-medium'>Notice Details</h2>
@@ -339,8 +402,8 @@ const FormSection: React.FC<FormSectionProps> = ({
               <h2 className='mb-4 text-2xl font-medium'>Upload CSV File</h2>
               <div
                 className={`rounded-lg border-2 border-dashed p-6 text-center transition-all ${isDragging
-                    ? 'border-primary bg-primary/5'
-                    : 'border-gray-300 hover:border-primary/50'
+                  ? 'border-primary bg-primary/5'
+                  : 'border-gray-300 hover:border-primary/50'
                   }`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}

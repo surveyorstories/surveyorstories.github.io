@@ -1,5 +1,5 @@
 import React from 'react'
-import { officerDesignations } from './FormSection'
+import { officerDesignations, formNumbers } from './FormSection'
 import { districts } from '../data/districts'
 import { decodeHTMLEntities } from '../lib/sanitize'
 import KhataTable from './KhataTable'
@@ -27,6 +27,7 @@ interface PrintableNoticeProps {
   officerName?: string
   officerDesignation?: string
   noticeMode?: string
+  formNumber: string
 }
 
 const formatTime = (timeString: string): string => {
@@ -80,7 +81,8 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
   noticeType,
   officerName,
   officerDesignation,
-  noticeMode = 'khata' // Default value: 'khata', 'survey', or 'khata-pattadar-once'
+  noticeMode = 'khata', // Default value: 'khata', 'survey', or 'khata-pattadar-once'
+  formNumber // <-- Add this line
 }) => {
   const formattedTime = formatTime(startTime)
   const formattedDate = formatDate(startDate)
@@ -95,10 +97,16 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
           <div
             className={`telugu-header-print telugu-text ${!showHeaderOnWeb ? 'hidden-on-web' : ''}`}
           >
+            {/* --- Add Form Number Display Here --- */}
+            <h3 className='telugu-text'>
+              {(formNumbers[noticeType] || []).find(f => f.value === formNumber)?.te || `ఫారం - ${formNumber}`}
+            </h3>
             {/* print page */}
             {noticeType === 'GT Notice' ? (
               <>
-                <h3 className='telugu-text'>ఫారం-15</h3>
+                <h3 className='telugu-text'>
+                  {(formNumbers[noticeType] || []).find(f => f.value === formNumber)?.te || `ఫారం - ${formNumber || '15'}`}
+                </h3>
                 <h3 className='telugu-text'>భూ యాజమాన్య దారులకు నోటీసు</h3>
                 <h3 className='telugu-text'>FOR GROUND TRUTHING</h3>
                 <p
@@ -113,7 +121,7 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
                   {mandalName || '_____________________'} మండలం,{' '}
                   {villageName || '____________________'} గ్రామములో సీమానిర్ణయం (demarcation) మరియు
                   సర్వే పనులు
-                  {formattedDate || '_____________'} తేదీన {formattedTime || '________'} గం.ని.లకు
+                  {formattedDate || '_____________'} తేదిన {formattedTime || '________'} గం.ని.లకు
                   ప్రారంభిచబడును అని తెలియజేయడమైనది.
                   <br />
                   2) సర్వే మరియు సరిహద్దుల చట్టం, 1923లోని నియమ నిబంధనలు అనుసరించి సర్వే సమయం నందు ఈ
@@ -123,7 +131,9 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
               </>
             ) : (
               <>
-                <h3 className='telugu-text'>ఫారం - 26</h3>
+                <h3 className='telugu-text'>
+                  {(formNumbers[noticeType] || []).find(f => f.value === formNumber)?.te || `ఫారం - ${formNumber || '26'}`}
+                </h3>
                 <h3 className='telugu-text'>
                   ప్రైవేట్ భూముల/ప్రభుత్వా విభాగాలు/ సంస్థల భూ కమత ధ్రువీకరణ విచారణ కై నోటీసు
                 </h3>
@@ -137,8 +147,8 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
                   సరిహద్దుల చట్టం, 1923 కు సంబంధించి{' '}
                   {districts.find((d) => d.value === districtName)?.te || '____________________'}{' '}
                   జిల్లా, {mandalName || '_____________________'} మండలం,{' '}
-                  {villageName || '____________________'} గ్రామం యొక్క ప్రాథమిక సర్వే రికార్డులు
-                  తయారుచేయడం జరిగినది. ప్రాథమిక సర్వే రికార్డులలో మీరు అభ్యంతరం తెలియచేసినందు భూమి
+                  {villageName || '____________________'} గ్రామం యొక్క ప్రాథమికార్డులు
+                  తయారుచేయడం జరిగినది. ప్రాథమికార్డులలో మీరు అభ్యంతరం తెలియచేసినందు భూమి
                   ధ్రువీకరణ (Ground Validation) నిమిత్తం తేది {formattedDate || '____________'} న{' '}
                   {formattedTime || '________'} గం. ని.లకు సర్వే పనులు ప్రారంభించబడును అని
                   తెలియచేయటమైనది.

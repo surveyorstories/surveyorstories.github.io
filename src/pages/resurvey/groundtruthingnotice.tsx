@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import Header from '../../components/Header'
-import FormSection from '../../components/FormSection'
+import FormSection from '../../components/FormSection' // <-- Add this import
+import { formNumbers } from '../../components/FormSection'
 import MappingTable from '../../components/MappingTable'
 import PreviewSection from '../../components/PreviewSection'
 import { toast } from '../../components/ui/use-toast'
@@ -25,6 +26,8 @@ function Index() {
   const [officerDesignation, setOfficerDesignation] = useState('')
   // Add noticeMode state
   const [noticeMode, setNoticeMode] = useState('khata')
+  // Add formNumber state here
+  const [formNumber, setFormNumber] = useState('')
 
   // CSV data state
   const [headers, setHeaders] = useState<string[]>([])
@@ -75,6 +78,8 @@ function Index() {
           </div>
 
           <div className='mt-8 w-full space-y-8 overflow-hidden print:m-0'>
+            {/* Remove this line from here: */}
+            {/* const [formNumber, setFormNumber] = useState('14') */}
             <FormSection
               onFileUpload={handleFileUpload}
               districtName={districtName}
@@ -101,6 +106,8 @@ function Index() {
               setOfficerDesignation={setOfficerDesignation}
               noticeMode={noticeMode}
               setNoticeMode={setNoticeMode}
+              formNumber={formNumber}
+              setFormNumber={setFormNumber}
             />
 
             <MappingTable
@@ -137,6 +144,7 @@ function Index() {
               officerName={officerName}
               officerDesignation={officerDesignation}
               noticeMode={noticeMode}
+              formNumber={formNumber} // <-- Add this line
             />
           </div>
         </div>

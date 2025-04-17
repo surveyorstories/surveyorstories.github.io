@@ -44,6 +44,7 @@ interface PreviewSectionProps {
   officerName: string
   officerDesignation: string
   noticeMode?: string
+  formNumber: string
 }
 
 // Update the component function to include noticeMode parameter
@@ -63,7 +64,8 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
   noticeType,
   officerName,
   officerDesignation,
-  noticeMode = 'khata' // Add default value
+  noticeMode = 'khata', // Add default value
+  formNumber           // <-- Add this line
 }) => {
   const printRef = useRef<HTMLDivElement>(null)
 
@@ -304,11 +306,11 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         header.innerHTML = createSafeHTML(
           noticeType === 'GT Notice'
             ? `
-          <h1 style="font-size: 14pt; margin-top: 0;">ఫారం-15 </h1>
+          <h1 style="font-size: 14pt; margin-top: 0;">ఫారం-${formNumber || '15'} </h1>
           <h2 style="font-size: 14pt;">భూ యాజమాన్య దారులకు నోటీసు</h2>
           <h2 style="font-size: 14pt; margin-bottom: 10px;">FOR GROUND TRUTHING</h2>
         `
-            : `<h1 style="font-size: 14pt; margin-top: 0;">ఫారం - 26 </h1>
+            : `<h1 style="font-size: 14pt; margin-top: 0;">${formNumber || '26'} </h1>
               <h2 style="font-size: 14pt; margin-bottom: 10px;">ప్రైవేట్ భూముల/ప్రభుత్వా విభాగాలు/ సంస్థల భూ కమత ధ్రువీకరణ విచారణ కై నోటీసు</h2>  `
         )
         noticeDiv.appendChild(header)
@@ -576,7 +578,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         <div className='telugu-text no-print overflow-hidden p-4 sm:pb-2 print:p-0'>
           {noticeType === 'GT Notice' ? (
             <>
-              <h3 className='telugu-text text-center font-bold'>ఫారం-15 </h3>
+              <h3 className='telugu-text text-center font-bold'>ఫారం-{formNumber || '15'} </h3>
               <h3 className='telugu-text text-center font-bold'>భూ యాజమాన్య దారులకు నోటీసు</h3>
               <h3 className='telugu-text mb-4 text-center font-bold'>FOR GROUND TRUTHING</h3>
               <p className='text-justify' style={{ marginBottom: '0px', wordBreak: 'break-all' }}>
@@ -599,7 +601,8 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
             </>
           ) : (
             <>
-              <h3 className='telugu-text text-center font-bold'>ఫారం - 26</h3>
+              <h3 className='telugu-text text-center font-bold'>ఫారం-{formNumber || '26'} </h3>
+
               <h3 className='telugu-text text-center font-bold'>
                 ప్రైవేట్ భూముల/ప్రభుత్వా విభాగాలు/ సంస్థల భూ కమత ధ్రువీకరణ విచారణ కై నోటీసు
               </h3>
@@ -644,6 +647,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
             officerName={officerName}
             officerDesignation={officerDesignation}
             noticeMode={noticeMode}
+            formNumber={formNumber} // <-- Add this line
           />
         </div>
       </Card>

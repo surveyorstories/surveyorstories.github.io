@@ -1,5 +1,5 @@
 import React from 'react'
-import { officerDesignations } from './../ninetwo_components/FormSection_ninetwo'
+import { officerDesignations, formNumbers } from './FormSection_ninetwo'
 import { districts } from '../data/districts'
 import { decodeHTMLEntities } from '../lib/sanitize'
 import NoticeTable from './NoticeTable_ninetwo'
@@ -22,9 +22,9 @@ interface PrintableNoticeProps {
   printedDate: string
   notices: NoticeData[]
   showHeaderOnWeb?: boolean
-
   officerName?: string
   officerDesignation?: string
+  formNumber: string
 }
 
 const formatTime = (timeString: string): string => {
@@ -76,7 +76,8 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
   showHeaderOnWeb = true,
 
   officerName,
-  officerDesignation
+  officerDesignation,
+  formNumber
 }) => {
   const formattedTime = formatTime(startTime)
   const formattedDate = formatDate(startDate)
@@ -138,7 +139,10 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
             >
               {/* print page */}
               <>
-                <h3 className='telugu-text'>ఫారం - 31</h3>
+                <h3 className='telugu-text'>
+                  {`ఫారం - ${formNumber || '31'}`}
+                </h3>
+
                 <h3 className='telugu-text'>
                   ఆంధ్రప్రదేశ్ సర్వే మరియు సరిహద్దుల చట్టం, 1923 లోని 9(2) సెక్షన్ ప్రకారము నోటీసు
                 </h3>

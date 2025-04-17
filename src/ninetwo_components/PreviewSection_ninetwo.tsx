@@ -33,6 +33,8 @@ interface PreviewSectionProps {
   officerName: string
   officerDesignation: string
   noticeType?: string
+  formNumber: string
+
 }
 
 const PreviewSection: React.FC<PreviewSectionProps> = ({
@@ -50,6 +52,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
   mapping,
   officerName,
   officerDesignation,
+  formNumber,
   noticeType = 'khata' // Default to khata if not provided
 }) => {
   const printRef = useRef<HTMLDivElement>(null)
@@ -316,7 +319,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         header.style.marginTop = '0'
         header.style.paddingTop = '0'
         header.innerHTML = createSafeHTML(`
-          <h1 style="font-size: 12pt; margin-top: 0;">ఫారం - 31 </h1>
+          <h1 style="font-size: 12pt; margin-top: 0;">ఫారం - ${formNumber || '31'}</h1>
           <h2 style="font-size: 12pt; margin-bottom: 6px;">ఆంధ్రప్రదేశ్ సర్వే మరియు సరిహద్దుల చట్టం, 1923 లోని 9(2) సెక్షన్ ప్రకారము నోటీసు</h2>
         `)
         noticeDiv.appendChild(header)
@@ -353,10 +356,9 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           <div style="display: flex; justify-content: space-between; width: 100%; font-size: 8pt; line-height: 1; word-break: break-all;">
                               <span>
                                 జిల్లా:
-                                ${
-                                  districts.find((d) => d.value === districtName)?.te ||
-                                  '____________________'
-                                }
+                                ${districts.find((d) => d.value === districtName)?.te ||
+          '____________________'
+          }
                               </span>
                               <span>మండలం: ${sanitizeString(mandalName) || '_____________'} </span>
                               <span>గ్రామం: ${sanitizeString(villageName) || '_____________'} </span>
@@ -377,12 +379,12 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           { en: 'Survey No', te: 'సర్వే నెంబరు', mappedIndex: notice.mapping['Survey No'] },
           ...(notice.mapping['Sub Division No']
             ? [
-                {
-                  en: 'Sub Division No',
-                  te: 'సబ్ డివిజన్ నెం లేదా లెటర్',
-                  mappedIndex: notice.mapping['Sub Division No']
-                }
-              ]
+              {
+                en: 'Sub Division No',
+                te: 'సబ్ డివిజన్ నెం లేదా లెటర్',
+                mappedIndex: notice.mapping['Sub Division No']
+              }
+            ]
             : []),
           {
             en: 'Old extent (Acres)',
@@ -436,11 +438,10 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
              <div class="right-footer">
               <p class='body-footer-text telugu-text mb-0 mt-5 text-left'>
                 సర్వే అధికారి
-                ${
-                  officerDesignation
-                    ? ` (${officerDesignations.find((d) => d.value === officerDesignation)?.te || officerDesignation})`
-                    : ''
-                }
+                ${officerDesignation
+            ? ` (${officerDesignations.find((d) => d.value === officerDesignation)?.te || officerDesignation})`
+            : ''
+          }
               </p>
             </div>
           </div>
@@ -458,7 +459,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           <div style="margin-top: 20px; text-align: center; font-family: 'Gautami', 'Noto Sans Telugu', sans-serif;">
             <p>--------------------------------------------✂️-------------------------------------------</p>
             <div style="text-align: center;">
-              <h3 style="margin: 0; font-size: 12pt;">ఫారం – 31(a)</h3>
+              <h3 style="margin: 0; font-size: 12pt;">ఫారం – ${formNumber || '31'}(a)</h3>
               <h3 style="margin: 0; font-size: 12pt;">రశీదు</h3>
             </div>
             <p style="text-align: justify; margin: 10px 0; font-size: 8pt; line-height: 1; word-break: break-all">
@@ -559,7 +560,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
       <Card className='glass-panel w-full overflow-hidden print:static print:bg-transparent'>
         <div className='telugu-text no-print overflow-hidden p-4 pb-0 sm:pb-0 print:p-0'>
           <>
-            <h3 className='telugu-text text-center'>ఫారం - 31</h3>
+            <h3 className='telugu-text text-center'>ఫారం -{formNumber || '31'} </h3>
             <h3 className='telugu-text text-center'>
               ఆంధ్రప్రదేశ్ సర్వే మరియు సరిహద్దుల చట్టం, 1923 లోని 9(2) సెక్షన్ ప్రకారము నోటీసు
             </h3>
@@ -616,6 +617,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
             showHeaderOnWeb={false}
             officerName={officerName}
             officerDesignation={officerDesignation}
+            formNumber={formNumber}
           />
         </div>
       </Card>
