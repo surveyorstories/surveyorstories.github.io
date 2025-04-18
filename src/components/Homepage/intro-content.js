@@ -9,7 +9,7 @@ const IntroContent = ({ buttonLink, nineTwoLink }) => {
     <Layout title='Resurvey Notice Generator' description='Generate Resurvey Notices with ease.'>
       <header className='header'>
         <div className='container mx-auto px-4 py-6 text-center'>
-          <h1 className='text-3xl font-bold text-blue-800'>Resurvey Notice Generator</h1>
+          <h1 className='text-3xl text-blue-800'>Resurvey Notice Generator</h1>
           <p className='mb-4 text-gray-600'>
             Ground Truthing Notice Ground Validation and Nine Two Notice Generation for Resurvey.
           </p>

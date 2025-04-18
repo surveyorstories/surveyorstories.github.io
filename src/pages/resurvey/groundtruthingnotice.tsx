@@ -84,8 +84,7 @@ function Index() {
           </div>
 
           <div className='mt-8 w-full space-y-8 overflow-hidden print:m-0'>
-            {/* Remove this line from here: */}
-            {/* const [formNumber, setFormNumber] = useState('14') */}
+
             <FormSection
               onFileUpload={handleFileUpload}
               districtName={districtName}
