@@ -224,7 +224,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         }
         body { 
           font-family: 'Gautami', 'Noto Sans Telugu', sans-serif; 
-          margin: 0;
+          margin: 1mm !important;
           padding: 0;
         }
         .table-header {
@@ -232,11 +232,13 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           padding: 3px;
           text-align: center;
           font-weight: bold;
+          font-size: 9pt !important;
         }
         .table-cell {
-            border: 1px solid black;
-            padding: 3px;
-            text-align: center;
+          border: 1px solid black;
+          padding: 3px;
+          text-align: center;
+          font-size: 9pt !important;
         }
 
         .pattadar{
@@ -254,6 +256,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           border-collapse: collapse; 
           font-family: 'Gautami', 'Noto Sans Telugu', sans-serif;
           table-layout: fixed;
+          font-size: 9pt !important;
         }
         th, td { 
           border: 1px solid black; 
@@ -262,6 +265,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           font-family: 'Gautami', 'Noto Sans Telugu', sans-serif;
           word-break: break-word;
           overflow-wrap: break-word;
+          font-size: 9pt !important;
         }
         .header { 
           text-align: center; 
@@ -290,7 +294,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         }
         .notice-section {
           page-break-after: always;
-          padding: 15mm 15mm 20mm 15mm;
+          padding: 1mm 1mm 2mm 1mm;
           margin-top: 0;
         }
         .notice-section:last-child {
@@ -303,7 +307,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           width: 120px;
         }
         @page {
-          margin: 5mm;
+          margin: 10mm;
         }
       `
       wordContent.appendChild(style)
@@ -411,11 +415,13 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
 
         // Render the NoticeTable component to a string
         const tableHtml = ReactDOMServer.renderToStaticMarkup(
-          <NoticeTable
-            fields={fields}
-            rows={notice.rows}
-            hasSubdivision={'Sub Division No' in notice.mapping}
-          />
+          <div style={{ fontSize: '9pt' }}>
+            <NoticeTable
+              fields={fields}
+              rows={notice.rows}
+              hasSubdivision={'Sub Division No' in notice.mapping}
+            />
+          </div>
         )
 
         tableContainer.innerHTML = createSafeHTML(tableHtml)
@@ -466,7 +472,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
               &emsp; ${districts.find((d) => d.value === districtName)?.te || '_____________'} జిల్లా, 
               ${sanitizeString(mandalName) || '_____________'} మండలం, 
               ${sanitizeString(villageName) || '_____________'} గ్రామము నందు రీసర్వే నిర్వహించి, 
-              ల్యాండ్ పార్సెల్ నెంబర్ "${notice.rows.map((row) => sanitizeString(row[notice.mapping['LPM Number']] || '')).join(', ')}" విషయమై 
+              ల్యాండ్ పార్సెల్ నెంబర్ "${Array.from(new Set(notice.rows.map((row) => sanitizeString(row[notice.mapping['LPM Number']] || '')))).join(', ')}" విషయమై 
               ఆంధ్రప్రదేశ్ సర్వే & సరిహద్దుల చట్టం, 1923 లోని 9(2) సెక్షన్ ప్రకారము 
               ${formattedPrintedDate || '_____________'} తేదీన జారీ చేసిన నోటీసు అందిన విషయాన్ని 
               నేను దృవీకరించుచున్నాను.
@@ -560,7 +566,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
       <Card className='glass-panel w-full overflow-hidden print:static print:bg-transparent'>
         <div className='telugu-text no-print overflow-hidden p-4 pb-0 sm:pb-0 print:p-0'>
           <>
-            <h3 className='telugu-text text-center'>ఫారం -{formNumber || '31'} </h3>
+            <h3 className='telugu-text text-center'>ఫారం - {formNumber || '31'} </h3>
             <h3 className='telugu-text text-center'>
               ఆంధ్రప్రదేశ్ సర్వే మరియు సరిహద్దుల చట్టం, 1923 లోని 9(2) సెక్షన్ ప్రకారము నోటీసు
             </h3>
@@ -576,7 +582,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
               &emsp; ఈ క్రింది జాబితా నందు తెలిపిన భూముల సరిహద్దుల నిర్ణయం మరియు కొలత సమయము నందు
               ఏవిధమైన తగాదాలు నాకు తెలియపరచనందున, సదరు చట్టం లోని 10(1) సెక్షన్ ననుసరించి,
               అభ్యంతరములు ఏమియు లేవని భావించి నేను ఇందుమూలముగా ఈ భూమి యొక్క సర్వే పటములలో
-              పొందుపరచబడిన సరిహద్దులు తగాదాలు లేనట్లుగాను, అవిసరిగా వున్నవని నిర్దారించి రికార్డులు
+              పొందుపరచబడిన సరిహద్దులు తగాదాలు లేనట్లుగాను, అవిసరిగా వున్నవని నిర్ధారించి రికార్డులు
               తయారు చేసియున్నాను.
               <br />
               &emsp;సదరు సర్వే రిజిస్టర్ లో నమోదు కాబడిన భూముల వివరములను ఈ క్రింది తెలిపిన జాబితా లో

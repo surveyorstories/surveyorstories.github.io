@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Header from '../../components/Header'
 import FormSection from '../../components/FormSection' // <-- Add this import
 import { formNumbers } from '../../components/FormSection'
 import MappingTable from '../../components/MappingTable'
-import PreviewSection from '../../components/PreviewSection'
+import PreviewSection from '../../components/previewsection'
 import { toast } from '../../components/ui/use-toast'
 import { Button } from '../../components/ui/button'
 import { Printer } from 'lucide-react'
@@ -28,6 +28,11 @@ function Index() {
   const [noticeMode, setNoticeMode] = useState('khata')
   // Add formNumber state here
   const [formNumber, setFormNumber] = useState('')
+
+  // Reset formNumber when noticeType changes
+  useEffect(() => {
+    setFormNumber('')
+  }, [noticeType])
 
   // CSV data state
   const [headers, setHeaders] = useState<string[]>([])
@@ -144,7 +149,7 @@ function Index() {
               officerName={officerName}
               officerDesignation={officerDesignation}
               noticeMode={noticeMode}
-              formNumber={formNumber} // <-- Add this line
+              formNumber={formNumber}
             />
           </div>
         </div>

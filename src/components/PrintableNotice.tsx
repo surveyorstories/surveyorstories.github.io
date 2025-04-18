@@ -97,15 +97,12 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
           <div
             className={`telugu-header-print telugu-text ${!showHeaderOnWeb ? 'hidden-on-web' : ''}`}
           >
-            {/* --- Add Form Number Display Here --- */}
-            <h3 className='telugu-text'>
-              {(formNumbers[noticeType] || []).find(f => f.value === formNumber)?.te || `ఫారం - ${formNumber}`}
-            </h3>
+
             {/* print page */}
             {noticeType === 'GT Notice' ? (
               <>
                 <h3 className='telugu-text'>
-                  {(formNumbers[noticeType] || []).find(f => f.value === formNumber)?.te || `ఫారం - ${formNumber || '15'}`}
+                  {(formNumbers[noticeType] || []).find(f => f.value === formNumber)?.te || `ఫారం - ${formNumber || ' 15'}`}
                 </h3>
                 <h3 className='telugu-text'>భూ యాజమాన్య దారులకు నోటీసు</h3>
                 <h3 className='telugu-text'>FOR GROUND TRUTHING</h3>

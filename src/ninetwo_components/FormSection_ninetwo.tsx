@@ -263,10 +263,11 @@ const FormSection: React.FC<FormSectionProps> = ({
               <div className='space-y-2'>
                 <Label htmlFor='formNumber'>Choice of Form Number</Label>
                 <Select
-                  value={formNumber}
+                  value={isCustomForm ? 'custom' : formNumber}
                   onValueChange={(value) => {
                     if (value === 'custom') {
                       setIsCustomForm(true)
+                      setFormNumber('') // Clear previous value for custom input
                     } else {
                       setIsCustomForm(false)
                       setFormNumber(value)
@@ -275,7 +276,9 @@ const FormSection: React.FC<FormSectionProps> = ({
                 >
                   <SelectTrigger className='form-input'>
                     <SelectValue placeholder='Select form number'>
-                      {isCustomForm ? formNumber : formNumbers[noticeType]?.find(f => f.value === formNumber)?.display}
+                      {isCustomForm
+                        ? (formNumber || 'Custom Form Number')
+                        : formNumbers.find(f => f.value === formNumber)?.display}
                     </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
@@ -289,6 +292,7 @@ const FormSection: React.FC<FormSectionProps> = ({
                 {isCustomForm && (
                   <div className='mt-2'>
                     <Input
+                      key="custom-form-input"
                       type='number'
                       min='1'
                       placeholder='Enter custom form number'

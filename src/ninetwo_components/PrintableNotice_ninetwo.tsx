@@ -99,11 +99,16 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
   const formatLPMNumbers = (rows: string[][], mapping: Record<string, number>): string => {
     if (!rows || !rows.length) return '_____________'
 
-    const lpmNumbers = rows
-      .map((row) => row[mapping['LPM Number']] || '')
-      .filter(Boolean)
-      .map((lpm) => decodeHTMLEntities(lpm).replace(/[^\d,.-]/g, ''))
-      .join(', ')
+    // Use a Set to ensure unique LPM numbers
+    const uniqueLpmNumbers = new Set(
+      rows
+        .map((row) => row[mapping['LPM Number']] || '')
+        .filter(Boolean)
+        .map((lpm) => decodeHTMLEntities(lpm).replace(/[^\d,.-]/g, ''))
+    )
+
+    // Convert Set back to string with comma separation
+    const lpmNumbers = Array.from(uniqueLpmNumbers).join(', ')
 
     return lpmNumbers || '_____________'
   }
@@ -215,7 +220,7 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
               <div
                 className={`telugu-header-print telugu-text ${!showHeaderOnWeb ? 'hidden-on-web' : ''}`}
               >
-                <h3 className='telugu-text m-0 text-center'>ఫారం – 31(a)</h3>
+                <h3 className='telugu-text m-0 text-center'>{`ఫారం - ${formNumber || '31'}(a)`}</h3>
                 <h3 className='telugu-text m-0 text-center'>రశీదు</h3>
               </div>
               <p
