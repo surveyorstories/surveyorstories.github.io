@@ -1,4 +1,5 @@
 import React, { useRef } from 'react'
+import he from 'he'
 import { motion } from 'framer-motion'
 import { Card } from '../components/ui/card'
 import { Button } from '../components/ui/button'
@@ -512,19 +513,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
       `
 
       // Replace any remaining HTML entities that might not be properly decoded
-      const finalHtmlContent = htmlContent
-        // First handle double-escaped entities
-        .replace(/&amp;#39;/g, "'")
-        .replace(/&amp;quot;/g, '"')
-        .replace(/&amp;lt;/g, '<')
-        .replace(/&amp;gt;/g, '>')
-        .replace(/&amp;amp;/g, '&')
-        // Then handle single-escaped entities
-        .replace(/&#39;/g, "'")
-        .replace(/&quot;/g, '"')
-        .replace(/&lt;/g, '<')
-        .replace(/&gt;/g, '>')
-        .replace(/&amp;/g, '&')
+      const finalHtmlContent = he.decode(htmlContent)
 
       const blob = new Blob([finalHtmlContent], { type: 'application/msword' })
 
