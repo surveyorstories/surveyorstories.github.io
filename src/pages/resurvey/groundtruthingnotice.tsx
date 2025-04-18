@@ -4,7 +4,8 @@ import Header from '../../components/Header'
 import FormSection from '../../components/FormSection' // <-- Add this import
 import { formNumbers } from '../../components/FormSection'
 import MappingTable from '../../components/MappingTable'
-import PreviewSection from '../../components/previewsection'
+
+import PreviewSection from '../../components/PreviewSection'
 import { toast } from '../../components/ui/use-toast'
 import { Button } from '../../components/ui/button'
 import { Printer } from 'lucide-react'
