@@ -95,7 +95,7 @@ const MappingTable: React.FC<MappingTableProps> = ({
             <CardContent className='pt-6'>
               <h2 className='mb-6 text-2xl font-medium'>Map CSV Columns</h2>
               <div className='overflow-x-auto'>
-                <div className='mb-4 border-2 border-blue-500 p-2 rounded-lg'>
+                <div className='mb-4 rounded-lg border-2 border-blue-500 p-2'>
                   <h3 className='mb-2 font-bold'>Required Fields</h3>
                   <Table>
                     <TableHeader>
@@ -121,10 +121,13 @@ const MappingTable: React.FC<MappingTableProps> = ({
                               value={mappings[field.en] || ''}
                               onValueChange={(value) => handleMappingChange(field.en, value)}
                             >
-                              <SelectTrigger className='w-full' style={{ fontFamily: 'noto sans telugu' }}>
+                              <SelectTrigger
+                                className='w-full'
+                                style={{ fontFamily: 'noto sans telugu' }}
+                              >
                                 <SelectValue placeholder='Select column' />
                               </SelectTrigger>
-                              <SelectContent>
+                              <SelectContent style={{ zIndex: 200 }}>
                                 {headers.map((header) => (
                                   <SelectItem key={header} value={header}>
                                     {header}
@@ -133,7 +136,7 @@ const MappingTable: React.FC<MappingTableProps> = ({
                               </SelectContent>
                             </Select>
                           </TableCell>
-                          <TableCell className='text-center '>
+                          <TableCell className='text-center'>
                             {mappings[field.en] ? (
                               <CheckCircle2 className='mx-auto h-5 w-5 text-green-500' />
                             ) : (
@@ -146,7 +149,7 @@ const MappingTable: React.FC<MappingTableProps> = ({
                   </Table>
                 </div>
 
-                <div className='border-2 border-green-500 rounded-lg p-2'>
+                <div className='rounded-lg border-2 border-green-500 p-2'>
                   <h3 className='mb-2 font-bold'>Optional Fields</h3>
                   <Table>
                     <TableHeader>
@@ -170,7 +173,7 @@ const MappingTable: React.FC<MappingTableProps> = ({
                               <SelectTrigger className='w-full'>
                                 <SelectValue placeholder='Select column' />
                               </SelectTrigger>
-                              <SelectContent>
+                              <SelectContent style={{ zIndex: 200 }}>
                                 {headers.map((header) => (
                                   <SelectItem key={header} value={header}>
                                     {header}

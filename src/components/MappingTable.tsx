@@ -135,16 +135,21 @@ const MappingTable: React.FC<MappingTableProps> = ({
                         >
                           {field.te}
                         </TableCell>
-                        <TableCell className='telugu-text'
-                          style={{ fontFamily: 'noto sans telugu' }} >
+                        <TableCell
+                          className='telugu-text'
+                          style={{ fontFamily: 'noto sans telugu' }}
+                        >
                           <Select
                             value={mappings[field.en] || ''}
                             onValueChange={(value) => handleMappingChange(field.en, value)}
                           >
-                            <SelectTrigger className='w-full' style={{ fontFamily: 'noto sans telugu' }}>
+                            <SelectTrigger
+                              className='w-full'
+                              style={{ fontFamily: 'noto sans telugu' }}
+                            >
                               <SelectValue placeholder='Select column' />
                             </SelectTrigger>
-                            <SelectContent >
+                            <SelectContent style={{ zIndex: 200 }}>
                               {headers.map((header) => (
                                 <SelectItem key={header} value={header}>
                                   {header}
