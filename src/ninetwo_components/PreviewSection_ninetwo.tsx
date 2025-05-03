@@ -34,7 +34,6 @@ interface PreviewSectionProps {
   officerDesignation: string
   noticeType?: string
   formNumber: string
-
 }
 
 const PreviewSection: React.FC<PreviewSectionProps> = ({
@@ -360,9 +359,10 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           <div style="display: flex; justify-content: space-between; width: 100%; font-size: 8pt; line-height: 1; word-break: break-all;">
                               <span>
                                 జిల్లా:
-                                ${districts.find((d) => d.value === districtName)?.te ||
-          '____________________'
-          }
+                                ${
+                                  districts.find((d) => d.value === districtName)?.te ||
+                                  '____________________'
+                                }
                               </span>
                               <span>మండలం: ${sanitizeString(mandalName) || '_____________'} </span>
                               <span>గ్రామం: ${sanitizeString(villageName) || '_____________'} </span>
@@ -383,12 +383,12 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           { en: 'Survey No', te: 'సర్వే నెంబరు', mappedIndex: notice.mapping['Survey No'] },
           ...(notice.mapping['Sub Division No']
             ? [
-              {
-                en: 'Sub Division No',
-                te: 'సబ్ డివిజన్ నెం లేదా లెటర్',
-                mappedIndex: notice.mapping['Sub Division No']
-              }
-            ]
+                {
+                  en: 'Sub Division No',
+                  te: 'సబ్ డివిజన్ నెం లేదా లెటర్',
+                  mappedIndex: notice.mapping['Sub Division No']
+                }
+              ]
             : []),
           {
             en: 'Old extent (Acres)',
@@ -444,10 +444,11 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
              <div class="right-footer">
               <p class='body-footer-text telugu-text mb-0 mt-5 text-left'>
                 సర్వే అధికారి
-                ${officerDesignation
-            ? ` (${officerDesignations.find((d) => d.value === officerDesignation)?.te || officerDesignation})`
-            : ''
-          }
+                ${
+                  officerDesignation
+                    ? ` (${officerDesignations.find((d) => d.value === officerDesignation)?.te || officerDesignation})`
+                    : ''
+                }
               </p>
             </div>
           </div>
@@ -510,7 +511,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           <title>Land Notices</title>
         </head>
         <body>
-          ${createSafeHTML(wordContent.innerHTML)}
+          ${createSafeHTML(wordContent.innerHTML, false, true)}
         </body>
         </html>
       `
@@ -599,8 +600,8 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
                   జిల్లా:{' '}
                   {districts.find((d) => d.value === districtName)?.te || '____________________'}
                 </span>
-                <span>మండలం: {mandalName || '_____________________'}</span>
-                <span>గ్రామం: {villageName || '____________________'}</span>
+                <span>మండలం: {mandalName || '_____________________'} </span>
+                <span>గ్రామం: {villageName || '____________________'} </span>
               </div>
             </p>
           </>

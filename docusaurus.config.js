@@ -67,7 +67,7 @@ const config = {
           sidebarPath: './sidebars.js',
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl: 'https://github.com/surveyorstories/surveyorstories.github.io/tree/main'
+          editUrl: 'https://github.com/surveyorstories/surveyorstories.github.io/edit/main'
         },
         blog: false,
         theme: {
@@ -118,7 +118,7 @@ const config = {
           // },
           // { to: '/blog', label: 'Blog', position: 'left' },
           {
-            'href': 'https://surveyorstories.github.io',
+            'href': 'https://github.com/surveyorstories/surveyorstories.github.io',
             'position': 'right',
             'className': 'header-github-link',
             'aria-label': 'GitHub repository'

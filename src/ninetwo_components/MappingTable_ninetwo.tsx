@@ -198,7 +198,7 @@ const MappingTable: React.FC<MappingTableProps> = ({
                   <Button
                     onClick={handleSubmit}
                     disabled={!isComplete}
-                    className='transition-all duration-300'
+                    className={`transition-all duration-300${isComplete ? 'cursor-pointer hover:cursor-pointer' : 'cursor-not-allowed'}`}
                   >
                     Generate Notices
                   </Button>

@@ -172,11 +172,10 @@ const MappingTable: React.FC<MappingTableProps> = ({
               </div>
 
               <div className='mt-6 flex justify-end space-x-4'>
-                {/* Preview button removed */}
                 <Button
                   onClick={handleSubmit}
                   disabled={!isComplete}
-                  className='transition-all duration-300'
+                  className={`transition-all duration-300${isComplete ? 'cursor-pointer hover:cursor-pointer' : 'cursor-not-allowed'}`}
                 >
                   Generate Notices
                 </Button>

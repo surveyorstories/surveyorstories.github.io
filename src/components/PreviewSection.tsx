@@ -66,7 +66,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
   officerName,
   officerDesignation,
   noticeMode = 'khata', // Add default value
-  formNumber           // <-- Add this line
+  formNumber // <-- Add this line
 }) => {
   const printRef = useRef<HTMLDivElement>(null)
 
@@ -138,6 +138,33 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
 
     notices = Object.entries(surveyGroups).map(([surveyNo, rows]) => ({
       khataNo: surveyNo, // We use khataNo field to store the survey number for consistency
+      rows,
+      mapping: indexMapping,
+      fields
+    }))
+  } else if (noticeMode === 'subdivision' && hasSurveyNo) {
+    // Sub Division wise: each row becomes a separate notice, grouped by Survey No
+    notices = data.map((row) => {
+      const surveyNo = row[indexMapping['Survey No']] || 'Unknown'
+      return {
+        khataNo: surveyNo,
+        rows: [row],
+        mapping: indexMapping,
+        fields
+      }
+    })
+  } else if (noticeMode === 'survey-grouped' && hasSurveyNo) {
+    // New mode: group all rows with the same Survey No into one table/notice
+    const surveyGroups: Record<string, string[][]> = {}
+    data.forEach((row) => {
+      const surveyNo = row[indexMapping['Survey No']] || 'Unknown'
+      if (!surveyGroups[surveyNo]) {
+        surveyGroups[surveyNo] = []
+      }
+      surveyGroups[surveyNo].push(row)
+    })
+    notices = Object.entries(surveyGroups).map(([surveyNo, rows]) => ({
+      khataNo: surveyNo,
       rows,
       mapping: indexMapping,
       fields
@@ -322,22 +349,27 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         content.innerHTML = createSafeHTML(
           noticeType === 'GT Notice'
             ? `
-          <p style="font-size: 12pt; line-height: 1.5;word-break: break-all ">1) సర్వే సహాయక సంచాలకులు వారి 6(1) నోటిఫికేషన్ ఆర్‌.సి నెం ${sanitizeString(notificationNumber) || '________________'} తేది: ${formatDate(sanitizeString(notificationDate)) || '____________'
-            }, అనుసరించి, ${districts.find((d) => d.value === districtName)?.te || '____________________'}  జిల్లా, 
-           ${sanitizeString(mandalName) || '_____________________'} మండలం, ${sanitizeString(villageName) || '____________________'
-            } గ్రామములో సీమానిర్ణయం (demarcation) మరియు సర్వే పనులు
-          ${formatDate(sanitizeString(startDate)) || '_____________'} తేదీన ${formatTime(sanitizeString(startTime)) || '________'
-            } గం.ని.లకు ప్రారంభిచబడును అని తెలియజేయడమైనది.</p>
+          <p style="font-size: 12pt; line-height: 1.5;word-break: break-all ">1) సర్వే సహాయక సంచాలకులు వారి 6(1) నోటిఫికేషన్ ఆర్‌.సి నెం ${sanitizeString(notificationNumber) || '________________'} తేది: ${
+            formatDate(sanitizeString(notificationDate)) || '____________'
+          }, అనుసరించి, ${districts.find((d) => d.value === districtName)?.te || '____________________'}  జిల్లా, 
+           ${sanitizeString(mandalName) || '_____________________'} మండలం, ${
+             sanitizeString(villageName) || '____________________'
+           } గ్రామములో సీమానిర్ణయం (demarcation) మరియు సర్వే పనులు
+          ${formatDate(sanitizeString(startDate)) || '_____________'} తేదీన ${
+            formatTime(sanitizeString(startTime)) || '________'
+          } గం.ని.లకు ప్రారంభిచబడును అని తెలియజేయడమైనది.</p>
 
           <p style="font-size: 12pt; line-height: 1.5; word-break: break-all ">2) సర్వే మరియు సరిహద్దుల చట్టం, 1923లోని నియమ నిబంధనలు అనుసరించి సర్వే సమయం నందు ఈ క్రింది షెడ్యూల్ లోని భూ
           యజమానాలు భూమి వద్ద హాజరై మీ పొలము యొక్క సరిహద్దులను చూపించి, తగిన సమాచారం మరియు అవసరమైన సహాయ సహకారములు
           అందించవలసినదిగా తెలియజేయడమైనది.</p>
         `
             : ` <p style="font-size: 12pt; line-height: 1.5; word-break: break-all ">1) సహాయ సంచాలకులు, సర్వే మరియు భూమి రికార్డ్ల వారు జారీ చేసిన 6 (1) నోటిఫికేషన్ ఆర్‌సి నెం ${sanitizeString(notificationNumber) || '________________'} తేది: ${formatDate(sanitizeString(notificationDate)) || '____________'}, మరియు ఆంధ్రప్రదేశ్ సర్వే మరియు సరిహద్దుల చట్టం, 1923 కు సంబంధించి ${districts.find((d) => d.value === districtName)?.te || '____________________'} జిల్లా, 
-           ${sanitizeString(mandalName) || '_____________________'} మండలం, ${sanitizeString(villageName) || '____________________'
-            } గ్రామం యొక్క ప్రాథమిక సర్వే రికార్డులు తయారుచేయడం జరిగినది. 
-ప్రాథమిక సర్వే రికార్డులలో మీరు అభ్యంతరం తెలియచేసినందున వలన భూమి ధ్రువీకరణ (Ground Validation) నిమిత్తం తేదీ ${formatDate(sanitizeString(startDate)) || '_____________'} న ${formatTime(sanitizeString(startTime)) || '________'
-            } గం.ని.లకు సర్వే పనులు ప్రారంభించబడును అని తెలియచేయటమైనది.</p>
+           ${sanitizeString(mandalName) || '_____________________'} మండలం, ${
+             sanitizeString(villageName) || '____________________'
+           } గ్రామం యొక్క ప్రాథమిక సర్వే రికార్డులు తయారుచేయడం జరిగినది. 
+ప్రాథమిక సర్వే రికార్డులలో మీరు అభ్యంతరం తెలియచేసినందున వలన భూమి ధ్రువీకరణ (Ground Validation) నిమిత్తం తేదీ ${formatDate(sanitizeString(startDate)) || '_____________'} న ${
+                formatTime(sanitizeString(startTime)) || '________'
+              } గం.ని.లకు సర్వే పనులు ప్రారంభించబడును అని తెలియచేయడమైనది.</p>
           <p style="font-size: 12pt; line-height: 1.5; word-break: break-all "> 2) సర్వే మరియు సరిహద్దుల చట్టం, 1923లోని నియమ నిబంధనలు అనుసరించి సర్వే సమయం నందు ఈ క్రింది షెడ్యూల్ లోని భూ
           యజమానాలు భూమి వద్ద హాజరై మీ పొలము యొక్క సరిహద్దులను చూపించి, తగిన సమాచారం మరియు అవసరమైన సహాయ సహకారములు
           అందించవలసినదిగా తెలియజేయడమైనది.</p>  `
@@ -507,7 +539,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           <title>Land Notices</title>
         </head>
         <body>
-          ${createSafeHTML(wordContent.innerHTML)}
+          ${createSafeHTML(wordContent.innerHTML, false, true)}
         </body>
         </html>
       `
