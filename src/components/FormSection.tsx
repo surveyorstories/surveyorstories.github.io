@@ -106,9 +106,9 @@ const FormSection: React.FC<FormSectionProps> = ({
   printedDate,
   setPrintedDate,
   noticeMode = 'khata',
-  setNoticeMode = () => { },
-  formNumber,           // <-- Add this line
-  setFormNumber         // <-- Add this line
+  setNoticeMode = () => {},
+  formNumber, // <-- Add this line
+  setFormNumber // <-- Add this line
 }) => {
   const [isDragging, setIsDragging] = useState(false)
   const [fileName, setFileName] = useState<string | null>(null)
@@ -151,7 +151,7 @@ const FormSection: React.FC<FormSectionProps> = ({
 
       if (rows.length > 1) {
         // Sanitize headers and data to prevent XSS attacks
-        const headers = rows[0].map(header => sanitizeString(header))
+        const headers = rows[0].map((header) => sanitizeString(header))
         const rawData = rows.slice(1).filter((row) => row.some((cell) => cell.trim() !== ''))
         const data = sanitizeCSVData(rawData)
         onFileUpload(headers, data)
@@ -176,7 +176,7 @@ const FormSection: React.FC<FormSectionProps> = ({
             className='space-y-6'
           >
             {/* Notice Type section */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
               <div>
                 <h2 className='text-2xl font-medium'>Notice Type</h2>
                 <div className='mb-6'>
@@ -211,19 +211,26 @@ const FormSection: React.FC<FormSectionProps> = ({
                     </div>
                     <div className='flex items-center space-x-2'>
                       <RadioGroupItem value='khata-pattadar-once' id='khata-pattadar-once' />
-                      <Label htmlFor='khata-pattadar-once'>Khata wise (Pattadar Name Once) * not fully tested</Label>
+                      <Label htmlFor='khata-pattadar-once'>Khata wise (Pattadar Name Once)</Label>
                     </div>
                     <div className='flex items-center space-x-2'>
                       <RadioGroupItem value='survey' id='survey' />
                       <Label htmlFor='survey'>Survey No wise </Label>
                     </div>
-
+                    <div className='flex items-center space-x-2'>
+                      <RadioGroupItem value='subdivision' id='subdivision' />
+                      <Label htmlFor='subdivision'>Sub Division wise (each row by Survey No)</Label>
+                    </div>
+                    <div className='flex items-center space-x-2'>
+                      <RadioGroupItem value='survey-grouped' id='survey-grouped' />
+                      <Label htmlFor='survey-grouped'>
+                        Sub Division wise (grouped by Same Sub Division)
+                      </Label>
+                    </div>
                   </RadioGroup>
                 </div>
               </div>
             </div>
-
-
 
             <h2 className='text-2xl font-medium'>Village Details</h2>
             <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
@@ -364,8 +371,9 @@ const FormSection: React.FC<FormSectionProps> = ({
                   <SelectTrigger className='form-input'>
                     <SelectValue placeholder='Select form number'>
                       {isCustomForm
-                        ? (formNumber || 'Custom Form Number')
-                        : (formNumbers[noticeType]?.find(f => f.value === formNumber)?.display || '')}
+                        ? formNumber || 'Custom Form Number'
+                        : formNumbers[noticeType]?.find((f) => f.value === formNumber)?.display ||
+                          ''}
                     </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
@@ -380,7 +388,7 @@ const FormSection: React.FC<FormSectionProps> = ({
                 {isCustomForm && (
                   <div className='mt-2'>
                     <Input
-                      key="custom-form-input"
+                      key='custom-form-input'
                       type='number'
                       min='1'
                       placeholder='Enter custom form number'
@@ -395,16 +403,16 @@ const FormSection: React.FC<FormSectionProps> = ({
                 )}
               </div>
               {/* --- End Form Number Dropdown --- */}
-
             </div>
 
             <div className='pt-4'>
               <h2 className='mb-4 text-2xl font-medium'>Upload CSV File</h2>
               <div
-                className={`rounded-lg border-2 border-dashed p-6 text-center transition-all  ${isDragging
-                  ? 'border-primary bg-primary/5'
-                  : 'border-gray-300 hover:border-primary/50'
-                  }`}
+                className={`rounded-lg border-2 border-dashed p-6 text-center transition-all ${
+                  isDragging
+                    ? 'border-primary bg-primary/5'
+                    : 'border-gray-300 hover:border-primary/50'
+                }`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
@@ -424,19 +432,18 @@ const FormSection: React.FC<FormSectionProps> = ({
                   <motion.div
                     className='rounded-full bg-primary/10 px-4 py-0.5'
                     animate={{
-                      scale: fileName ? 1 : [1, 1.1, 1],
-
+                      scale: fileName ? 1 : [1, 1.1, 1]
                     }}
                     transition={{
                       duration: 1.5,
-                      ease: "easeInOut",
+                      ease: 'easeInOut',
                       repeat: fileName ? 0 : Infinity
                     }}
                   >
                     <Upload className='h-6 w-6 text-primary' />
                   </motion.div>
 
-                  <span className='text-sm text-gray-500 '>
+                  <span className='text-sm text-gray-500'>
                     {fileName ? fileName : 'Drag & drop or click to upload CSV file'}
                   </span>
                   <span className='text-xs text-gray-400'>
