@@ -35,7 +35,8 @@ jobs:
 
       - name: Build website
         env:
-          POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}  # Add this line
+          POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }} 
+          CHATWOOT_WEBSITE_TOKEN: ${{ secrets.CHATWOOT_WEBSITE_TOKEN }}  # Add this line
         run: yarn build
 
       - name: Deploy to GitHub Pages

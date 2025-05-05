@@ -177,8 +177,9 @@ const config = {
       // Add Chatwoot configuration here
       chatwoot: {
         websiteToken: process.env.CHATWOOT_WEBSITE_TOKEN, // Replace with your actual token
-        baseURL: "/",  // optional
-        enableInDevelopment: false,  // optional
+        // baseURL: "https://surveyorstories.github.io",  // optional
+        enableInDevelopment: true,
+          // optional
       }
     }),
   // scripts: [
@@ -208,6 +209,7 @@ const config = {
     // Add the Chatwoot plugin here
     "@chatwoot/docusaurus-plugin",
     ['./src/plugins/tailwind-config.js', {}],
+   
     [
       'ideal-image',
       /** @type {import('@docusaurus/plugin-ideal-image').PluginOptions} */
