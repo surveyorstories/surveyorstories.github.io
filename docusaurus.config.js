@@ -173,6 +173,12 @@ const config = {
       prism: {
         theme: prismThemes.github,
         darkTheme: prismThemes.dracula
+      },
+      // Add Chatwoot configuration here
+      chatwoot: {
+        websiteToken: process.env.CHATWOOT_WEBSITE_TOKEN, // Replace with your actual token
+        baseURL: "/",  // optional
+        enableInDevelopment: false,  // optional
       }
     }),
   // scripts: [
@@ -199,6 +205,8 @@ const config = {
     ]
   ],
   plugins: [
+    // Add the Chatwoot plugin here
+    "@chatwoot/docusaurus-plugin",
     ['./src/plugins/tailwind-config.js', {}],
     [
       'ideal-image',
