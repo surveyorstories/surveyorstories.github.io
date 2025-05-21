@@ -88,9 +88,17 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
     { en: 'Relation Name', te: 'భర్త/తండ్రి పేరు' }
   ]
 
-  const optionalFields = [{ en: 'Mobile Number', te: 'మొబైల్ నెంబరు' }]
+  // Add Extent field if mapped
+  let fields = [...requiredFields]
+  const hasExtent = 'Extent' in indexMapping
+  if (noticeType === 'GV Notice' && hasExtent) {
+    // Insert Extent after Relation Name (before Mobile Number)
+    const relIdx = fields.findIndex((f) => f.en === 'Relation Name')
+    fields.splice(relIdx + 1, 0, { en: 'Extent', te: 'విస్తీర్ణం' })
+  }
 
-  const fields = [...requiredFields, ...optionalFields]
+  const optionalFields = [{ en: 'Mobile Number', te: 'మొబైల్ నెంబరు' }]
+  fields = [...fields, ...optionalFields]
 
   // Check if we have the necessary fields based on the noticeMode
   const hasKhataNo = 'Khata No' in indexMapping

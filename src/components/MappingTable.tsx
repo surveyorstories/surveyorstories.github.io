@@ -47,8 +47,8 @@ const MappingTable: React.FC<MappingTableProps> = ({
 }) => {
   const [mappings, setMappings] = useState<Record<string, string>>({})
   const [isComplete, setIsComplete] = useState(false)
-
-  // Remove the localNoticeMode state and handleNoticeModeChange function
+  // Add state for extent column
+  const [showExtent, setShowExtent] = useState(false)
 
   const allRequiredFields: FieldMapping[] = [
     { en: 'LPM Number', te: 'ల్యాండ్ పార్సెల్ నెంబర్' },
@@ -63,26 +63,27 @@ const MappingTable: React.FC<MappingTableProps> = ({
     (field) => noticeType === 'GV Notice' || field.en !== 'LPM Number'
   )
 
-  const optionalFields: FieldMapping[] = [{ en: 'Mobile Number', te: 'మొబైల్ నెంబరు' }]
+  // Add Extent field if checkbox is checked and noticeType is GV Notice
+  const extentField: FieldMapping = { en: 'Extent', te: 'విస్తీర్ణం' }
+  let mappingFields = [...requiredFields]
+  if (noticeType === 'GV Notice' && showExtent) {
+    // Insert Extent after Relation Name (before Mobile Number)
+    const relIdx = mappingFields.findIndex((f) => f.en === 'Relation Name')
+    mappingFields.splice(relIdx + 1, 0, extentField)
+  }
 
-  const mappingFields = [...requiredFields, ...optionalFields]
+  const optionalFields: FieldMapping[] = [{ en: 'Mobile Number', te: 'మొబైల్ నెంబరు' }]
+  mappingFields = [...mappingFields, ...optionalFields]
 
   useEffect(() => {
     // Check if all required fields (excluding optional ones) have been mapped
     const requiredFieldsMapped = requiredFields.every((field) => mappings[field.en])
     setIsComplete(requiredFieldsMapped)
-  }, [mappings])
+  }, [mappings, requiredFields])
 
   const handleMappingChange = (field: string, value: string) => {
     setMappings((prev) => ({ ...prev, [field]: value }))
   }
-
-  // const handleNoticeModeChange = (value: string) => {
-  //   setLocalNoticeMode(value)
-  //   if (setNoticeMode) {
-  //     setNoticeMode(value)
-  //   }
-  // }
 
   const handleSubmit = () => {
     onMappingSubmit(mappings)
@@ -108,7 +109,20 @@ const MappingTable: React.FC<MappingTableProps> = ({
             <CardContent className='pt-6'>
               <h2 className='mb-6 text-2xl font-medium'>Map CSV Columns</h2>
 
-              {/* Remove the Notice Mode radio button section */}
+              {/* Add checkbox for Extent column (only for GV Notice) */}
+              {noticeType === 'GV Notice' && (
+                <div className='mb-4 flex items-center gap-2'>
+                  <input
+                    type='checkbox'
+                    id='show-extent'
+                    checked={showExtent}
+                    onChange={(e) => setShowExtent(e.target.checked)}
+                  />
+                  <label htmlFor='show-extent' className='text-sm'>
+                    Add Extent column (విస్తీర్ణం)
+                  </label>
+                </div>
+              )}
 
               <div className='overflow-x-auto'>
                 <Table>
