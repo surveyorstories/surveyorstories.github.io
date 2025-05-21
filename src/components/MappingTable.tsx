@@ -109,18 +109,28 @@ const MappingTable: React.FC<MappingTableProps> = ({
             <CardContent className='pt-6'>
               <h2 className='mb-6 text-2xl font-medium'>Map CSV Columns</h2>
 
-              {/* Add checkbox for Extent column (only for GV Notice) */}
+              {/* Change checkbox to radio group for Extent column (only for GV Notice) */}
               {noticeType === 'GV Notice' && (
-                <div className='mb-4 flex items-center gap-2'>
-                  <input
-                    type='checkbox'
-                    id='show-extent'
-                    checked={showExtent}
-                    onChange={(e) => setShowExtent(e.target.checked)}
-                  />
-                  <label htmlFor='show-extent' className='text-sm'>
-                    Add Extent column (విస్తీర్ణం)
-                  </label>
+                <div className='mb-4 flex items-center gap-4'>
+                  <span className='text-sm'>Add Extent column (విస్తీర్ణం):</span>
+                  <RadioGroup
+                    value={showExtent ? 'yes' : 'no'}
+                    onValueChange={(val) => setShowExtent(val === 'yes')}
+                    className='flex flex-row gap-4'
+                  >
+                    <div className='flex items-center gap-1'>
+                      <RadioGroupItem value='yes' id='extent-yes' />
+                      <Label htmlFor='extent-yes' className='text-sm'>
+                        Yes
+                      </Label>
+                    </div>
+                    <div className='flex items-center gap-1'>
+                      <RadioGroupItem value='no' id='extent-no' />
+                      <Label htmlFor='extent-no' className='text-sm'>
+                        No
+                      </Label>
+                    </div>
+                  </RadioGroup>
                 </div>
               )}
 
