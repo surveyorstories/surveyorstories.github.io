@@ -5,7 +5,7 @@ import DocumentationButton from "./DocumentationButton";
 import "../css/home.css"; // Import the CSS file
 
 const WelcomeBlock = () => {
-  const imageUrls = ["img/ppm.svg"];
+  const imageUrls = ["../img/ppm.svg"];
 
   return (
     <div className="welcomeblock-container" id="welcomeblock">
@@ -14,7 +14,7 @@ const WelcomeBlock = () => {
           <img
             key={index}
             src={imageUrl}
-            alt={`Image ${index + 1}`}
+            alt={`PPM ${index + 1}`}
             className="column-image"
           />
         ))}
