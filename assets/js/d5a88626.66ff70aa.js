@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkresurvey=self.webpackChunkresurvey||[]).push([["164"],{6380:function(e,t,a){a.r(t),a.d(t,{default:()=>r});var n=a(5893);a(7294);var o=a(6550);function r(e){let t=(0,o.TH)();return("undefined"!=typeof window&&(window.blogData={metadata:e.homePageBlogMetadata,recentPosts:e.recentPosts}),"/blog-data"===t.pathname)?(0,n.jsx)(o.l_,{to:"/"}):null}}}]);
