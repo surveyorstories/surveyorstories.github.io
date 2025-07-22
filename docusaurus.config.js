@@ -164,6 +164,10 @@ const config = {
               {
                 label: 'GitHub',
                 href: 'https://github.com/surveyorstories'
+              },
+              {
+                label: 'Gruhanaksha',
+                href: '/gruhanaksha'
               }
             ]
           }
@@ -195,8 +199,8 @@ const config = {
         highlightSearchTermsOnTargetPage: false,
         searchResultContextMaxLength: 50,
         searchResultLimits: 8,
-        searchBarShortcut: true,
-        searchBarShortcutHint: false
+
+
       }
     ]
   ],

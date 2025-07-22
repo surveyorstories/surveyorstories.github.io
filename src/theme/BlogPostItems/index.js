@@ -1,6 +1,6 @@
 import React from 'react'
 import Link from '@docusaurus/Link'
-import Image from '@theme/IdealImage'
+// import Image from '@theme/IdealImage'
 import useBaseUrl from '@docusaurus/useBaseUrl'
 
 import BlogPostItem from '@theme/BlogPostItem'
