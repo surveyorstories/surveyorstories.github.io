@@ -144,9 +144,7 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
             >
               {/* print page */}
               <>
-                <h3 className='telugu-text'>
-                  {`ఫారం - ${formNumber || '31'}`}
-                </h3>
+                <h3 className='telugu-text'>{`ఫారం - ${formNumber || '31'}`}</h3>
 
                 <h3 className='telugu-text'>
                   ఆంధ్రప్రదేశ్ సర్వే మరియు సరిహద్దుల చట్టం, 1923 లోని 9(2) సెక్షన్ ప్రకారము నోటీసు
@@ -232,7 +230,12 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
                 గ్రామము నందు రీసర్వే నిర్వహించి, ల్యాండ్ పార్సెల్ నెంబర్ "{lpmNumbersList}" విషయమై
                 ఆంధ్రప్రదేశ్ సర్వే & సరిహద్దుల చట్టం, 1923 లోని 9(2) సెక్షన్ ప్రకారము{' '}
                 {formattedPrintedDate || '_____________'} తేదీన జారీ చేసిన నోటీసు అందిన విషయాన్ని
-                నేను దృవీకరించుచున్నాను.
+                నేను(
+                {notice.rows[0][notice.mapping['Pattadar Name']] ||
+                  '_________________________'} /{' '}
+                {notice.rows[0][notice.mapping['Relation Name']] || '____________________'}-
+                {notice.rows[0][notice.mapping['Khata No']] || '____________________'})
+                దృవీకరించుచున్నాను.
               </p>
 
               <div className='footer-signature-row mt-4'>
