@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkresurvey=self.webpackChunkresurvey||[]).push([["627"],{7548:function(e){e.exports=JSON.parse('{"blogBasePath":"/blog","blogTitle":"Blog","authorsListPath":"/blog/authors"}')}}]);
