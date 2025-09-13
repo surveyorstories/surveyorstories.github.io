@@ -1032,3 +1032,19 @@ table thead tr {
   /* Ensure cards take equal width */
   /* Other styles as before */
 }
+
+@media print {
+
+  /* Hide all AdSense ads */
+  ins.adsbygoogle,
+  .adsbygoogle,
+  iframe[src*="adsense"],
+  .googleads,
+  #google_ads_frame,
+  [id^="aswift_"],
+  [id^="google_ads_iframe_"] {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+  }
+}
