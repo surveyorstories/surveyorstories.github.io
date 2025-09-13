@@ -174,13 +174,20 @@ const config = {
             ]
           }
         ],
-        copyright: `Copyright © ${new Date().getFullYear()}  <a href="https://surveyorstories.github.io" style="font-weight: bold;" target="_blank">Surveyor Stories</a> Designed with Template Docusaurus Tailwind Shadcn</a>`
+        copyright: `Copyright © ${new Date().getFullYear()}  <a href="https://surveyorstories.github.io" style="font-weight: bold;" target="_blank">Surveyor Stories</a> Designed with Template Docusaurus Tailwind Shadcn`
       },
       prism: {
         theme: prismThemes.github,
         darkTheme: prismThemes.dracula
       },
-
+      announcementBar: {
+        id: 'support_us',
+        content:
+          'Please bear with us as we testing ads on this site; they support us in continuing our work.',
+        backgroundColor: '#55ec87ff',
+        textColor: '#0c131fff',
+        isCloseable: true,
+      },
 
     }),
   // scripts: [
@@ -191,20 +198,7 @@ const config = {
   //   }
   // ],
   themes: [
-    [
-      require.resolve('@easyops-cn/docusaurus-search-local'),
-      {
-        indexPages: true,
-        docsRouteBasePath: '/docs',
-        hashed: true,
-        language: ['en'],
-        highlightSearchTermsOnTargetPage: false,
-        searchResultContextMaxLength: 50,
-        searchResultLimits: 8,
 
-
-      }
-    ]
   ],
   plugins: [
     // Add the Chatwoot plugin here
