@@ -17,6 +17,7 @@ import { districts } from '../data/districts'
 import { sanitizeString, sanitizeCSVData } from '../lib/sanitize'
 import { toast } from '../components/ui/use-toast'
 import Papa from 'papaparse' // Add this import for CSV parsing
+import * as XLSX from 'xlsx'
 
 interface FormSectionProps {
   onFileUpload: (headers: string[], data: string[][]) => void
@@ -110,7 +111,7 @@ const FormSection: React.FC<FormSectionProps> = ({
     if (!file) return
 
     setFileName(file.name)
-    processCSVFile(file)
+    processFile(file)
   }
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -128,10 +129,18 @@ const FormSection: React.FC<FormSectionProps> = ({
     setIsDragging(false)
 
     const file = e.dataTransfer.files?.[0]
-    if (!file || !file.name.endsWith('.csv')) return
+    if (!file || !file.name.endsWith('.csv') && !file.name.endsWith('.xlsx')) return
 
     setFileName(file.name)
-    processCSVFile(file)
+    processFile(file)
+  }
+
+  const processFile = (file: File) => {
+    if (file.name.endsWith('.csv')) {
+      processCSVFile(file)
+    } else if (file.name.endsWith('.xlsx')) {
+      processExcelFile(file)
+    }
   }
 
   const processCSVFile = (file: File) => {
@@ -153,6 +162,25 @@ const FormSection: React.FC<FormSectionProps> = ({
       }
     }
     reader.readAsText(file)
+  }
+
+  const processExcelFile = (file: File) => {
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      const content = e.target?.result
+      const workbook = XLSX.read(content, { type: 'array' })
+      const sheetName = workbook.SheetNames[0]
+      const worksheet = workbook.Sheets[sheetName]
+      const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 })
+
+      if (jsonData.length > 1) {
+        const headers = (jsonData[0] as string[]).map((header) => sanitizeString(header))
+        const rawData = jsonData.slice(1) as string[][]
+        const data = sanitizeCSVData(rawData)
+        onFileUpload(headers, data)
+      }
+    }
+    reader.readAsArrayBuffer(file)
   }
 
   return (
@@ -193,7 +221,7 @@ const FormSection: React.FC<FormSectionProps> = ({
             <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
               <div className='space-y-2'>
                 <Label htmlFor='districtName'>District Name</Label>
-                <Select value={districtName} onValueChange={(value) => setDistrictName(value)}>
+                <Select value={districtName || undefined} onValueChange={(value) => setDistrictName(value)}>
                   <SelectTrigger className='form-input'>
                     <SelectValue placeholder='Select district' />
                   </SelectTrigger>
@@ -232,7 +260,7 @@ const FormSection: React.FC<FormSectionProps> = ({
               <div className='space-y-2'>
                 <Label htmlFor='officerDesignation'>Officer Designation</Label>
                 <Select
-                  value={officerDesignation}
+                  value={officerDesignation || undefined}
                   onValueChange={(value) => setOfficerDesignation(value)}
                 >
                   <SelectTrigger className='form-input'>
@@ -263,7 +291,7 @@ const FormSection: React.FC<FormSectionProps> = ({
               <div className='space-y-2'>
                 <Label htmlFor='formNumber'>Choice of Form Number</Label>
                 <Select
-                  value={isCustomForm ? 'custom' : formNumber}
+                  value={isCustomForm ? 'custom' : formNumber || undefined}
                   onValueChange={(value) => {
                     if (value === 'custom') {
                       setIsCustomForm(true)
@@ -331,7 +359,7 @@ const FormSection: React.FC<FormSectionProps> = ({
                   type='time'
                   value={startTime}
                   onChange={(e) => setStartTime(e.target.value)}
-                  className='form-input'
+                  className='form-.tsx'
                 />
               </div>
 
@@ -385,7 +413,7 @@ const FormSection: React.FC<FormSectionProps> = ({
               <div className='space-y-2'>
                 <Label htmlFor='officerDesignation'>Officer Designation</Label>
                 <Select
-                  value={officerDesignation}
+                  value={officerDesignation || undefined}
                   onValueChange={(value) => setOfficerDesignation(value)}
                 >
                   <SelectTrigger className='form-input'>
@@ -403,7 +431,7 @@ const FormSection: React.FC<FormSectionProps> = ({
             </div> */}
 
             <div className='pt-4'>
-              <h2 className='mb-4 text-2xl font-medium'>Upload CSV File</h2>
+              <h2 className='mb-4 text-2xl font-medium'>Upload CSV or Excel File</h2>
               <div
                 className={`rounded-lg border-2 border-dashed p-6 text-center transition-all ${isDragging
                   ? 'border-primary bg-primary/5'
@@ -415,14 +443,14 @@ const FormSection: React.FC<FormSectionProps> = ({
               >
                 <input
                   type='file'
-                  id='csvFile'
-                  accept='.csv'
+                  id='fileUpload'
+                  accept='.csv, .xlsx'
                   onChange={handleFileChange}
                   className='hidden'
                 />
 
                 <label
-                  htmlFor='csvFile'
+                  htmlFor='fileUpload'
                   className='flex cursor-pointer flex-col items-center justify-center gap-2'
                 >
                   <motion.div
@@ -440,7 +468,7 @@ const FormSection: React.FC<FormSectionProps> = ({
                   </motion.div>
 
                   <span className='text-sm text-gray-500'>
-                    {fileName ? fileName : 'Drag & drop or click to upload CSV file'}
+                    {fileName ? fileName : 'Drag & drop or click to upload CSV or Excel file'}
                   </span>
                   {/* <Button
                     variant='outline'
@@ -450,7 +478,7 @@ const FormSection: React.FC<FormSectionProps> = ({
                     Browse Files
                   </Button> */}
                   <span className='text-xs text-gray-400'>
-                    {fileName ? 'Click to change file' : 'Supports CSV format only'}
+                    {fileName ? 'Click to change file' : 'Supports CSV and Excel formats'}
                   </span>
                 </label>
               </div>

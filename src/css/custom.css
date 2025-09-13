@@ -55,6 +55,8 @@
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
 
+
+
     /* Docusaurus color */
     --prism-background-color: #edefff;
     --ifm-background-color: hsl(0, 0%, 99%);
@@ -116,13 +118,15 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
 
+
+
     /* Docusaurus color */
     --prism-background-color: #12142c;
     --khata-border: #ffffff;
     --ifm-background-color: #000000;
     --ifm-background-surface-color: #0c0c0e;
     --ifm-footer-link-color: #dadde1;
-    --ifm-color-primary: #16ad8d;
+    --ifm-color-primary: #fffb00;
     --ifm-menu-color-background-active: #ffffff1a;
     --menu-link-active: rgba(255, 255, 255, 0.1);
     --ifm-menu-color-active: var(--ifm-color-primary);
@@ -586,11 +590,15 @@ table {
   /* Hide glass-panel elements when printing */
   .glass-panel,
   .card,
-  .motion-div,
-  .table-container {
-    border: none !important;
+  .motion-div {
+    background: transparent !important;
     box-shadow: none !important;
-    margin-top: 0px !important;
+    backdrop-filter: none !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+    transition: none !important;
   }
 
 }
@@ -707,6 +715,16 @@ table {
 
   .blog-tags b {
     @apply hidden;
+  }
+
+
+  .bg-pattern-dots {
+    background-image: radial-gradient(#ffffff 1px, transparent 1px);
+    background-size: 10px 10px;
+  }
+
+  html[data-theme='dark'] .bg-pattern-dots {
+    background-image: radial-gradient(#666666 1px, transparent 1px);
   }
 }
 
