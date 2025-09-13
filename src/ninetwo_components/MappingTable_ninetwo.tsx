@@ -118,7 +118,7 @@ const MappingTable: React.FC<MappingTableProps> = ({
                           <TableCell className='anek telugu-text'>{field.te}</TableCell>
                           <TableCell>
                             <Select
-                              value={mappings[field.en] || ''}
+                              value={mappings[field.en] || undefined}
                               onValueChange={(value) => handleMappingChange(field.en, value)}
                             >
                               <SelectTrigger
@@ -167,7 +167,7 @@ const MappingTable: React.FC<MappingTableProps> = ({
                           <TableCell className='anek telugu-text'>{field.te}</TableCell>
                           <TableCell>
                             <Select
-                              value={mappings[field.en] || ''}
+                              value={mappings[field.en] || undefined}
                               onValueChange={(value) => handleMappingChange(field.en, value)}
                             >
                               <SelectTrigger className='w-full'>

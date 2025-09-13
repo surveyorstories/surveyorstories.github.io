@@ -11,8 +11,8 @@ require('dotenv').config()
 /** @type {import('@docusaurus/types').Config} */
 
 const config = {
-  title: 'Surveyor Stories',
-  tagline: 'Generate survey notices with ease of use',
+  title: 'Surveyor Stories - Empowering Land Surveyors',
+  tagline: 'Empowering Land Surveyors with Modern Tools and Resources',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
@@ -106,6 +106,7 @@ const config = {
           src: 'img/logo.svg'
         },
         items: [
+          { to: '/docs/intro', label: 'Tutorial', position: 'right' },
           {
             type: 'search',
             position: 'right'
@@ -116,13 +117,14 @@ const config = {
           //   position: 'left',
           //   label: 'Tutorial'
           // },
-          // { to: '/blog', label: 'Blog', position: 'left' },
-          {
-            'href': 'https://github.com/surveyorstories/surveyorstories.github.io',
-            'position': 'right',
-            'className': 'header-github-link',
-            'aria-label': 'GitHub repository'
-          }
+
+          // // { to: '/blog', label: 'Blog', position: 'left' },
+          // {
+          //   'href': 'https://github.com/surveyorstories/surveyorstories.github.io',
+          //   'position': 'right',
+          //   'className': 'header-github-link',
+          //   'aria-label': 'GitHub repository'
+          // }
         ]
       },
       footer: {
@@ -161,10 +163,10 @@ const config = {
               //   label: 'Blog',
               //   to: '/blog'
               // },
-              {
-                label: 'GitHub',
-                href: 'https://github.com/surveyorstories'
-              },
+              // {
+              //   label: 'GitHub',
+              //   href: 'https://github.com/surveyorstories'
+              // },
               {
                 label: 'Gruhanaksha',
                 href: '/gruhanaksha'
@@ -172,7 +174,7 @@ const config = {
             ]
           }
         ],
-        copyright: `Copyright © ${new Date().getFullYear()}  <a href="https://github.com/surveyorstories" style="font-weight: bold;" target="_blank">Surveyor Stories</a> Designed with Template <a href="https://github.com/surveyorstories" style="font-weight: bold;" target="_blank">Docusaurus Tailwind Shadcn</a>`
+        copyright: `Copyright © ${new Date().getFullYear()}  <a href="https://surveyorstories.github.io" style="font-weight: bold;" target="_blank">Surveyor Stories</a> Designed with Template Docusaurus Tailwind Shadcn</a>`
       },
       prism: {
         theme: prismThemes.github,

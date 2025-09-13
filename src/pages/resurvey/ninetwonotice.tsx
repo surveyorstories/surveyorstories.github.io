@@ -9,6 +9,7 @@ import { Button } from '../../components/ui/button'
 import { Printer } from 'lucide-react'
 import Layout from '@theme/Layout'
 import { Toaster } from '../../components/ui/toaster'
+import ErrorBoundary from '../../components/ErrorBoundary'
 
 function Index() {
   // Form state
@@ -36,13 +37,14 @@ function Index() {
   const [showPreview, setShowPreview] = useState(false)
 
   const handleFileUpload = (headers, data) => {
-    setHeaders(headers)
+    const filteredHeaders = headers.filter(header => header && header.trim() !== '');
+    setHeaders(filteredHeaders);
     setData(data)
     setShowMapping(true)
     setShowPreview(false)
 
     toast({
-      title: 'CSV Uploaded Successfully',
+      title: 'File Uploaded Successfully',
       description: `${data.length} rows loaded. Please map the columns.`
     })
   }
@@ -63,88 +65,90 @@ function Index() {
 
   return (
     <Layout title='Resurvey Notice Generator' description='Generate Resurvey Notices with ease.'>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
-        className='min-h-screen w-full overflow-hidden bg-gradient-to-b from-background to-secondary/20'
-      >
-        <div className='container mx-auto w-full max-w-6xl overflow-hidden px-2 py-8 sm:px-4'>
-          <div className='whitespace-nowrap'>
-            <Header />
+      <ErrorBoundary>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+          className='min-h-screen w-full overflow-hidden bg-gradient-to-b from-background to-secondary/20'
+        >
+          <div className='container mx-auto w-full max-w-6xl overflow-hidden px-2 py-8 sm:px-4'>
+            <div className='whitespace-nowrap'>
+              <Header />
+            </div>
+
+            <div className='mt-8 w-full space-y-8 overflow-hidden print:m-0'>
+              <FormSection
+                onFileUpload={handleFileUpload}
+                districtName={districtName}
+                setDistrictName={setDistrictName}
+                mandalName={mandalName}
+                setMandalName={setMandalName}
+                villageName={villageName}
+                setVillageName={setVillageName}
+                startDate={startDate}
+                setStartDate={setStartDate}
+                startTime={startTime}
+                setStartTime={setStartTime}
+                notificationNumber={notificationNumber}
+                setNotificationNumber={setNotificationNumber}
+                notificationDate={notificationDate}
+                setNotificationDate={setNotificationDate}
+                printedDate={printedDate}
+                setPrintedDate={setPrintedDate}
+                officerName={officerName}
+                setOfficerName={setOfficerName}
+                officerDesignation={officerDesignation}
+                setOfficerDesignation={setOfficerDesignation}
+                // Pass the new notice type props
+                noticeType={noticeType}
+                setNoticeType={setNoticeType}
+                formNumber={formNumber}           // <-- Add this line
+                setFormNumber={setFormNumber}     // <-- Add this line
+              />
+
+              <MappingTable
+                headers={headers}
+                show={showMapping}
+                onMappingSubmit={handleMappingSubmit}
+                onPreview={() => setShowPreview(true)}
+              />
+
+              <PreviewSection
+                districtName={districtName}
+                mandalName={mandalName}
+                villageName={villageName}
+                startDate={startDate}
+                startTime={startTime}
+                notificationNumber={notificationNumber}
+                notificationDate={notificationDate}
+                printedDate={printedDate}
+                show={showPreview}
+                headers={headers}
+                data={data}
+                mapping={mapping}
+                officerName={officerName}
+                officerDesignation={officerDesignation}
+                // Make sure this is passed
+                noticeType={noticeType}
+                formNumber={formNumber}           // <-- Add this line
+              />
+            </div>
           </div>
 
-          <div className='mt-8 w-full space-y-8 overflow-hidden print:m-0'>
-            <FormSection
-              onFileUpload={handleFileUpload}
-              districtName={districtName}
-              setDistrictName={setDistrictName}
-              mandalName={mandalName}
-              setMandalName={setMandalName}
-              villageName={villageName}
-              setVillageName={setVillageName}
-              startDate={startDate}
-              setStartDate={setStartDate}
-              startTime={startTime}
-              setStartTime={setStartTime}
-              notificationNumber={notificationNumber}
-              setNotificationNumber={setNotificationNumber}
-              notificationDate={notificationDate}
-              setNotificationDate={setNotificationDate}
-              printedDate={printedDate}
-              setPrintedDate={setPrintedDate}
-              officerName={officerName}
-              setOfficerName={setOfficerName}
-              officerDesignation={officerDesignation}
-              setOfficerDesignation={setOfficerDesignation}
-              // Pass the new notice type props
-              noticeType={noticeType}
-              setNoticeType={setNoticeType}
-              formNumber={formNumber}           // <-- Add this line
-              setFormNumber={setFormNumber}     // <-- Add this line
-            />
-
-            <MappingTable
-              headers={headers}
-              show={showMapping}
-              onMappingSubmit={handleMappingSubmit}
-              onPreview={() => setShowPreview(true)}
-            />
-
-            <PreviewSection
-              districtName={districtName}
-              mandalName={mandalName}
-              villageName={villageName}
-              startDate={startDate}
-              startTime={startTime}
-              notificationNumber={notificationNumber}
-              notificationDate={notificationDate}
-              printedDate={printedDate}
-              show={showPreview}
-              headers={headers}
-              data={data}
-              mapping={mapping}
-              officerName={officerName}
-              officerDesignation={officerDesignation}
-              // Make sure this is passed
-              noticeType={noticeType}
-              formNumber={formNumber}           // <-- Add this line
-            />
-          </div>
-        </div>
-
-        {showPreview && (
-          <div className='fixed bottom-8 right-8 z-50 print:hidden'>
-            <Button
-              onClick={handlePrint}
-              className='flex h-14 w-14 items-center justify-center gap-2 rounded-full bg-primary text-white shadow-lg hover:bg-primary/90'
-              size='icon'
-            >
-              <Printer className='h-6 w-6' />
-            </Button>
-          </div>
-        )}
-      </motion.div>
+          {showPreview && (
+            <div className='fixed bottom-8 right-8 z-50 print:hidden'>
+              <Button
+                onClick={handlePrint}
+                className='flex h-14 w-14 items-center justify-center gap-2 rounded-full bg-primary text-white shadow-lg hover:bg-primary/90'
+                size='icon'
+              >
+                <Printer className='h-6 w-6' />
+              </Button>
+            </div>
+          )}
+        </motion.div>
+      </ErrorBoundary>
       <Toaster />
     </Layout>
   )

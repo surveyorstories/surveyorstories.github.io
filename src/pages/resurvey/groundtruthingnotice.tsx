@@ -45,13 +45,14 @@ function Index() {
   const [showPreview, setShowPreview] = useState(false)
 
   const handleFileUpload = (headers, data) => {
-    setHeaders(headers)
+    const filteredHeaders = headers.filter(header => header && header.trim() !== '');
+    setHeaders(filteredHeaders);
     setData(data)
     setShowMapping(true)
     setShowPreview(false)
 
     toast({
-      title: 'CSV Uploaded Successfully',
+      title: 'File Uploaded Successfully',
       description: `${data.length} rows loaded. Please map the columns.`
     })
   }

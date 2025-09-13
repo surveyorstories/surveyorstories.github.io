@@ -164,7 +164,7 @@ const MappingTable: React.FC<MappingTableProps> = ({
                           style={{ fontFamily: 'noto sans telugu' }}
                         >
                           <Select
-                            value={mappings[field.en] || ''}
+                            value={mappings[field.en] || undefined}
                             onValueChange={(value) => handleMappingChange(field.en, value)}
                           >
                             <SelectTrigger
