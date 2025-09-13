@@ -17,7 +17,7 @@ import { districts } from '../data/districts'
 import { sanitizeString, sanitizeCSVData } from '../lib/sanitize'
 import { toast } from '../components/ui/use-toast'
 import Papa from 'papaparse' // Add this import for CSV parsing
-import * as XLSX from 'xlsx'
+import ExcelJS from 'exceljs'
 
 interface FormSectionProps {
   onFileUpload: (headers: string[], data: string[][]) => void
@@ -166,18 +166,31 @@ const FormSection: React.FC<FormSectionProps> = ({
 
   const processExcelFile = (file: File) => {
     const reader = new FileReader()
-    reader.onload = (e) => {
-      const content = e.target?.result
-      const workbook = XLSX.read(content, { type: 'array' })
-      const sheetName = workbook.SheetNames[0]
-      const worksheet = workbook.Sheets[sheetName]
-      const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 })
+    reader.onload = async (e) => {
+      try {
+        const buffer = e.target?.result
+        const workbook = new ExcelJS.Workbook()
+        await workbook.xlsx.load(buffer as ArrayBuffer)
+        const worksheet = workbook.worksheets[0]
+        const jsonData: string[][] = []
+        worksheet.eachRow((row) => {
+          const rowData = row.values as string[]
+          jsonData.push(rowData.slice(1)) // slice(1) to remove the first empty element
+        })
 
-      if (jsonData.length > 1) {
-        const headers = (jsonData[0] as string[]).map((header) => sanitizeString(header))
-        const rawData = jsonData.slice(1) as string[][]
-        const data = sanitizeCSVData(rawData)
-        onFileUpload(headers, data)
+        if (jsonData.length > 1) {
+          const headers = jsonData[0].map((header) => sanitizeString(header))
+          const rawData = jsonData.slice(1)
+          const data = sanitizeCSVData(rawData)
+          onFileUpload(headers, data)
+        }
+      } catch (error) {
+        console.error("Error processing Excel file:", error);
+        toast({
+          title: "Error",
+          description: "Could not process the Excel file. Please ensure it is a valid .xlsx file.",
+          variant: "destructive",
+        });
       }
     }
     reader.readAsArrayBuffer(file)
