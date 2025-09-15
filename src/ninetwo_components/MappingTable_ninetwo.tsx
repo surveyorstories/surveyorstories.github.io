@@ -36,7 +36,8 @@ const MappingTable: React.FC<MappingTableProps> = ({
   headers,
   show,
   onMappingSubmit,
-  onPreview
+  onPreview,
+  noticeType
 }) => {
   const [mappings, setMappings] = useState<Record<string, string>>(() => {
     const initialMappings: Record<string, string> = {}
@@ -55,12 +56,14 @@ const MappingTable: React.FC<MappingTableProps> = ({
     { en: 'Resurvey extent (Hect)', te: 'రీ సర్వే విస్తీర్ణం (హెక్టార్లు)' }
   ]
 
+  const isMergedMode = noticeType === 'khata_merged_synos' || noticeType === 'lpm_merged_synos';
+
   const optionalFields: FieldMapping[] = [
     { en: 'Sub Division No', te: 'సబ్ డివిజన్ నెం' },
     { en: 'Old extent (Acres)', te: 'పూర్వపు విస్తీర్ణం (ఎకరం)' },
     { en: 'Old extent (Hect)', te: 'పూర్వపు విస్తీర్ణం (హెక్టార్లు)' },
     { en: 'Remark', te: 'రిమార్క్స్' }
-  ]
+  ].filter(field => !(isMergedMode && field.en === 'Sub Division No'));
 
   useEffect(() => {
     const requiredFieldsMapped = requiredFields.every((field) => mappings[field.en])

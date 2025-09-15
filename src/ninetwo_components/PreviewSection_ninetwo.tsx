@@ -79,16 +79,72 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
 
   const fields = [...requiredFields, ...optionalFields]
 
+  const mergeRowsByLPM = (rowsToMerge: string[][]): string[][] => {
+    const lpmIndex = indexMapping['LPM Number'];
+    const surveyNoIndex = indexMapping['Survey No'];
+    const oldExtentAcresIndex = indexMapping['Old extent (Acres)'];
+    const oldExtentHectIndex = indexMapping['Old extent (Hect)'];
+
+    if (lpmIndex === undefined || surveyNoIndex === undefined) return rowsToMerge;
+
+    const lpmGroups: Record<string, string[][]> = {};
+    rowsToMerge.forEach(row => {
+      const lpm = row[lpmIndex];
+      if (!lpmGroups[lpm]) {
+        lpmGroups[lpm] = [];
+      }
+      lpmGroups[lpm].push(row);
+    });
+
+    const mergedRows: string[][] = [];
+    for (const lpm in lpmGroups) {
+      const group = lpmGroups[lpm];
+      if (group.length > 0) {
+        const firstRow = [...group[0]];
+        const surveyNos = new Set(group.map(r => r[surveyNoIndex]));
+        firstRow[surveyNoIndex] = Array.from(surveyNos).join(', ');
+
+        if (oldExtentAcresIndex !== undefined) {
+          const allAcres = group.map(r => parseFloat(r[oldExtentAcresIndex])).filter(v => !isNaN(v));
+          if (allAcres.length > 0) {
+            const firstAcre = allAcres[0];
+            const areAllAcresSame = allAcres.every(v => v === firstAcre);
+            if (!areAllAcresSame) {
+              const sumAcres = allAcres.reduce((sum, val) => sum + val, 0);
+              firstRow[oldExtentAcresIndex] = sumAcres.toFixed(4); // Assuming 4 decimal places for acres
+            }
+          }
+        }
+
+        if (oldExtentHectIndex !== undefined) {
+          const allHects = group.map(r => parseFloat(r[oldExtentHectIndex])).filter(v => !isNaN(v));
+          if (allHects.length > 0) {
+            const firstHect = allHects[0];
+            const areAllHectsSame = allHects.every(v => v === firstHect);
+            if (!areAllHectsSame) {
+              const sumHects = allHects.reduce((sum, val) => sum + val, 0);
+              firstRow[oldExtentHectIndex] = sumHects.toFixed(4); // Assuming 4 decimal places for hectares
+            }
+          }
+        }
+
+        mergedRows.push(firstRow);
+      }
+    }
+    return mergedRows;
+  };
+
   let notices: {
     khataNo: string
     rows: string[][]
     mapping: Record<string, number>
     fields: { en: string; te: string }[]
+    isMerged: boolean
   }[] = []
 
-  // Group data based on noticeType
-  if (noticeType === 'landparcel') {
-    // Group by Land Parcel Number
+  const isMergedMode = noticeType === 'khata_merged_synos' || noticeType === 'lpm_merged_synos';
+
+  if (noticeType === 'landparcel' || noticeType === 'lpm_merged_synos') {
     const landParcelField = 'LPM Number'
     const landParcelGroups: Record<string, string[][]> = {}
 
@@ -101,26 +157,36 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         landParcelGroups[landParcelNo].push(row)
       })
 
-      notices = Object.entries(landParcelGroups).map(([landParcelNo, rows]) => ({
-        khataNo: `Land Parcel: ${landParcelNo}`, // Use khataNo field to store Land Parcel info
-        rows,
-        mapping: indexMapping,
-        fields
-      }))
+      notices = Object.entries(landParcelGroups).map(([landParcelNo, rows]) => {
+        const processedRows = isMergedMode ? mergeRowsByLPM(rows) : rows;
+        return {
+          khataNo: `Land Parcel: ${landParcelNo}`,
+          rows: processedRows,
+          mapping: indexMapping,
+          fields,
+          isMerged: isMergedMode,
+        }
+      })
+
+      notices.sort((a, b) => {
+        const lpmA = a.khataNo.replace('Land Parcel: ', '');
+        const lpmB = b.khataNo.replace('Land Parcel: ', '');
+        return lpmA.localeCompare(lpmB, undefined, { numeric: true });
+      });
+
     } else {
-      // Fallback if LPM Number mapping is not found
       notices = [
         {
           khataNo: 'All Data',
           rows: data,
           mapping: indexMapping,
-          fields
+          fields,
+          isMerged: false,
         }
       ]
       console.warn('LPM Number field mapping not found, using all data')
     }
-  } else {
-    // Original Khata No grouping
+  } else { // 'khata' or 'khata_merged_synos'
     const hasKhataNo = 'Khata No' in indexMapping
 
     if (hasKhataNo) {
@@ -133,19 +199,33 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         khataGroups[khataNo].push(row)
       })
 
-      notices = Object.entries(khataGroups).map(([khataNo, rows]) => ({
-        khataNo,
-        rows,
-        mapping: indexMapping,
-        fields
-      }))
+      notices = Object.entries(khataGroups).map(([khataNo, rows]) => {
+        const processedRows = isMergedMode ? mergeRowsByLPM(rows) : rows;
+        return {
+          khataNo,
+          rows: processedRows,
+          mapping: indexMapping,
+          fields,
+          isMerged: isMergedMode,
+        }
+      })
+
+      notices.sort((a, b) => {
+        const khataA = parseInt(a.khataNo, 10);
+        const khataB = parseInt(b.khataNo, 10);
+        if (isNaN(khataA) || isNaN(khataB)) {
+          return a.khataNo.localeCompare(b.khataNo);
+        }
+        return khataA - khataB;
+      });
     } else {
       notices = [
         {
           khataNo: 'All Data',
           rows: data,
           mapping: indexMapping,
-          fields
+          fields,
+          isMerged: false,
         }
       ]
     }
@@ -322,16 +402,19 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         header.className = 'header telugu-text'
         header.style.marginTop = '0'
         header.style.paddingTop = '0'
-        header.innerHTML = createSafeHTML(`
+        header.innerHTML = createSafeHTML(
+          `
           <h1 style="font-size: 12pt; margin-top: 0;">ఫారం - ${formNumber || '31'}</h1>
           <h2 style="font-size: 12pt; margin-bottom: 6px;">ఆంధ్రప్రదేశ్ సర్వే మరియు సరిహద్దుల చట్టం, 1923 లోని 9(2) సెక్షన్ ప్రకారము నోటీసు</h2>
-        `)
+        `
+        )
         noticeDiv.appendChild(header)
 
         // Add content paragraph
         const content = document.createElement('div')
         content.className = 'content telugu-text'
-        content.innerHTML = createSafeHTML(`
+        content.innerHTML = createSafeHTML(
+          `
           <p class="pattadar">
             శ్రీ/శ్రీమతి ${notice.rows[0][notice.mapping['Pattadar Name']] || '_________________________'} /
             ${notice.rows[0][notice.mapping['Relation Name']] || '____________________'} (
@@ -360,7 +443,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           <div style="display: flex; justify-content: space-between; width: 100%; font-size: 8pt; line-height: 1; word-break: break-all;">
                               <span>
                                 జిల్లా:
-                                ${
+                                ${ 
                                   districts.find((d) => d.value === districtName)?.te ||
                                   '____________________'
                                 }
@@ -368,7 +451,8 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
                               <span>మండలం: ${sanitizeString(mandalName) || '_____________'} </span>
                               <span>గ్రామం: ${sanitizeString(villageName) || '_____________'} </span>
                             </div>
-        `)
+        `
+        )
         noticeDiv.appendChild(content)
 
         // Create a container for the NoticeTable component
@@ -434,18 +518,19 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
 
         const formattedPrintedDate = formatDate(printedDate)
 
-        noticeNumber.innerHTML = createSafeHTML(`
+        noticeNumber.innerHTML = createSafeHTML(
+          `
           <div style="display: flex; justify-content: space-between; width: 100%;font-size: 8pt; line-height: 1;">
             <div class="left-footer">
               <p class='body-footer-text telugu-text m-1'>
-                నోటీసు జారి చేసిన తేది: ${formattedPrintedDate || '_____________'}
+                నోటీసు జారి చేసిన తేది: ${formattedPrintedDate || '_____________'} 
               </p>
             </div>
 
              <div class="right-footer">
               <p class='body-footer-text telugu-text mb-0 mt-5 text-left'>
                 సర్వే అధికారి
-                ${
+                ${ 
                   officerDesignation
                     ? ` (${officerDesignations.find((d) => d.value === officerDesignation)?.te || officerDesignation})`
                     : ''
@@ -454,7 +539,8 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
             </div>
           </div>
           
-        `)
+        `
+        )
 
         noticeDiv.appendChild(noticeNumber)
 

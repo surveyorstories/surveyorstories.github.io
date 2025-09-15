@@ -112,6 +112,7 @@ function Index() {
                 show={showMapping}
                 onMappingSubmit={handleMappingSubmit}
                 onPreview={() => setShowPreview(true)}
+                noticeType={noticeType}
               />
 
               <PreviewSection

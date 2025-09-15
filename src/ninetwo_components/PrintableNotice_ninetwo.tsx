@@ -190,7 +190,7 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
               </>
             </div>
 
-            <NoticeTable fields={tableFields} rows={notice.rows} hasSubdivision={hasSubdivision} />
+            <NoticeTable fields={tableFields} rows={notice.rows} hasSubdivision={hasSubdivision} isMerged={notice.isMerged} />
 
             <div className='footer-signature-row print:text-sm'>
               <div className='left-column'>

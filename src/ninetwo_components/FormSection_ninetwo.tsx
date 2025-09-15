@@ -217,7 +217,7 @@ const FormSection: React.FC<FormSectionProps> = ({
               <RadioGroup
                 value={noticeType}
                 onValueChange={setNoticeType}
-                className='flex space-x-6'
+                className='flex flex-wrap gap-x-6 gap-y-2'
               >
                 <div className='flex items-center space-x-2'>
                   <RadioGroupItem value='khata' id='khata' />
@@ -226,6 +226,14 @@ const FormSection: React.FC<FormSectionProps> = ({
                 <div className='flex items-center space-x-2'>
                   <RadioGroupItem value='landparcel' id='landparcel' />
                   <Label htmlFor='landparcel'>Land Parcel Wise</Label>
+                </div>
+                <div className='flex items-center space-x-2'>
+                  <RadioGroupItem value='khata_merged_synos' id='khata_merged_synos' />
+                  <Label htmlFor='khata_merged_synos'>Khata Wise (Merged Survey Nos)</Label>
+                </div>
+                <div className='flex items-center space-x-2'>
+                  <RadioGroupItem value='lpm_merged_synos' id='lpm_merged_synos' />
+                  <Label htmlFor='lpm_merged_synos'>LPM Wise (Merged Survey Nos)</Label>
                 </div>
               </RadioGroup>
             </div>
@@ -316,11 +324,7 @@ const FormSection: React.FC<FormSectionProps> = ({
                   }}
                 >
                   <SelectTrigger className='form-input'>
-                    <SelectValue placeholder='Select form number'>
-                      {isCustomForm
-                        ? (formNumber || 'Custom Form Number')
-                        : formNumbers.find(f => f.value === formNumber)?.display}
-                    </SelectValue>
+                    <SelectValue placeholder='Select form number' />
                   </SelectTrigger>
                   <SelectContent>
                     {formNumbers.map((form) => (

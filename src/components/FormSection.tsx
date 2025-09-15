@@ -268,7 +268,10 @@ const FormSection: React.FC<FormSectionProps> = ({
             <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
               <div className='space-y-2'>
                 <Label htmlFor='districtName'>District Name</Label>
-                <Select value={districtName || undefined} onValueChange={(value) => setDistrictName(value)}>
+                <Select
+                  value={districtName || undefined}
+                  onValueChange={(value) => setDistrictName(value)}
+                >
                   <SelectTrigger className='form-input'>
                     <SelectValue placeholder='Select district' />
                   </SelectTrigger>
@@ -401,12 +404,7 @@ const FormSection: React.FC<FormSectionProps> = ({
                   }}
                 >
                   <SelectTrigger className='form-input'>
-                    <SelectValue placeholder='Select form number'>
-                      {isCustomForm
-                        ? formNumber || 'Custom Form Number'
-                        : formNumbers[noticeType]?.find((f) => f.value === formNumber)?.display ||
-                          ''}
-                    </SelectValue>
+                    <SelectValue placeholder='Select form number' />
                   </SelectTrigger>
                   <SelectContent>
                     {(formNumbers[noticeType] || []).map((form) => (
