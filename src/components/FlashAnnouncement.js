@@ -67,8 +67,8 @@ const FlashAnnouncement = () => {
     <div className="flash-announcement-overlay">
       <div className="flash-announcement-card">
         <button className="flash-announcement-close" onClick={handleClose}>&times;</button>
-        <h2><span className="animated-star">✨</span> Big Update Coming Soon! <span className="animated-star">✨</span></h2>
-        <p><span className="animated-rocket">🚀</span> We're working on something amazing. Stay tuned for a major update that will enhance your experience! <span className="animated-star">🌟</span></p>
+        <h2><span className="animated-star">✨</span> 9(2) Notice generation will be disabled very soon.! <span className="animated-star">✨</span></h2>
+        <p><span className="animated-rocket">🚀</span> The official Bhunaksha portal has now enabled the provision for generating 9(2) Notices. Users are therefore advised to use the official platform for this purpose <span className="animated-star">🌟</span></p>
         <div className="sparkle-container">
           {renderSparkles()}
         </div>
