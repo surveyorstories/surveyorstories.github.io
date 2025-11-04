@@ -19,7 +19,7 @@ const Header = () => {
           <h1 className='w-full whitespace-normal text-5xl font-medium leading-tight tracking-tight text-blue-800 dark:text-blue-400 sm:text-4xl md:text-4xl lg:text-5xl'>
             GT & GV Notice Generation
           </h1>
-          <p className='mt-2 w-full max-w-5xl whitespace-normal text-base leading-relaxed text-gray-600 sm:mt-3 sm:text-lg'>
+          <p className='mt-2 w-full max-w-5xl whitespace-normal text-base leading-relaxed text-gray-600 dark:text-gray-300 sm:mt-3 sm:text-lg'>
             Effortlessly generate Ground Truthing and Ground Validation notices for private land
             records.
           </p>

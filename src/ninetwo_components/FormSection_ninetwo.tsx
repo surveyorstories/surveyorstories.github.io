@@ -45,8 +45,6 @@ interface FormSectionProps {
   setNoticeType?: (value: string) => void
   formNumber: string
   setFormNumber: (value: string) => void
-
-
 }
 
 // Officer designation options with both English and Telugu values
@@ -66,12 +64,12 @@ export const officerDesignations = [
   { value: 'Tahsildhar', display: 'Tahsildhar', te: 'తహశీల్దార్' }
 ]
 
-export const formNumbers = [{ value: '31', display: 'Form 31', te: 'ఫారం - 31' },
-{ value: '34', display: 'Form 34', te: 'ఫారం - 34' },
-{ value: 'custom', display: 'Custom Form Number', te: 'కస్టమ్ ఫారం నంబర్' }
+export const formNumbers = [
+  { value: '31', display: 'Form 31', te: 'ఫారం - 31' },
+  { value: '34', display: 'Form 34', te: 'ఫారం - 34' },
+  { value: 'custom', display: 'Custom Form Number', te: 'కస్టమ్ ఫారం నంబర్' }
   // { value: '30', display: 'Form 30', te: 'ఫారం - 30' }
 ]
-
 
 const FormSection: React.FC<FormSectionProps> = ({
   onFileUpload,
@@ -93,14 +91,13 @@ const FormSection: React.FC<FormSectionProps> = ({
   setPrintedDate,
   officerName,
   setOfficerName,
-  formNumber,           // <-- Add this line
+  formNumber, // <-- Add this line
   setFormNumber,
   officerDesignation,
   setOfficerDesignation,
   noticeType = 'khata',
 
-
-  setNoticeType = () => { }
+  setNoticeType = () => {}
 }) => {
   const [isDragging, setIsDragging] = useState(false)
   const [fileName, setFileName] = useState<string | null>(null)
@@ -129,7 +126,7 @@ const FormSection: React.FC<FormSectionProps> = ({
     setIsDragging(false)
 
     const file = e.dataTransfer.files?.[0]
-    if (!file || !file.name.endsWith('.csv') && !file.name.endsWith('.xlsx')) return
+    if (!file || (!file.name.endsWith('.csv') && !file.name.endsWith('.xlsx'))) return
 
     setFileName(file.name)
     processFile(file)
@@ -185,12 +182,12 @@ const FormSection: React.FC<FormSectionProps> = ({
           onFileUpload(headers, data)
         }
       } catch (error) {
-        console.error("Error processing Excel file:", error);
+        console.error('Error processing Excel file:', error)
         toast({
-          title: "Error",
-          description: "Could not process the Excel file. Please ensure it is a valid .xlsx file.",
-          variant: "destructive",
-        });
+          title: 'Error',
+          description: 'Could not process the Excel file. Please ensure it is a valid .xlsx file.',
+          variant: 'destructive'
+        })
       }
     }
     reader.readAsArrayBuffer(file)
@@ -213,11 +210,11 @@ const FormSection: React.FC<FormSectionProps> = ({
           >
             {/* Notice Type Selection */}
             <div className='space-y-3'>
-              <h2 className='text-2xl font-medium'>Notice Generation Type</h2>
+              <h2 className='text-2xl font-medium'>Notice Mode</h2>
               <RadioGroup
                 value={noticeType}
                 onValueChange={setNoticeType}
-                className='flex flex-wrap gap-x-6 gap-y-2'
+                className='flex flex-col gap-y-2'
               >
                 <div className='flex items-center space-x-2'>
                   <RadioGroupItem value='khata' id='khata' />
@@ -242,7 +239,10 @@ const FormSection: React.FC<FormSectionProps> = ({
             <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
               <div className='space-y-2'>
                 <Label htmlFor='districtName'>District Name</Label>
-                <Select value={districtName || undefined} onValueChange={(value) => setDistrictName(value)}>
+                <Select
+                  value={districtName || undefined}
+                  onValueChange={(value) => setDistrictName(value)}
+                >
                   <SelectTrigger className='form-input'>
                     <SelectValue placeholder='Select district' />
                   </SelectTrigger>
@@ -337,7 +337,7 @@ const FormSection: React.FC<FormSectionProps> = ({
                 {isCustomForm && (
                   <div className='mt-2'>
                     <Input
-                      key="custom-form-input"
+                      key='custom-form-input'
                       type='number'
                       min='1'
                       placeholder='Enter custom form number'
@@ -350,10 +350,8 @@ const FormSection: React.FC<FormSectionProps> = ({
                     />
                   </div>
                 )}
-
               </div>
               {/* --- End Form Number Dropdown --- */}
-
             </div>
 
             {/* <h2 className='text-2xl font-medium'>Notice Details</h2>
@@ -450,10 +448,11 @@ const FormSection: React.FC<FormSectionProps> = ({
             <div className='pt-4'>
               <h2 className='mb-4 text-2xl font-medium'>Upload CSV or Excel File</h2>
               <div
-                className={`rounded-lg border-2 border-dashed p-6 text-center transition-all ${isDragging
-                  ? 'border-primary bg-primary/5'
-                  : 'border-gray-300 hover:border-primary/50'
-                  }`}
+                className={`rounded-lg border-2 border-dashed p-6 text-center transition-all ${
+                  isDragging
+                    ? 'border-primary bg-primary/5'
+                    : 'border-gray-300 hover:border-primary/50'
+                }`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}

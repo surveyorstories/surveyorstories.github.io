@@ -27,7 +27,12 @@ const config = {
   projectName: 'surveyorstories.github.io', // Usually your repo name.
 
   onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
+
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: 'warn'
+    }
+  },
 
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
@@ -98,7 +103,7 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       // Replace with your project's social card
-      image: 'img/docusaurus-social-card.jpg',
+      image: 'img/social-card.jpg',
       navbar: {
         title: 'Surveyor Stories',
         logo: {
@@ -106,7 +111,6 @@ const config = {
           src: 'img/logo.svg'
         },
         items: [
-          { to: '/docs/intro', label: 'Tutorial', position: 'right' },
           {
             type: 'search',
             position: 'right'
@@ -117,8 +121,7 @@ const config = {
           //   position: 'left',
           //   label: 'Tutorial'
           // },
-
-          // // { to: '/blog', label: 'Blog', position: 'left' },
+          // { to: '/blog', label: 'Blog', position: 'left' },
           // {
           //   'href': 'https://github.com/surveyorstories/surveyorstories.github.io',
           //   'position': 'right',
@@ -163,10 +166,10 @@ const config = {
               //   label: 'Blog',
               //   to: '/blog'
               // },
-              // {
-              //   label: 'GitHub',
-              //   href: 'https://github.com/surveyorstories'
-              // },
+              {
+                label: 'GitHub',
+                href: 'https://github.com/surveyorstories'
+              },
               {
                 label: 'Gruhanaksha',
                 href: '/gruhanaksha'
@@ -174,20 +177,13 @@ const config = {
             ]
           }
         ],
-        copyright: `Copyright © ${new Date().getFullYear()}  <a href="https://surveyorstories.github.io" style="font-weight: bold;" target="_blank">Surveyor Stories</a> Designed with Template Docusaurus Tailwind Shadcn`
+        copyright: `Copyright © ${new Date().getFullYear()}  <a href="https://github.com/surveyorstories" style="font-weight: bold;" target="_blank">Surveyor Stories</a> Designed with Template <a href="https://github.com/surveyorstories" style="font-weight: bold;" target="_blank">Docusaurus Tailwind Shadcn</a>`
       },
       prism: {
         theme: prismThemes.github,
         darkTheme: prismThemes.dracula
       },
-      announcementBar: {
-        id: 'support_us',
-        content:
-          'Please bear with us as we testing ads on this site; they support us in continuing our work.',
-        backgroundColor: '#55ec87ff',
-        textColor: '#0c131fff',
-        isCloseable: true,
-      },
+
 
     }),
   // scripts: [
@@ -198,7 +194,22 @@ const config = {
   //   }
   // ],
   themes: [
+    [
+      require.resolve('@easyops-cn/docusaurus-search-local'),
+      {
+        indexPages: true,
+        docsRouteBasePath: '/docs/intro',
+        hashed: true,
+        language: ['en'],
+        highlightSearchTermsOnTargetPage: true,
+        searchResultContextMaxLength: 50,
+        searchResultLimits: 8,
+        indexPages: true,
 
+
+
+      }
+    ]
   ],
   plugins: [
     // Add the Chatwoot plugin here

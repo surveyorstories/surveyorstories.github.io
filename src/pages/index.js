@@ -1,16 +1,16 @@
 import React from 'react'
 import IntroContent from '../components/Homepage/intro-content'
-import FlashAnnouncement from '../components/FlashAnnouncement'
 import Head from '@docusaurus/Head'
 function HomePage() {
   return (
     <>
       <Head></Head>
-      <FlashAnnouncement />
       <IntroContent
         buttonLink='resurvey/groundtruthingnotice'
         nineTwoLink='resurvey/ninetwonotice'
-        gruhanakshaLink='gruhanaksha'
+        gruhanakshaLink='/gruhanaksha'
+        svamitvagtLink='svamitva/groundtruthingnotice_svamitva'
+        svamitvanineTwoLink='svamitva/ninetwonotice_svamitva'
       />
     </>
   )

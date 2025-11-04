@@ -99,7 +99,7 @@
     --secondary-foreground: 210 20% 98%;
 
     --muted: 215 27.9% 16.9%;
-    --muted-foreground: 217.9 10.6% 64.9%;
+    --muted-foreground: 217.9 10.6% 95%;
 
     --accent: 215 27.9% 16.9%;
     --accent-foreground: 210 20% 98%;
@@ -126,7 +126,7 @@
     --ifm-background-color: #000000;
     --ifm-background-surface-color: #0c0c0e;
     --ifm-footer-link-color: #dadde1;
-    --ifm-color-primary: #fffb00;
+    --ifm-color-primary: #fff651;
     --ifm-menu-color-background-active: #ffffff1a;
     --menu-link-active: rgba(255, 255, 255, 0.1);
     --ifm-menu-color-active: var(--ifm-color-primary);
@@ -187,8 +187,8 @@
 
 
   @font-face {
-    font-family: 'Gautami';
-    src: url('../fonts/gautami.ttf') format('ttf');
+    font-family: 'Noto Sans Telugu';
+    src: url('../fonts/NotoSansTelugu.ttf') format('ttf');
     font-weight: 400;
     font-style: normal;
     font-display: swap;
@@ -464,7 +464,7 @@ table {
   }
 
   .telugu-header-print h3 {
-    font-family: 'Anek Telugu', 'Gautami', 'Noto Sans Telugu', sans-serif;
+    font-family: 'Anek Telugu', 'Noto Sans Telugu', 'gautami', sans-serif;
     font-size: 01rem;
     margin-bottom: 0.5rem;
     /* margin-bottom: 6px; */
@@ -474,7 +474,7 @@ table {
 
   .telugu-header-print p {
     margin: 0px;
-    text-align: left;
+
     font-weight: normal;
   }
 
@@ -489,24 +489,30 @@ table {
     justify-content: space-between;
     align-items: flex-start;
     width: 100%;
-    margin-top: 0px !important;
+
   }
 
   .left-column {
-    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    /* Align text to the left in a column */
+    width: 40%;
+    margin-left: 0.5rem;
   }
 
   .right-column {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: flex-end;
     /* Align text to the left in a column */
-    width: 250px;
+    width: 40%;
     /* Adjust the width as needed */
+    margin-right: 1rem;
   }
 
   .body-footer-text {
-    white-space: nowrap;
+    white-space: normal;
     /* Prevent text from wrapping */
   }
 
@@ -624,7 +630,7 @@ table {
 .telugu-text,
 .khata-table,
 .khata-table9 {
-  font-family: 'Gautami', 'Noto Sans Telugu', sans-serif;
+  font-family: 'Noto Sans Telugu', 'Noto Sans Telugu', sans-serif;
 }
 
 /* 
@@ -632,8 +638,8 @@ table {
   font-family: 'Noto Sans Telugu', sans-serif;
 } */
 
-.font-gautami {
-  font-family: 'Gautami', 'Noto Sans Telugu', sans-serif;
+.font-Noto Sans Telugu {
+  font-family: 'Noto Sans Telugu', 'Noto Sans Telugu', sans-serif;
 }
 
 /* Footer layout */
@@ -642,24 +648,30 @@ table {
   justify-content: space-between;
   align-items: flex-start;
   width: 100%;
-  margin-top: 1rem;
+
 }
 
 .left-column {
-  text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* Align text to the left in a column */
+  width: 40%;
+  margin-left: 1rem;
 }
 
 .right-column {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: flex-end;
   /* Align text to the left in a column */
-  width: 250px;
+  width: 40%;
   /* Adjust the width as needed */
+  margin-right: 1rem;
 }
 
 .body-footer-text {
-  white-space: nowrap;
+  white-space: normal;
   /* Prevent text from wrapping */
 }
 
@@ -669,7 +681,7 @@ table {
 .khata-table9 th,
 .khata-table9 td {
   border: 1px solid rgb(0, 0, 0);
-  padding: 8px;
+  padding: 4px;
   text-align: center;
   word-break: break-word;
   overflow-wrap: break-word;
@@ -724,7 +736,7 @@ table {
   }
 
   html[data-theme='dark'] .bg-pattern-dots {
-    background-image: radial-gradient(#666666 1px, transparent 1px);
+    background-image: radial-gradient(#333333 1px, transparent 1px);
   }
 }
 
@@ -895,13 +907,13 @@ table thead tr {
 .notice-paragraph {
   text-align: justify;
   color: rgb(0, 0, 0);
-  font-size: 13px;
-  word-break: break-all;
+  font-size: 14px;
+  /* word-break: break-all; */
   /* line-height: 1.5; */
 }
 
 .anek {
-  /* font-family: 'Anek Telugu', 'Gautami', 'Noto Sans Telugu', sans-serif; */
+  /* font-family: 'Anek Telugu', 'Noto Sans Telugu', 'Noto Sans Telugu', sans-serif; */
   font-family: 'Noto Sans Telugu', sans-serif;
 }
 
@@ -1031,21 +1043,4 @@ table thead tr {
   flex: 1;
   /* Ensure cards take equal width */
   /* Other styles as before */
-}
-
-@media print {
-
-  /* Hide all AdSense ads */
-  ins.adsbygoogle,
-  .adsbygoogle,
-  iframe[src*="adsense"],
-  .googleads,
-  #google_ads_frame,
-  [id^="aswift_"],
-  [id^="google_ads_iframe_"],
-  #ad-container {
-    display: none !important;
-    visibility: hidden !important;
-    height: 0 !important;
-  }
 }

@@ -12,29 +12,23 @@
 }
 
 .flash-announcement-card {
-  background: linear-gradient(135deg, #00C6FF 0%, #0072FF 100%);
-  /* More vibrant blue gradient */
+  background: linear-gradient(135deg, #00C6FF 0%, #0072FF 100%); /* More vibrant blue gradient */
   border-radius: 15px;
   padding: 40px;
   position: relative;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 0 5px rgba(255, 255, 255, 0.2);
-  /* Initial sparkle effect */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 0 5px rgba(255, 255, 255, 0.2); /* Initial sparkle effect */
   text-align: center;
-  max-width: 600px;
-  width: 90%;
+  max-width: 500px;
   color: #fff;
   animation: popIn 0.5s ease-out forwards;
-  overflow: hidden;
-  /* Ensure content stays within bounds */
+  overflow: hidden; /* Ensure content stays within bounds */
 }
 
 .flash-announcement-card h2 {
-  font-size: 2em;
+  font-size: 2.5em;
   margin-bottom: 15px;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
-  /* Enhanced text shadow */
-  position: relative;
-  /* Ensure text is above any subtle background effects */
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4); /* Enhanced text shadow */
+  position: relative; /* Ensure text is above any subtle background effects */
   z-index: 1;
 }
 
@@ -42,8 +36,7 @@
   font-size: 1.3em;
   line-height: 1.5;
   text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
-  position: relative;
-  /* Ensure text is above any subtle background effects */
+  position: relative; /* Ensure text is above any subtle background effects */
   z-index: 1;
 }
 
@@ -57,8 +50,7 @@
   color: #fff;
   cursor: pointer;
   transition: transform 0.2s ease-in-out;
-  z-index: 2;
-  /* Ensure close button is above everything */
+  z-index: 2; /* Ensure close button is above everything */
 }
 
 .flash-announcement-close:hover {
@@ -70,7 +62,6 @@
     opacity: 0;
     transform: scale(0.8);
   }
-
   to {
     opacity: 1;
     transform: scale(1);
@@ -84,16 +75,14 @@
   left: 0;
   width: 100%;
   height: 100%;
-  pointer-events: none;
-  /* Allow clicks to pass through */
+  pointer-events: none; /* Allow clicks to pass through */
   overflow: hidden;
 }
 
 /* Individual sparkle */
 .sparkle {
   position: absolute;
-  border-radius: 50%;
-  /* Keep it circular for now, can be changed to star later */
+  border-radius: 50%; /* Keep it circular for now, can be changed to star later */
   opacity: 0;
   animation: star-blow 4s linear infinite;
 }
@@ -115,15 +104,12 @@
     transform: scale(0.5) rotate(0deg);
     opacity: 0;
   }
-
   20% {
     opacity: 0.8;
   }
-
   80% {
     opacity: 0.2;
   }
-
   100% {
     transform: scale(1.5) translateX(var(--star-x-offset)) rotate(var(--star-rotation));
     opacity: 0;
@@ -145,11 +131,9 @@
   0% {
     transform: scale(1);
   }
-
   50% {
     transform: scale(1.2);
   }
-
   100% {
     transform: scale(1);
   }
@@ -159,19 +143,15 @@
   0% {
     transform: translateY(0) rotate(0deg);
   }
-
   25% {
     transform: translateY(-5px) rotate(-5deg);
   }
-
   50% {
     transform: translateY(0) rotate(0deg);
   }
-
   75% {
     transform: translateY(5px) rotate(5deg);
   }
-
   100% {
     transform: translateY(0) rotate(0deg);
   }

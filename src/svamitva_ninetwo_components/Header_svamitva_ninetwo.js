@@ -9,7 +9,6 @@ const Header = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
     >
-
       <motion.div
         className='container mx-auto px-0 sm:px-0 md:px-0'
         initial={{ opacity: 0 }}
@@ -17,12 +16,11 @@ const Header = () => {
         transition={{ delay: 0.2, duration: 0.6 }}
       >
         <div className='print:hidden'>
-          <h1 className='w-full whitespace-normal text-2xl font-medium leading-tight tracking-tight text-blue-800 dark:text-blue-400 sm:text-3xl md:text-4xl lg:text-5xl'>
-            9(2) Notices Generation
+          <h1 className='w-full whitespace-normal text-5xl font-medium leading-tight tracking-tight text-blue-800 dark:text-blue-400 sm:text-4xl md:text-4xl lg:text-5xl'>
+            Svamitva 9(2) Notices Generation
           </h1>
-          <p className='mt-2 w-full max-w-4xl whitespace-normal text-base leading-relaxed text-gray-600 dark:text-gray-300 sm:mt-3 sm:text-lg'>
-            Effortlessly Create 9(2)notices for private and government land records Khata and Land
-            Parcel Wise.
+          <p className='mt-2 w-full max-w-5xl whitespace-normal text-base leading-relaxed text-gray-600 dark:text-gray-300 sm:mt-3 sm:text-lg'>
+            Effortlessly Create 9(2)notices for Svamitva Survey.
           </p>
         </div>
       </motion.div>
