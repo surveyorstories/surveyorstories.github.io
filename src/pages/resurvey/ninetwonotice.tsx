@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Header from '../../ninetwo_components/Header_ninetwo'
 import FormSection from '../../ninetwo_components/FormSection_ninetwo'
@@ -164,6 +164,20 @@ function Index() {
   // Mapping and preview state
   const [mapping, setMapping] = useState<Record<string, string>>({})
   const [showPreview, setShowPreview] = useState(false)
+  const [showArrow, setShowArrow] = useState(false)
+
+  // Show arrow for 30 seconds when preview is shown
+  useEffect(() => {
+    if (showPreview) {
+      setShowArrow(true)
+      const timer = setTimeout(() => {
+        setShowArrow(false)
+      }, 30000) // 30 seconds
+      return () => clearTimeout(timer)
+    } else {
+      setShowArrow(false)
+    }
+  }, [showPreview])
 
   const handleFileUpload = (headers, data) => {
     const filteredHeaders = headers.filter((header) => header && header.trim() !== '')
@@ -280,14 +294,28 @@ function Index() {
           </div>
 
           {showPreview && (
-            <div className='fixed bottom-8 right-8 z-50 print:hidden'>
-              <Button
-                onClick={handlePrint}
-                className='flex h-14 w-14 items-center justify-center gap-2 rounded-full bg-primary text-white shadow-lg hover:bg-primary/90'
-                size='icon'
+            <div className='fixed bottom-4 right-8 z-50 flex items-center print:hidden'>
+              {showArrow && (
+                <motion.div
+                  animate={{ x: [-10, 0, -10] }}
+                  transition={{ duration: 1, repeat: Infinity }}
+                  className='-mt-4 mr-2'
+                >
+                  <img src='/img/arrow.svg' alt='Arrow' className='h-16 w-16' />
+                </motion.div>
+              )}
+              <motion.div
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{ duration: 1, repeat: Infinity }}
               >
-                <Printer className='h-6 w-6' />
-              </Button>
+                <Button
+                  onClick={handlePrint}
+                  className='flex h-14 w-14 items-center justify-center gap-2 rounded-full bg-primary text-white shadow-lg hover:bg-primary/90'
+                  size='icon'
+                >
+                  <Printer className='h-6 w-6' />
+                </Button>
+              </motion.div>
             </div>
           )}
         </motion.div>

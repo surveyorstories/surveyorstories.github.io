@@ -112,7 +112,7 @@ const MappingTable: React.FC<MappingTableProps> = ({
                   <TableBody>
                     {mappingFields.map((field, index) => {
                       const isRequired = requiredFields.some((f) => f.en === field.en)
-                      const borderColorClass = isRequired ? 'border-red-500' : 'border-green-500'
+                      const borderColorClass = isRequired ? 'border-blue-500' : 'border-green-500'
                       return (
                         <motion.tr
                           key={field.en}

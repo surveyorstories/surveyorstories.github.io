@@ -138,9 +138,9 @@ const Hero = () => (
     <div className={styles.container}>
       <h1 className={styles.heroTitle}>{APP_TITLE}</h1>
       <p className={styles.heroTagline}>{APP_TAGLINE}</p>
-      <Link to="#pages" className={styles.heroButton}>
+      <a href="#pages" className={styles.heroButton}>
         Explore Pages
-      </Link>
+      </a>
     </div>
   </header>
 );
