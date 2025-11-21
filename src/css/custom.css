@@ -225,7 +225,6 @@
   max-width: 1200px;
   margin: 0 auto;
   position: relative;
-  overflow-x: hidden;
 }
 
 /* Preview section specific fixes */
@@ -263,7 +262,6 @@ table {
     padding-right: 0.5rem;
     width: 100%;
     max-width: 100%;
-    overflow-x: hidden;
   }
 
   .khata-table th,
@@ -1008,6 +1006,14 @@ table thead tr {
   to {
     scale: 1 1;
   }
+}
+
+/* Make the table of contents sticky on custom pages */
+[class^='tableOfContents_'] {
+  position: sticky;
+  top: calc(var(--ifm-navbar-height) + 1rem);
+  max-height: calc(100vh - var(--ifm-navbar-height) - 2rem);
+  overflow-y: auto;
 }
 
 
