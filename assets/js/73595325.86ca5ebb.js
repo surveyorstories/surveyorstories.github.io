@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkresurvey=self.webpackChunkresurvey||[]).push([["2213"],{1487:function(e){e.exports=JSON.parse('{"blogTitle":"Blog","blogDescription":"Blog description is here ...","path":"blog","totalPosts":0,"totalRecentPosts":0}')}}]);
