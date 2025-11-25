@@ -4,7 +4,7 @@ title: Pdf Extract
 sidebar_label: Pdf Extract
 ---
 
-import PdfToDxfDownloadButton from "../../components/PdfToDxfDownloadButton";
+import PdfToDxfDownloadButton from "@site/src/components/PdfToDxfDownloadButton";
 
 # 📄 Pdf Extract QGIS Plugin
 

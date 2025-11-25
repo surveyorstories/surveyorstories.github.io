@@ -53,7 +53,7 @@ const FEATURES = [
   {
     title: 'PDF Extract',
     description: 'QGIS plugin that making it useful for converting PDFs into CAD-compatible DXF, Shapefile, Geojson files.',
-    link: '/pdfextract',
+    link: '/docs/pdfextract',
     fromColor: '#22a1d8ff', // from-green-500
     toColor: '#542dd4ff',   // to-teal-400
   },
