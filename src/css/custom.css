@@ -385,7 +385,8 @@ table {
   .toaster,
   [data-sonner-toaster],
   [data-radix-toast-viewport],
-  .toast-container {
+  .toast-container,
+  .adsbygoogle {
     display: none !important;
   }
 
