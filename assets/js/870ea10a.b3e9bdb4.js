@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkresurvey=self.webpackChunkresurvey||[]).push([["3295"],{1897(e,r,u){u.r(r),u.d(r,{default:()=>t});var s=u(6540);function t(){return(0,s.useEffect)(()=>{window.location.replace("https://surveyorstories.github.io/gruhanakshaweb")},[]),null}}}]);

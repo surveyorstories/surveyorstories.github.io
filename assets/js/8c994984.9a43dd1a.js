@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkresurvey=self.webpackChunkresurvey||[]).push([["3292"],{153(e,u,r){r.r(u),r.d(u,{default:()=>t});var l=r(6540),s=r(6347);let t=function(){let e=(0,s.W6)();return(0,l.useEffect)(()=>{e.replace("/")},[]),null}}}]);
