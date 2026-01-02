@@ -92,9 +92,9 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
   let fields = [...requiredFields]
   const hasExtent = 'Extent' in indexMapping
   if (noticeType === 'GV Notice' && hasExtent) {
-    // Insert Extent after Relation Name (before Mobile Number)
-    const relIdx = fields.findIndex((f) => f.en === 'Relation Name')
-    fields.splice(relIdx + 1, 0, { en: 'Extent', te: 'విస్తీర్ణం' })
+    // Insert Extent after Survey No
+    const surveyNoIdx = fields.findIndex((f) => f.en === 'Survey No')
+    fields.splice(surveyNoIdx + 1, 0, { en: 'Extent', te: 'విస్తీర్ణం' })
   }
 
   const optionalFields = [{ en: 'Mobile Number', te: 'మొబైల్ నెంబరు' }]
@@ -103,6 +103,8 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
   // Check if we have the necessary fields based on the noticeMode
   const hasKhataNo = 'Khata No' in indexMapping
   const hasSurveyNo = 'Survey No' in indexMapping
+  const hasPattadarName = 'Pattadar Name' in indexMapping
+  const hasRelationName = 'Relation Name' in indexMapping
 
   let notices: {
     khataNo: string
@@ -125,6 +127,25 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
 
     notices = Object.entries(khataGroups).map(([khataNo, rows]) => ({
       khataNo,
+      rows,
+      mapping: indexMapping,
+      fields
+    }))
+  } else if (noticeMode === 'pattadar-relation' && hasPattadarName && hasRelationName) {
+    const pattadarGroups: Record<string, string[][]> = {}
+    data.forEach((row) => {
+      const pattadarName = (row[indexMapping['Pattadar Name']] || '').trim()
+      const relationName = (row[indexMapping['Relation Name']] || '').trim()
+      const groupKey = pattadarName || relationName ? `${pattadarName}-${relationName}` : 'Unknown'
+
+      if (!pattadarGroups[groupKey]) {
+        pattadarGroups[groupKey] = []
+      }
+      pattadarGroups[groupKey].push(row)
+    })
+
+    notices = Object.entries(pattadarGroups).map(([groupKey, rows]) => ({
+      khataNo: groupKey, // We use khataNo field to store the group key
       rows,
       mapping: indexMapping,
       fields

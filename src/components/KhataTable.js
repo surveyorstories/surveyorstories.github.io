@@ -39,15 +39,15 @@ const KhataTable = ({ notice = {}, noticeType = '', noticeMode = 'khata' }) => {
   // Optionally show Survey No heading in subdivision mode
   if (noticeMode === 'subdivision') {
     // Remove the Survey No: title, just render the table
-    // Insert Extent column after Relation Name if present
+    // Insert Extent column after survey no if present
     let fields = notice.fields
       .filter((field) => noticeType === 'GV Notice' || field.en !== 'LPM Number')
-    const relIdx = fields.findIndex(f => f.en === 'Relation Name')
+    const surveyNoIdx = fields.findIndex(f => f.en === 'Survey No')
     const extentIdx = notice.fields.findIndex(f => f.en === 'Extent')
-    if (extentIdx !== -1 && relIdx !== -1) {
-      // Remove Extent if already present, then insert after Relation Name
+    if (extentIdx !== -1 && surveyNoIdx !== -1) {
+      // Remove Extent if already present, then insert after survey no
       fields = fields.filter(f => f.en !== 'Extent')
-      fields.splice(relIdx + 1, 0, notice.fields[extentIdx])
+      fields.splice(surveyNoIdx + 1, 0, notice.fields[extentIdx])
     }
     return (
       <div>
@@ -72,9 +72,10 @@ const KhataTable = ({ notice = {}, noticeType = '', noticeMode = 'khata' }) => {
                   const sanitizedValue = sanitizeData(decodedValue)
                   const isSurveyNumberColumn = field.en === 'Survey No' || colIndex === 0
                   const isLPMNumberColumn = field.en === 'LPM Number'
+                  const isExtentColumn = field.en === 'Extent'
                   const shouldAlwaysShow =
                     isSurveyNumberColumn ||
-                    (noticeType === 'GV Notice' && isLPMNumberColumn)
+                    (noticeType === 'GV Notice' && (isLPMNumberColumn || isExtentColumn))
                   const shouldShowValue =
                     noticeMode !== 'khata-pattadar-once' ||
                     shouldAlwaysShow ||
@@ -98,14 +99,14 @@ const KhataTable = ({ notice = {}, noticeType = '', noticeMode = 'khata' }) => {
   }
 
   // Main table (non-subdivision)
-  // Insert Extent column after Relation Name if present
+  // Insert Extent column after survey no if present
   let fields = notice.fields
     .filter((field) => noticeType === 'GV Notice' || field.en !== 'LPM Number')
-  const relIdx = fields.findIndex(f => f.en === 'Relation Name')
+  const surveyNoIdx = fields.findIndex(f => f.en === 'Survey No')
   const extentIdx = notice.fields.findIndex(f => f.en === 'Extent')
-  if (extentIdx !== -1 && relIdx !== -1) {
+  if (extentIdx !== -1 && surveyNoIdx !== -1) {
     fields = fields.filter(f => f.en !== 'Extent')
-    fields.splice(relIdx + 1, 0, notice.fields[extentIdx])
+    fields.splice(surveyNoIdx + 1, 0, notice.fields[extentIdx])
   }
 
   return (
@@ -130,9 +131,10 @@ const KhataTable = ({ notice = {}, noticeType = '', noticeMode = 'khata' }) => {
               const sanitizedValue = sanitizeData(decodedValue)
               const isSurveyNumberColumn = field.en === 'Survey No' || colIndex === 0
               const isLPMNumberColumn = field.en === 'LPM Number'
+              const isExtentColumn = field.en === 'Extent'
               const shouldAlwaysShow =
                 isSurveyNumberColumn ||
-                (noticeType === 'GV Notice' && isLPMNumberColumn)
+                (noticeType === 'GV Notice' && (isLPMNumberColumn || isExtentColumn))
               const shouldShowValue =
                 noticeMode !== 'khata-pattadar-once' ||
                 shouldAlwaysShow ||

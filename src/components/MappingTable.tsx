@@ -56,24 +56,29 @@ const MappingTable: React.FC<MappingTableProps> = ({
     { en: 'Khata No', te: 'ఖాతా సంఖ్య' },
     { en: 'Pattadar Name', te: 'భూ యజమాని పేరు' },
     { en: 'Relation Name', te: 'భర్త/తండ్రి పేరు' }
-  ]
+  ];
 
-  // Filter out LPM Number field if notice type is GT Notice
-  const requiredFields: FieldMapping[] = allRequiredFields.filter(
+  // These are the fields that will be displayed in the mapping table.
+  let mappingFields: FieldMapping[] = allRequiredFields.filter(
     (field) => noticeType === 'GV Notice' || field.en !== 'LPM Number'
-  )
+  );
 
-  // Add Extent field if checkbox is checked and noticeType is GV Notice
-  const extentField: FieldMapping = { en: 'Extent', te: 'విస్తీర్ణం' }
-  let mappingFields = [...requiredFields]
-  if (noticeType === 'GV Notice' && showExtent) {
-    // Insert Extent after Relation Name (before Mobile Number)
-    const relIdx = mappingFields.findIndex((f) => f.en === 'Relation Name')
-    mappingFields.splice(relIdx + 1, 0, extentField)
+  // From the fields in the table, determine which are actually required for validation.
+  let requiredFields = [...mappingFields];
+  if (noticeMode === 'pattadar-relation') {
+    requiredFields = requiredFields.filter(f => f.en !== 'Khata No');
   }
 
-  const optionalFields: FieldMapping[] = [{ en: 'Mobile Number', te: 'మొబైల్ నెంబరు' }]
-  mappingFields = [...mappingFields, ...optionalFields]
+  // Add Extent field if checkbox is checked and noticeType is GV Notice
+  const extentField: FieldMapping = { en: 'Extent', te: 'విస్తీర్ణం' };
+  if (noticeType === 'GV Notice' && showExtent) {
+    // Insert Extent after Relation Name (before Mobile Number)
+    const relIdx = mappingFields.findIndex((f) => f.en === 'Relation Name');
+    mappingFields.splice(relIdx + 1, 0, extentField);
+  }
+
+  const optionalFields: FieldMapping[] = [{ en: 'Mobile Number', te: 'మొబైల్ నెంబరు' }];
+  mappingFields = [...mappingFields, ...optionalFields];
 
   useEffect(() => {
     // Check if all required fields (excluding optional ones) have been mapped

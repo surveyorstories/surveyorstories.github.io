@@ -259,6 +259,10 @@ const FormSection: React.FC<FormSectionProps> = ({
                         Sub Division wise (grouped by Same Sub Division)
                       </Label>
                     </div>
+                    <div className='flex items-center space-x-2'>
+                      <RadioGroupItem value='pattadar-relation' id='pattadar-relation' />
+                      <Label htmlFor='pattadar-relation'>Pattadar Name + Relation Name wise</Label>
+                    </div>
                   </RadioGroup>
                 </div>
               </div>
