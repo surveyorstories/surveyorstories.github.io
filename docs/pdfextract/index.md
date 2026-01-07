@@ -49,30 +49,39 @@ The plugin relies on two Python libraries, which are **automatically installed**
    - If prompted, confirm the installation.
 
 3. **Manual Installation (If Automatic Installation Fails)**:
-   
+
    If `qpip` does not prompt you or installation fails, you can install the dependencies manually using the OS Command Shell or QGIS Python Console.
 
    **Method A: OS Command Shell (Recommended)**
-   Open the **OSGeo4W Shell** (Windows) or Terminal (macOS/Linux) and run:
-   *Common Path: `C:\Program Files\QGIS 3.xx\OSGeo4W.bat`*
+   Open the **OSGeo4W Shell**:
+   - **Windows**: Navigate to `C:\Program Files\QGIS 3.xx\` and double-click `OSGeo4W.bat`
+   - **macOS/Linux**: Open Terminal
+
+   Then run:
+
    ```bash
    pip install pymupdf ezdxf
    ```
+
    *Note: Ensure you are using the python environment associated with your QGIS installation.*
 
    **Method B: QGIS Python Console**
    1. Open QGIS.
    2. Go to **Plugins** > **Python Console** (or press `Ctrl+Alt+P`).
    3. Copy and run the following command to install `pymupdf`:
+
       ```python
       import pip
       pip.main(['install', 'pymupdf'])
       ```
+
    4. Then run this command to install `ezdxf`:
+
       ```python
       import pip
       pip.main(['install', 'ezdxf'])
       ```
+
    5. **Restart QGIS** after installation.
 
 4. **Verify Installation**:
