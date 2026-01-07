@@ -13,6 +13,7 @@ import PdfToDxfDownloadButton from "@site/src/components/PdfToDxfDownloadButton"
 ## ✨ Features
 
 - **Vector Conversion**: Converts PDF vector graphics (lines, curves, polygons) into editable vector formats including DXF, Shapefile, and GeoJSON.
+- **Batch Processing**: Select and convert multiple PDF files simultaneously. Each file is processed sequentially, and results are grouped for easy management.
 - **Text Extraction**: Extracts text from PDF files and converts them into DXF `MTEXT` entities or vector text layers in Shapefile/GeoJSON, preserving position and size.
 - **Layer Separation**: Automatically organizes output into distinct layers or files:
   - Geometry layers contain vector shapes (lines, curves, rectangles).
@@ -47,7 +48,34 @@ The plugin relies on two Python libraries, which are **automatically installed**
    - It will download and install the required libraries (`pymupdf`, `ezdxf`).
    - If prompted, confirm the installation.
 
-3. **Verify Installation**:
+3. **Manual Installation (If Automatic Installation Fails)**:
+   
+   If `qpip` does not prompt you or installation fails, you can install the dependencies manually using the OS Command Shell or QGIS Python Console.
+
+   **Method A: OS Command Shell (Recommended)**
+   Open the **OSGeo4W Shell** (Windows) or Terminal (macOS/Linux) and run:
+   *Common Path: `C:\Program Files\QGIS 3.xx\OSGeo4W.bat`*
+   ```bash
+   pip install pymupdf ezdxf
+   ```
+   *Note: Ensure you are using the python environment associated with your QGIS installation.*
+
+   **Method B: QGIS Python Console**
+   1. Open QGIS.
+   2. Go to **Plugins** > **Python Console** (or press `Ctrl+Alt+P`).
+   3. Copy and run the following command to install `pymupdf`:
+      ```python
+      import pip
+      pip.main(['install', 'pymupdf'])
+      ```
+   4. Then run this command to install `ezdxf`:
+      ```python
+      import pip
+      pip.main(['install', 'ezdxf'])
+      ```
+   5. **Restart QGIS** after installation.
+
+4. **Verify Installation**:
    - Once QGIS is open, the plugin should be ready to use.
 
 ## 🧭 Usage Guide
@@ -57,7 +85,9 @@ The plugin relies on two Python libraries, which are **automatically installed**
 1. Open the **Pdf Extract** dialog from the QGIS main window via toolbar or menu.
 
 2. In the **Input** tab:
-    - Click `Browse...` to select the PDF file.
+    - Click `Browse...` to open the file selection dialog (titled **"Select PDF(s)"**).
+    - Select **one or more** PDF files. You can hold `Ctrl` or `Shift` to select multiple files at once.
+    - Selected files will be listed in the input field separated by semicolons (`;`).
     - Click `Browse...` to select the output folder.
     - Select the output format from the dropdown: Shapefile (.shp), GeoJSON (.geojson), or DXF (.dxf).
     - Optionally, check **Load results into QGIS** to load outputs automatically.
@@ -70,8 +100,9 @@ The plugin relies on two Python libraries, which are **automatically installed**
       - **Both**: Extracts both geometry and text for comprehensive conversion.
 
 4. Click **Convert** ▶️ to start processing.
-    - The progress bar displays the current status.
-    - A confirmation message appears upon completion showing how many layers were loaded.
+    - The progress bar displays the status of the batch operation.
+    - A confirmation message appears upon completion showing how many layers were loaded across all files.
+    - If multiple files were processed, loaded layers are grouped under a "PDF_Batch_Import" group in the Layers panel.
 
 ### ⚙️ Running the Algorithm Directly
 
