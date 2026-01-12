@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Header from '../../components/Header'
-import FormSection from '../../components/FormSection' // <-- Add this import
-import { formNumbers } from '../../components/FormSection'
+import FormSection, { formNumbers } from '../../components/FormSection'
 import MappingTable from '../../components/MappingTable'
 
 import PreviewSection from '../../components/PreviewSection'
@@ -17,6 +16,7 @@ function Index() {
   const [districtName, setDistrictName] = useState('')
   const [mandalName, setMandalName] = useState('')
   const [villageName, setVillageName] = useState('')
+  const [useMappedDate, setUseMappedDate] = useState(false)
   const [startDate, setStartDate] = useState('')
   const [startTime, setStartTime] = useState('')
   const [notificationNumber, setNotificationNumber] = useState('')
@@ -107,6 +107,8 @@ function Index() {
               setMandalName={setMandalName}
               villageName={villageName}
               setVillageName={setVillageName}
+              useMappedDate={useMappedDate}
+              setUseMappedDate={setUseMappedDate}
               startDate={startDate}
               setStartDate={setStartDate}
               startTime={startTime}
@@ -144,12 +146,14 @@ function Index() {
               onPreview={() => setShowPreview(true)}
               noticeType={noticeType}
               noticeMode={noticeMode}
+              useMappedDate={useMappedDate}
             />
 
             <PreviewSection
               districtName={districtName}
               mandalName={mandalName}
               villageName={villageName}
+              useMappedDate={useMappedDate}
               startDate={startDate}
               startTime={startTime}
               notificationNumber={notificationNumber}

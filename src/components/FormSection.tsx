@@ -61,6 +61,8 @@ interface FormSectionProps {
   setMandalName: (value: string) => void
   villageName: string
   setVillageName: (value: string) => void
+  useMappedDate: boolean
+  setUseMappedDate: (value: boolean) => void
   startDate: string
   setStartDate: (value: string) => void
   startTime: string
@@ -91,6 +93,8 @@ const FormSection: React.FC<FormSectionProps> = ({
   setMandalName,
   villageName,
   setVillageName,
+  useMappedDate,
+  setUseMappedDate,
   startDate,
   setStartDate,
   startTime,
@@ -309,26 +313,6 @@ const FormSection: React.FC<FormSectionProps> = ({
                 />
               </div>
               <div className='space-y-2'>
-                <Label htmlFor='startDate'>Date</Label>
-                <Input
-                  id='startDate'
-                  type='date'
-                  className='form-input'
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                />
-              </div>
-              <div className='space-y-2'>
-                <Label htmlFor='startTime'>Time</Label>
-                <Input
-                  id='startTime'
-                  type='time'
-                  className='form-input'
-                  value={startTime}
-                  onChange={(e) => setStartTime(e.target.value)}
-                />
-              </div>
-              <div className='space-y-2'>
                 <Label htmlFor='notificationNumber'>6(1) Notification Number</Label>
                 <Input
                   id='notificationNumber'
@@ -346,6 +330,17 @@ const FormSection: React.FC<FormSectionProps> = ({
                   className='form-input'
                   value={notificationDate}
                   onChange={(e) => setNotificationDate(e.target.value)}
+                />
+              </div>
+
+              <div className='space-y-2'>
+                <Label htmlFor='printedDate'>Notice Printed Date</Label>
+                <Input
+                  id='printedDate'
+                  type='date'
+                  className='form-input'
+                  value={printedDate}
+                  onChange={(e) => setPrintedDate(e.target.value)}
                 />
               </div>
 
@@ -381,16 +376,6 @@ const FormSection: React.FC<FormSectionProps> = ({
                   </div>
                 </>
               )}
-              <div className='space-y-2'>
-                <Label htmlFor='printedDate'>Notice Printed Date</Label>
-                <Input
-                  id='printedDate'
-                  type='date'
-                  className='form-input'
-                  value={printedDate}
-                  onChange={(e) => setPrintedDate(e.target.value)}
-                />
-              </div>
 
               {/* Replace the existing Form Number Dropdown section with this updated version */}
               <div className='space-y-2'>
@@ -437,6 +422,38 @@ const FormSection: React.FC<FormSectionProps> = ({
                 )}
               </div>
               {/* --- End Form Number Dropdown --- */}
+              <div className='space-y-2'>
+                <Label htmlFor='startTime'>Survey Start Time</Label>
+                <Input
+                  id='startTime'
+                  type='time'
+                  className='form-input'
+                  value={startTime}
+                  onChange={(e) => setStartTime(e.target.value)}
+                />
+              </div>
+              <div className='space-y-2'>
+                <Label>Survey Start Date</Label>
+                <div className='flex items-center space-x-2'>
+                  <input
+                    type='checkbox'
+                    id='useMappedDate'
+                    checked={useMappedDate}
+                    onChange={(e) => setUseMappedDate(e.target.checked)}
+                    className='form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out'
+                  />
+                  <Label htmlFor='useMappedDate'>Get from CSV / Excel</Label>
+                </div>
+                {!useMappedDate && (
+                  <Input
+                    id='startDate'
+                    type='date'
+                    className='form-input'
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                  />
+                )}
+              </div>
             </div>
 
             <div className='pt-4'>

@@ -9,29 +9,12 @@ import { toast } from '../components/ui/use-toast'
 import { officerDesignations } from './FormSection'
 import { districts } from '../data/districts'
 import { sanitizeString, createSafeHTML, sanitizeAttribute } from '../lib/sanitize'
-interface PreviewSectionProps {
-  districtName: string
-  mandalName: string
-  villageName: string
-  startDate: string
-  startTime: string
-  notificationNumber: string
-  notificationDate: string
-  printedDate: string
-  show: boolean
-  headers: string[]
-  data: string[][]
-  mapping: Record<string, string>
-  noticeType: string
-  officerName: string
-  officerDesignation: string
-}
 
-// First, fix the duplicate interface by removing one of them and updating the remaining one
 interface PreviewSectionProps {
   districtName: string
   mandalName: string
   villageName: string
+  useMappedDate: boolean
   startDate: string
   startTime: string
   notificationNumber: string
@@ -53,6 +36,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
   districtName,
   mandalName,
   villageName,
+  useMappedDate,
   startDate,
   startTime,
   notificationNumber,
@@ -71,6 +55,9 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
   const printRef = useRef<HTMLDivElement>(null)
 
   if (!show) return null
+
+  const dateMapping = mapping['Survey Start Date']
+  const dateHeaderIndex = dateMapping ? headers.indexOf(dateMapping) : -1
 
   const indexMapping: Record<string, number> = {}
   Object.entries(mapping).forEach(([fieldName, csvHeader]) => {
@@ -256,10 +243,13 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
   }
 
   const formatDate = (dateString: string): string => {
-    if (!dateString) return ''
+    if (!dateString) return '_____________'
 
     try {
       const date = new Date(dateString)
+      if (isNaN(date.getTime())) {
+        return '_____________'
+      }
       return date
         .toLocaleDateString('en-IN', {
           day: '2-digit',
@@ -268,7 +258,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         })
         .replace(/\//g, '-')
     } catch (error) {
-      return dateString
+      return '_____________'
     }
   }
 
@@ -355,6 +345,12 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         const noticeDiv = document.createElement('div')
         noticeDiv.className = 'notice-section telugu-text'
 
+        const noticeSpecificStartDate =
+          useMappedDate && dateHeaderIndex !== -1 && notice.rows.length > 0
+            ? notice.rows[0][dateHeaderIndex]
+            : startDate
+        const formattedDate = formatDate(sanitizeString(noticeSpecificStartDate))
+
         // Add header at the very top of the page
         const header = document.createElement('div')
         header.className = 'header telugu-text'
@@ -378,13 +374,15 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         content.innerHTML = createSafeHTML(
           noticeType === 'GT Notice'
             ? `
-          <p style="font-size: 12pt; line-height: 1.5;word-break: break-all ">1) సర్వే సహాయక సంచాలకులు వారి 6(1) నోటిఫికేషన్ ఆర్‌.సి నెం ${sanitizeString(notificationNumber) || '________________'} తేది: ${
-            formatDate(sanitizeString(notificationDate)) || '____________'
-          }, అనుసరించి, ${districts.find((d) => d.value === districtName)?.te || '____________________'}  జిల్లా, 
+          <p style="font-size: 12pt; line-height: 1.5;word-break: break-all ">1) సర్వే సహాయక సంచాలకులు వారి 6(1) నోటిఫికేషన్ ఆర్‌.సి నెం ${
+            sanitizeString(notificationNumber) || '________________'
+          } తేది: ${formatDate(sanitizeString(notificationDate))}, అనుసరించి, ${
+            districts.find((d) => d.value === districtName)?.te || '____________________'
+          }  జిల్లా, 
            ${sanitizeString(mandalName) || '_____________________'} మండలం, ${
              sanitizeString(villageName) || '____________________'
            } గ్రామములో సీమానిర్ణయం (demarcation) మరియు సర్వే పనులు
-          ${formatDate(sanitizeString(startDate)) || '_____________'} తేదీన ${
+          ${formattedDate} తేదీన ${
             formatTime(sanitizeString(startTime)) || '________'
           } గం.ని.లకు ప్రారంభిచబడును అని తెలియజేయడమైనది.</p>
 
@@ -392,11 +390,19 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           యజమానాలు భూమి వద్ద హాజరై మీ పొలము యొక్క సరిహద్దులను చూపించి, తగిన సమాచారం మరియు అవసరమైన సహాయ సహకారములు
           అందించవలసినదిగా తెలియజేయడమైనది.</p>
         `
-            : ` <p style="font-size: 12pt; line-height: 1.5; word-break: break-all ">1) సహాయ సంచాలకులు, సర్వే మరియు భూమి రికార్డ్ల వారు జారీ చేసిన 6 (1) నోటిఫికేషన్ ఆర్‌సి నెం ${sanitizeString(notificationNumber) || '________________'} తేది: ${formatDate(sanitizeString(notificationDate)) || '____________'}, మరియు ఆంధ్రప్రదేశ్ సర్వే మరియు సరిహద్దుల చట్టం, 1923 కు సంబంధించి ${districts.find((d) => d.value === districtName)?.te || '____________________'} జిల్లా, 
+            : ` <p style="font-size: 12pt; line-height: 1.5; word-break: break-all ">1) సహాయ సంచాలకులు, సర్వే మరియు భూమి రికార్డ్ల వారు జారీ చేసిన 6 (1) నోటిఫికేషన్ ఆర్‌సి నెం ${
+                sanitizeString(notificationNumber) || '________________'
+              } తేది: ${formatDate(
+                sanitizeString(notificationDate)
+              )}, మరియు ఆంధ్రప్రదేశ్ సర్వే మరియు సరిహద్దుల చట్టం, 1923 కు సంబంధించి ${
+                districts.find((d) => d.value === districtName)?.te || '____________________'
+              } జిల్లా, 
            ${sanitizeString(mandalName) || '_____________________'} మండలం, ${
              sanitizeString(villageName) || '____________________'
            } గ్రామం యొక్క ప్రాథమిక సర్వే రికార్డులు తయారుచేయడం జరిగినది. 
-ప్రాథమిక సర్వే రికార్డులలో మీరు అభ్యంతరం తెలియచేసినందున వలన భూమి ధ్రువీకరణ (Ground Validation) నిమిత్తం తేదీ ${formatDate(sanitizeString(startDate)) || '_____________'} న ${
+ప్రాథమిక సర్వే రికార్డులలో మీరు అభ్యంతరం తెలియచేసినందున వలన భూమి ధ్రువీకరణ (Ground Validation) నిమిత్తం తేదీ ${
+                formattedDate
+              } న ${
                 formatTime(sanitizeString(startTime)) || '________'
               } గం.ని.లకు సర్వే పనులు ప్రారంభించబడును అని తెలియచేయడమైనది.</p>
           <p style="font-size: 12pt; line-height: 1.5; word-break: break-all "> 2) సర్వే మరియు సరిహద్దుల చట్టం, 1923లోని నియమ నిబంధనలు అనుసరించి సర్వే సమయం నందు ఈ క్రింది షెడ్యూల్ లోని భూ
@@ -532,7 +538,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           <div style="display: flex; justify-content: space-between; width: 100%;">
             <div class="left-footer">
               <p>స్థలం: ${sanitizeString(villageName) || '_____________'}</p>
-              <p>తేది: ${formatDate(sanitizeString(printedDate)) || '_____________'}</p>
+              <p>తేది: ${formatDate(sanitizeString(printedDate))}</p>
             </div>
             <div class="right-footer">
               <p>గ్రామ సర్వేయర్</p>
@@ -543,12 +549,17 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           <div style="display: flex; justify-content: space-between; width: 100%;">
             <div class="left-footer">
               <p>స్థలం: ${sanitizeString(villageName) || '_____________'}</p>
-              <p>తేది: ${formatDate(sanitizeString(printedDate)) || '_____________'}</p>
+              <p>తేది: ${formatDate(sanitizeString(printedDate))}</p>
             </div>
             <div class="right-footer">
               <p>సంతకం:</p>
               <p>పేరు: ${sanitizeString(officerName) || '_______________'}</p>
-              <p>హోదా/వృత్తి: ${officerDesignation ? officerDesignations.find((d) => d.value === officerDesignation)?.te || sanitizeString(officerDesignation) : '_______________'}</p>
+              <p>హోదా/వృత్తి: ${
+                officerDesignation
+                  ? officerDesignations.find((d) => d.value === officerDesignation)?.te ||
+                    sanitizeString(officerDesignation)
+                  : '_______________'
+              }</p>
             </div>
           </div>
         `
@@ -633,14 +644,13 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
               <h3 className='telugu-text mb-4 text-center font-bold'>FOR GROUND TRUTHING</h3>
               <p className='text-justify' style={{ marginBottom: '0px', wordBreak: 'break-all' }}>
                 1) సర్వే సహాయక సంచాలకులు వారి 6(1) నోటిఫికేషన్ ఆర్‌.సి నెం
-                {notificationNumber || '________________'}తేది:{' '}
-                {formatDate(notificationDate) || '____________'}, అనుసరించి,{' '}
+                {notificationNumber || '________________'}తేది: {formatDate(notificationDate)},
+                అనుసరించి,{' '}
                 {districts.find((d) => d.value === districtName)?.te || '____________________'}{' '}
                 జిల్లా,
                 {mandalName || '______________________'} మండలం,{' '}
                 {villageName || '___________________'} గ్రామములో సీమానిర్ణయం (demarcation) మరియు
-                సర్వే పనులు
-                {startDate ? formatDate(startDate) : '_____________'} తేదీన{' '}
+                సర్వే పనులు {useMappedDate ? '(తేదీ ఫైల్ నుండి)' : formatDate(startDate)} తేదీన{' '}
                 {startTime ? formatTime(startTime) : '__________'} గం.ని.లకు ప్రారంభిచబడును అని
                 తెలియజేయడమైనది.
                 <br />
@@ -659,14 +669,14 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
               <p className='text-justify' style={{ marginBottom: '0px', wordBreak: 'break-all' }}>
                 1) సహాయ సంచాలకులు, సర్వే మరియు భూమి రికార్డ్ల వారు జారీ చేసిన 6 (1) నోటిఫికేషన్
                 ఆర్‌.సి నెం {notificationNumber || '________________'}తేది:{' '}
-                {formatDate(notificationDate) || '____________'} మరియు ఆంధ్రప్రదేశ్ సర్వే మరియు
-                సరిహద్దుల చట్టం, 1923 కు సంబంధించి{' '}
+                {formatDate(notificationDate)} మరియు ఆంధ్రప్రదేశ్ సర్వే మరియు సరిహద్దుల చట్టం, 1923
+                కు సంబంధించి{' '}
                 {districts.find((d) => d.value === districtName)?.te || '____________________'}{' '}
                 జిల్లా, {mandalName || '_____________________'} మండలం,{' '}
                 {villageName || '____________________'} గ్రామం యొక్క ప్రాథమిక సర్వే రికార్డులు
                 తయారుచేయడం జరిగినది. ప్రాథమిక సర్వే రికార్డులలో మీరు అభ్యంతరం తెలియచేసినందు వలన భూమి
                 ధ్రువీకరణ (Ground Validation) నిమిత్తం తేది{' '}
-                {startDate ? formatDate(startDate) : '_____________'} న{' '}
+                {useMappedDate ? '(తేదీ ఫైల్ నుండి)' : formatDate(startDate)} న{' '}
                 {startTime ? formatTime(startTime) : '________'}గం. ని.లకు సర్వే పనులు
                 ప్రారంభించబడును అని తెలియచేయటమైనది.
                 <br />
@@ -697,7 +707,10 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
             officerName={officerName}
             officerDesignation={officerDesignation}
             noticeMode={noticeMode}
-            formNumber={formNumber} // <-- Add this line
+            formNumber={formNumber}
+            useMappedDate={useMappedDate}
+            dateHeaderIndex={dateHeaderIndex}
+            // ... (existing code) ...
           />
         </div>
       </Card>
