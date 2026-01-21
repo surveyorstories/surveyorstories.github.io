@@ -14,6 +14,7 @@ import PdfToDxfDownloadButton from "@site/src/components/PdfToDxfDownloadButton"
 
 - **Vector Conversion**: Converts PDF vector graphics (lines, curves, polygons) into editable vector formats including DXF, Shapefile, and GeoJSON.
 - **Crop Region Selection**: Interactively select a rectangular region on the PDF preview to extract only the content within that area. Perfect for isolating specific sections of large drawings.
+- **Geometry Filtering**: Filter extracted geometries by minimum size or exclude curve types (Bezier/Splines) to clean up noisy data or focus on specific features.
 - **Batch Processing**: Select and convert multiple PDF files simultaneously. Each file is processed sequentially, and results are grouped for easy management.
 - **Text Extraction**: Extracts text from PDF files and converts them into DXF `MTEXT` entities or vector text layers in Shapefile/GeoJSON, preserving position and size.
 - **Layer Separation**: Automatically organizes output into distinct layers or files:
@@ -113,6 +114,9 @@ The plugin relies on two Python libraries, which are **automatically installed**
       - **Geometry**: Extracts vector shapes such as lines, curves, and rectangles from the PDF.
       - **Text**: Extracts text elements including labels and annotations.
       - **Both**: Extracts both geometry and text for comprehensive conversion.
+    - **Filter Geometries**:
+      - **Skip Curved Geometries**: Check this option to exclude Bezier curves and splines from the extraction. Useful for simplifying output or removing decorative elements.
+      - **Minimum Size**: Set a threshold (in points) to exclude small geometries such as dots, noise, or minor details. Geometries with a bounding box dimension smaller than this value will be skipped.
 
 4. Click **Convert** ▶️ to start processing.
     - The progress bar displays the status of the batch operation.
@@ -137,6 +141,8 @@ The plugin relies on two Python libraries, which are **automatically installed**
     - Output format (Shapefile or GeoJSON or DXF).
     - Output base path.
     - Option to load output into the project.
+    - **Skip Curved Geometries**: Boolean flag to skip curves.
+    - **Minimum Size**: Double value to set minimum geometry size threshold.
 
 4. Run the algorithm to process the PDF and generate vector output layers.
 
