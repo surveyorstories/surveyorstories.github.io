@@ -57,7 +57,7 @@ const MappingTable: React.FC<MappingTableProps> = ({
     { en: 'Survey No', te: 'సర్వే నెం' },
     { en: 'Khata No', te: 'ఖాతా సంఖ్య' },
     { en: 'Pattadar Name', te: 'భూ యజమాని పేరు' },
-    { en: 'Relation Name', te: 'భర్త/తండ్రి పేరు' }
+    { en: 'Relation Name', te: 'సంబంధికులు (తండ్రి/భర్త) పేరు' }
   ]
 
   // These are the fields that will be displayed in the mapping table.

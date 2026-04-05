@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Card } from '../components/ui/card'
 import { Button } from '../components/ui/button'
@@ -17,6 +17,15 @@ import {
 // Add to your imports at the top
 import NoticeTable from './NoticeTable_ninetwo'
 import ReactDOMServer from 'react-dom/server'
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious
+} from '../components/ui/pagination'
 
 interface PreviewSectionProps {
   districtName: string
@@ -56,6 +65,9 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
   noticeType = 'khata' // Default to khata if not provided
 }) => {
   const printRef = useRef<HTMLDivElement>(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [showAll, setShowAll] = useState(false)
+  const pageSize = 150
 
   if (!show) return null
 
@@ -72,7 +84,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
     { en: 'Survey No', te: 'సర్వే నెం' },
     { en: 'Khata No', te: 'ఖాతా సంఖ్య' },
     { en: 'Pattadar Name', te: 'భూ యజమాని పేరు' },
-    { en: 'Relation Name', te: 'భర్త/తండ్రి పేరు' }
+    { en: 'Relation Name', te: 'సంబంధికులు (తండ్రి/భర్త) పేరు' }
   ]
 
   const optionalFields = [{ en: 'Mobile Number', te: 'మొబైల్ నెంబరు' }]
@@ -230,6 +242,12 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
       ]
     }
   }
+
+  // Calculate pagination
+  const totalPages = showAll ? 1 : Math.ceil(notices.length / pageSize)
+  const startIndex = showAll ? 0 : (currentPage - 1) * pageSize
+  const endIndex = showAll ? notices.length : startIndex + pageSize
+  const currentNotices = notices.slice(startIndex, endIndex)
 
   const prepareForPDF = () => {
     if (!printRef.current) return
@@ -392,8 +410,8 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
       `
       wordContent.appendChild(style)
 
-      // Process each notice
-      notices.forEach((notice, index) => {
+      // Process each notice (only current page)
+      currentNotices.forEach((notice, index) => {
         const noticeDiv = document.createElement('div')
         noticeDiv.className = 'notice-section telugu-text'
 
@@ -443,10 +461,9 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           <div style="display: flex; justify-content: space-between; width: 100%; font-size: 8pt; line-height: 1; word-break: break-all;">
                               <span>
                                 జిల్లా:
-                                ${ 
-                                  districts.find((d) => d.value === districtName)?.te ||
-                                  '____________________'
-                                }
+                                ${districts.find((d) => d.value === districtName)?.te ||
+          '____________________'
+          }
                               </span>
                               <span>మండలం: ${sanitizeString(mandalName) || '_____________'} </span>
                               <span>గ్రామం: ${sanitizeString(villageName) || '_____________'} </span>
@@ -468,12 +485,12 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           { en: 'Survey No', te: 'సర్వే నెంబరు', mappedIndex: notice.mapping['Survey No'] },
           ...(notice.mapping['Sub Division No']
             ? [
-                {
-                  en: 'Sub Division No',
-                  te: 'సబ్ డివిజన్ నెం లేదా లెటర్',
-                  mappedIndex: notice.mapping['Sub Division No']
-                }
-              ]
+              {
+                en: 'Sub Division No',
+                te: 'సబ్ డివిజన్ నెం లేదా లెటర్',
+                mappedIndex: notice.mapping['Sub Division No']
+              }
+            ]
             : []),
           {
             en: 'Old extent (Acres)',
@@ -530,11 +547,10 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
              <div class="right-footer">
               <p class='body-footer-text telugu-text mb-0 mt-5 text-left'>
                 సర్వే అధికారి
-                ${ 
-                  officerDesignation
-                    ? ` (${officerDesignations.find((d) => d.value === officerDesignation)?.te || officerDesignation})`
-                    : ''
-                }
+                ${officerDesignation
+            ? ` (${officerDesignations.find((d) => d.value === officerDesignation)?.te || officerDesignation})`
+            : ''
+          }
               </p>
             </div>
           </div>
@@ -652,6 +668,88 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
       </div>
       {/* web preview web page */}
       <Card className='glass-panel w-full overflow-hidden print:static print:bg-transparent'>
+        <div className='no-print flex flex-col items-center justify-center gap-4 border-b p-4'>
+          <div className='flex flex-col items-center gap-2'>
+            {notices.length > pageSize && (
+              <Button
+                onClick={() => setShowAll(!showAll)}
+                className='button flex items-center gap-2 rounded bg-gray-600 px-4 py-2 text-white hover:bg-gray-500'
+                variant='secondary'
+                size='sm'
+              >
+                {showAll ? 'Enable Pagination' : 'Show All'}
+              </Button>
+            )}
+            <p className='text-sm text-gray-500 text-center'>
+              {showAll
+                ? `Showing all ${notices.length} notices`
+                : `Showing ${startIndex + 1} to ${Math.min(endIndex, notices.length)} of ${
+                    notices.length
+                  } notices`}
+            </p>
+          </div>
+          {!showAll && totalPages > 1 && (
+            <Pagination className='justify-center'>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    href='#'
+                    onClick={(e) => {
+                      e.preventDefault()
+                      if (currentPage > 1) setCurrentPage(currentPage - 1)
+                    }}
+                    className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
+                  />
+                </PaginationItem>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1)
+                  .filter((page) => {
+                    // Show first, last, current, and pages around current
+                    return (
+                      page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1
+                    )
+                  })
+                  .map((page, index, array) => {
+                    const elements = []
+                    if (index > 0 && page - array[index - 1] > 1) {
+                      elements.push(
+                        <PaginationItem key={`ellipsis-${page}`}>
+                          <PaginationEllipsis />
+                        </PaginationItem>
+                      )
+                    }
+                    elements.push(
+                      <PaginationItem key={page}>
+                        <PaginationLink
+                          href='#'
+                          onClick={(e) => {
+                            e.preventDefault()
+                            setCurrentPage(page)
+                          }}
+                          isActive={currentPage === page}
+                        >
+                          {page}
+                        </PaginationLink>
+                      </PaginationItem>
+                    )
+                    return elements
+                  })}
+
+                <PaginationItem>
+                  <PaginationNext
+                    href='#'
+                    onClick={(e) => {
+                      e.preventDefault()
+                      if (currentPage < totalPages) setCurrentPage(currentPage + 1)
+                    }}
+                    className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          )}
+        </div>
+
         <div className='telugu-text no-print overflow-hidden p-4 pb-0 sm:pb-0 print:p-0'>
           <>
             <h3 className='telugu-text text-center'>ఫారం - {formNumber || '31'} </h3>
@@ -707,7 +805,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
             notificationNumber={notificationNumber}
             notificationDate={notificationDate}
             printedDate={printedDate}
-            notices={notices}
+            notices={currentNotices}
             showHeaderOnWeb={false}
             officerName={officerName}
             officerDesignation={officerDesignation}

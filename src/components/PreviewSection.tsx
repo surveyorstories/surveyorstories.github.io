@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import he from 'he'
 import { motion } from 'framer-motion'
 import { Card } from '../components/ui/card'
@@ -9,6 +9,15 @@ import { toast } from '../components/ui/use-toast'
 import { officerDesignations } from './FormSection'
 import { districts } from '../data/districts'
 import { sanitizeString, createSafeHTML, sanitizeAttribute } from '../lib/sanitize'
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious
+} from './ui/pagination'
 
 interface PreviewSectionProps {
   districtName: string
@@ -53,6 +62,10 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
   formNumber // <-- Add this line
 }) => {
   const printRef = useRef<HTMLDivElement>(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [showAll, setShowAll] = useState(false)
+  const pageSize = 150
+
 
   if (!show) return null
 
@@ -72,7 +85,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
     { en: 'Survey No', te: 'సర్వే నెం' },
     { en: 'Khata No', te: 'ఖాతా సంఖ్య' },
     { en: 'Pattadar Name', te: 'భూ యజమాని పేరు' },
-    { en: 'Relation Name', te: 'భర్త/తండ్రి పేరు' }
+    { en: 'Relation Name', te: 'సంబంధికులు (తండ్రి/భర్త) పేరు' }
   ]
 
   // Add Extent field if mapped
@@ -196,6 +209,12 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
       }
     ]
   }
+
+  // Calculate pagination
+  const totalPages = showAll ? 1 : Math.ceil(notices.length / pageSize)
+  const startIndex = showAll ? 0 : (currentPage - 1) * pageSize
+  const endIndex = showAll ? notices.length : startIndex + pageSize
+  const currentNotices = notices.slice(startIndex, endIndex)
 
   const prepareForPDF = () => {
     if (!printRef.current) return
@@ -340,8 +359,8 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
 
       wordContent.appendChild(style)
 
-      // Process each notice
-      notices.forEach((notice, index) => {
+      // Process each notice (only current page)
+      currentNotices.forEach((notice, index) => {
         const noticeDiv = document.createElement('div')
         noticeDiv.className = 'notice-section telugu-text'
 
@@ -374,37 +393,28 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         content.innerHTML = createSafeHTML(
           noticeType === 'GT Notice'
             ? `
-          <p style="font-size: 12pt; line-height: 1.5;word-break: break-all ">1) సర్వే సహాయక సంచాలకులు వారి 6(1) నోటిఫికేషన్ ఆర్‌.సి నెం ${
-            sanitizeString(notificationNumber) || '________________'
-          } తేది: ${formatDate(sanitizeString(notificationDate))}, అనుసరించి, ${
-            districts.find((d) => d.value === districtName)?.te || '____________________'
-          }  జిల్లా, 
-           ${sanitizeString(mandalName) || '_____________________'} మండలం, ${
-             sanitizeString(villageName) || '____________________'
-           } గ్రామములో సీమానిర్ణయం (demarcation) మరియు సర్వే పనులు
-          ${formattedDate} తేదీన ${
-            formatTime(sanitizeString(startTime)) || '________'
-          } గం.ని.లకు ప్రారంభిచబడును అని తెలియజేయడమైనది.</p>
+          <p style="font-size: 12pt; line-height: 1.5;word-break: break-all ">1) సర్వే సహాయక సంచాలకులు వారి 6(1) నోటిఫికేషన్ ఆర్‌.సి నెం ${sanitizeString(notificationNumber) || '________________'
+            } తేది: ${formatDate(sanitizeString(notificationDate))}, అనుసరించి, ${districts.find((d) => d.value === districtName)?.te || '____________________'
+            }  జిల్లా, 
+           ${sanitizeString(mandalName) || '_____________________'} మండలం, ${sanitizeString(villageName) || '____________________'
+            } గ్రామములో సీమానిర్ణయం (demarcation) మరియు సర్వే పనులు
+          ${formattedDate} తేదీన ${formatTime(sanitizeString(startTime)) || '________'
+            } గం.ని.లకు ప్రారంభిచబడును అని తెలియజేయడమైనది.</p>
 
           <p style="font-size: 12pt; line-height: 1.5; word-break: break-all ">2) సర్వే మరియు సరిహద్దుల చట్టం, 1923లోని నియమ నిబంధనలు అనుసరించి సర్వే సమయం నందు ఈ క్రింది షెడ్యూల్ లోని భూ
           యజమానాలు భూమి వద్ద హాజరై మీ పొలము యొక్క సరిహద్దులను చూపించి, తగిన సమాచారం మరియు అవసరమైన సహాయ సహకారములు
           అందించవలసినదిగా తెలియజేయడమైనది.</p>
         `
-            : ` <p style="font-size: 12pt; line-height: 1.5; word-break: break-all ">1) సహాయ సంచాలకులు, సర్వే మరియు భూమి రికార్డ్ల వారు జారీ చేసిన 6 (1) నోటిఫికేషన్ ఆర్‌సి నెం ${
-                sanitizeString(notificationNumber) || '________________'
-              } తేది: ${formatDate(
-                sanitizeString(notificationDate)
-              )}, మరియు ఆంధ్రప్రదేశ్ సర్వే మరియు సరిహద్దుల చట్టం, 1923 కు సంబంధించి ${
-                districts.find((d) => d.value === districtName)?.te || '____________________'
-              } జిల్లా, 
-           ${sanitizeString(mandalName) || '_____________________'} మండలం, ${
-             sanitizeString(villageName) || '____________________'
-           } గ్రామం యొక్క ప్రాథమిక సర్వే రికార్డులు తయారుచేయడం జరిగినది. 
-ప్రాథమిక సర్వే రికార్డులలో మీరు అభ్యంతరం తెలియచేసినందున వలన భూమి ధ్రువీకరణ (Ground Validation) నిమిత్తం తేదీ ${
-                formattedDate
-              } న ${
-                formatTime(sanitizeString(startTime)) || '________'
-              } గం.ని.లకు సర్వే పనులు ప్రారంభించబడును అని తెలియచేయడమైనది.</p>
+            : ` <p style="font-size: 12pt; line-height: 1.5; word-break: break-all ">1) సహాయ సంచాలకులు, సర్వే మరియు భూమి రికార్డ్ల వారు జారీ చేసిన 6 (1) నోటిఫికేషన్ ఆర్‌సి నెం ${sanitizeString(notificationNumber) || '________________'
+            } తేది: ${formatDate(
+              sanitizeString(notificationDate)
+            )}, మరియు ఆంధ్రప్రదేశ్ సర్వే మరియు సరిహద్దుల చట్టం, 1923 కు సంబంధించి ${districts.find((d) => d.value === districtName)?.te || '____________________'
+            } జిల్లా, 
+           ${sanitizeString(mandalName) || '_____________________'} మండలం, ${sanitizeString(villageName) || '____________________'
+            } గ్రామం యొక్క ప్రాథమిక సర్వే రికార్డులు తయారుచేయడం జరిగినది. 
+ప్రాథమిక సర్వే రికార్డులలో మీరు అభ్యంతరం తెలియచేసినందున వలన భూమి ధ్రువీకరణ (Ground Validation) నిమిత్తం తేదీ ${formattedDate
+            } న ${formatTime(sanitizeString(startTime)) || '________'
+            } గం.ని.లకు సర్వే పనులు ప్రారంభించబడును అని తెలియచేయడమైనది.</p>
           <p style="font-size: 12pt; line-height: 1.5; word-break: break-all "> 2) సర్వే మరియు సరిహద్దుల చట్టం, 1923లోని నియమ నిబంధనలు అనుసరించి సర్వే సమయం నందు ఈ క్రింది షెడ్యూల్ లోని భూ
           యజమానాలు భూమి వద్ద హాజరై మీ పొలము యొక్క సరిహద్దులను చూపించి, తగిన సమాచారం మరియు అవసరమైన సహాయ సహకారములు
           అందించవలసినదిగా తెలియజేయడమైనది.</p>  `
@@ -554,12 +564,11 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
             <div class="right-footer">
               <p>సంతకం:</p>
               <p>పేరు: ${sanitizeString(officerName) || '_______________'}</p>
-              <p>హోదా/వృత్తి: ${
-                officerDesignation
-                  ? officerDesignations.find((d) => d.value === officerDesignation)?.te ||
-                    sanitizeString(officerDesignation)
-                  : '_______________'
-              }</p>
+              <p>హోదా/వృత్తి: ${officerDesignation
+              ? officerDesignations.find((d) => d.value === officerDesignation)?.te ||
+              sanitizeString(officerDesignation)
+              : '_______________'
+            }</p>
             </div>
           </div>
         `
@@ -636,6 +645,89 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
       </div>
       {/* web preview web page */}
       <Card className='glass-panel w-full overflow-hidden print:static print:bg-transparent'>
+        {notices.length > pageSize && (
+          <div className='no-print flex flex-col items-center justify-center gap-4 border-b p-4'>
+            <div className='flex flex-col items-center gap-2'>
+              <Button
+                onClick={() => setShowAll(!showAll)}
+                className='button rounded bg-gray-600 px-4 py-2 text-white hover:bg-gray-500'
+                variant='secondary'
+                size='sm'
+              >
+                {showAll ? 'Enable Pagination' : 'Show All'}
+              </Button>
+              <p className='text-sm text-gray-500 text-center'>
+                {showAll
+                  ? `Showing all ${notices.length} notices`
+                  : `Showing ${startIndex + 1} to ${Math.min(endIndex, notices.length)} of ${
+                      notices.length
+                    } notices`}
+              </p>
+            </div>
+
+            {!showAll && totalPages > 1 && (
+              <Pagination className='justify-center'>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      href='#'
+                      onClick={(e) => {
+                        e.preventDefault()
+                        if (currentPage > 1) setCurrentPage(currentPage - 1)
+                      }}
+                      className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
+                    />
+                  </PaginationItem>
+
+                  {Array.from({ length: totalPages }, (_, i) => i + 1)
+                    .filter((page) => {
+                      // Show first, last, current, and pages around current
+                      return (
+                        page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1
+                      )
+                    })
+                    .map((page, index, array) => {
+                      const elements = []
+                      if (index > 0 && page - array[index - 1] > 1) {
+                        elements.push(
+                          <PaginationItem key={`ellipsis-${page}`}>
+                            <PaginationEllipsis />
+                          </PaginationItem>
+                        )
+                      }
+                      elements.push(
+                        <PaginationItem key={page}>
+                          <PaginationLink
+                            href='#'
+                            onClick={(e) => {
+                              e.preventDefault()
+                              setCurrentPage(page)
+                            }}
+                            isActive={currentPage === page}
+                          >
+                            {page}
+                          </PaginationLink>
+                        </PaginationItem>
+                      )
+                      return elements
+                    })}
+
+                  <PaginationItem>
+                    <PaginationNext
+                      href='#'
+                      onClick={(e) => {
+                        e.preventDefault()
+                        if (currentPage < totalPages) setCurrentPage(currentPage + 1)
+                      }}
+                      className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            )}
+          </div>
+        )}
+
         <div className='telugu-text no-print overflow-hidden p-4 sm:pb-2 print:p-0'>
           {noticeType === 'GT Notice' ? (
             <>
@@ -701,7 +793,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
             notificationNumber={notificationNumber}
             notificationDate={notificationDate}
             printedDate={printedDate}
-            notices={notices}
+            notices={currentNotices}
             showHeaderOnWeb={false}
             noticeType={noticeType}
             officerName={officerName}
@@ -710,7 +802,6 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
             formNumber={formNumber}
             useMappedDate={useMappedDate}
             dateHeaderIndex={dateHeaderIndex}
-            // ... (existing code) ...
           />
         </div>
       </Card>

@@ -31,7 +31,7 @@ These fields **must** be present in your CSV and mapped during the column mappin
 - **Survey No** (`సర్వే నెం`)
 - **Khata No** (`ఖాతా సంఖ్య`)
 - **Pattadar Name** (`భూ యజమాని పేరు`)
-- **Relation Name** (`భర్త/తండ్రి పేరు`)
+- **Relation Name** (`సంబంధికులు (తండ్రి/భర్త) పేరు`)
 - **Resurvey extent (Acres)** (`రీ సర్వే విస్తీర్ణం (ఎకరం)`)
 - **Resurvey extent (Hect)** (`రీ సర్వే విస్తీర్ణం (హెక్టార్లు)`)
 

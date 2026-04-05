@@ -21,7 +21,7 @@ These fields **must** be present in your CSV and mapped during the column mappin
 - **Assessment Number** (`అసెస్మెంట్ నంబర్`)
 - **Property Parcel Number** (`ప్రాపర్టీ పార్సెల్ నంబర్`)
 - **Pattadar Name** (`భూ యజమాని పేరు`)
-- **Relation Name** (`భర్త/తండ్రి పేరు`)
+- **Relation Name** (`సంబంధికులు (తండ్రి/భర్త) పేరు`)
 
 ### Optional Fields
 

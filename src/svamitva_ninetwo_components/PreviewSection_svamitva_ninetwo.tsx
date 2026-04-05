@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import he from 'he'
 import { motion } from 'framer-motion'
 import { Card } from '../components/ui/card'
@@ -9,6 +9,15 @@ import { toast } from '../components/ui/use-toast'
 import { officerDesignations } from './FormSection_svamitva_ninetwo'
 import { districts } from '../data/districts'
 import { sanitizeString, createSafeHTML, sanitizeAttribute } from '../lib/sanitize'
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious
+} from '../components/ui/pagination'
 interface PreviewSectionProps {
   districtName: string
   mandalName: string
@@ -52,6 +61,9 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
   habitationName // Add this line
 }) => {
   const printRef = useRef<HTMLDivElement>(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [showAll, setShowAll] = useState(false)
+  const pageSize = 150
 
   const indexMapping: Record<string, number> = {}
   Object.entries(mapping).forEach(([fieldName, csvHeader]) => {
@@ -178,6 +190,12 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
       }
     ]
   }
+
+  // Calculate pagination
+  const totalPages = showAll ? 1 : Math.ceil(notices.length / pageSize)
+  const startIndex = showAll ? 0 : (currentPage - 1) * pageSize
+  const endIndex = showAll ? notices.length : startIndex + pageSize
+  const currentNotices = notices.slice(startIndex, endIndex)
 
   const prepareForPDF = () => {
     if (!printRef.current) return
@@ -310,8 +328,8 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
 
       wordContent.appendChild(style)
 
-      // Process each notice
-      notices.forEach((notice, index) => {
+      // Process each notice (only current page)
+      currentNotices.forEach((notice, index) => {
         const noticeDiv = document.createElement('div')
         noticeDiv.className = 'notice-section telugu-text'
 
@@ -547,6 +565,88 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
       </div>
       {/* web preview web page */}
       <Card className='glass-panel w-full overflow-hidden print:static print:bg-transparent'>
+        <div className='no-print flex flex-col items-center justify-center gap-4 border-b p-4'>
+          <div className='flex flex-col items-center gap-2'>
+            {notices.length > pageSize && (
+              <Button
+                onClick={() => setShowAll(!showAll)}
+                className='button flex items-center gap-2 rounded bg-gray-600 px-4 py-2 text-white hover:bg-gray-500'
+                variant='secondary'
+                size='sm'
+              >
+                {showAll ? 'Enable Pagination' : 'Show All'}
+              </Button>
+            )}
+            <p className='text-sm text-gray-500 text-center'>
+              {showAll
+                ? `Showing all ${notices.length} notices`
+                : `Showing ${startIndex + 1} to ${Math.min(endIndex, notices.length)} of ${
+                    notices.length
+                  } notices`}
+            </p>
+          </div>
+          {!showAll && totalPages > 1 && (
+            <Pagination className='justify-center'>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    href='#'
+                    onClick={(e) => {
+                      e.preventDefault()
+                      if (currentPage > 1) setCurrentPage(currentPage - 1)
+                    }}
+                    className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
+                  />
+                </PaginationItem>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1)
+                  .filter((page) => {
+                    // Show first, last, current, and pages around current
+                    return (
+                      page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1
+                    )
+                  })
+                  .map((page, index, array) => {
+                    const elements = []
+                    if (index > 0 && page - array[index - 1] > 1) {
+                      elements.push(
+                        <PaginationItem key={`ellipsis-${page}`}>
+                          <PaginationEllipsis />
+                        </PaginationItem>
+                      )
+                    }
+                    elements.push(
+                      <PaginationItem key={page}>
+                        <PaginationLink
+                          href='#'
+                          onClick={(e) => {
+                            e.preventDefault()
+                            setCurrentPage(page)
+                          }}
+                          isActive={currentPage === page}
+                        >
+                          {page}
+                        </PaginationLink>
+                      </PaginationItem>
+                    )
+                    return elements
+                  })}
+
+                <PaginationItem>
+                  <PaginationNext
+                    href='#'
+                    onClick={(e) => {
+                      e.preventDefault()
+                      if (currentPage < totalPages) setCurrentPage(currentPage + 1)
+                    }}
+                    className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          )}
+        </div>
+
         <div className='telugu-text no-print overflow-hidden p-4 sm:pb-2 print:p-0'>
           {
             <>
@@ -600,13 +700,13 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
             notificationNumber={notificationNumber}
             notificationDate={notificationDate}
             printedDate={printedDate}
-            notices={notices}
+            notices={currentNotices}
             showHeaderOnWeb={false}
             noticeType={noticeType}
             officerName={officerName}
             officerDesignation={officerDesignation}
             noticeMode={noticeMode}
-            formNumber={formNumber} // <-- Add this line
+            formNumber={formNumber}
           />
         </div>
       </Card>
