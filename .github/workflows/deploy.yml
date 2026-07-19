@@ -20,9 +20,6 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Clear Yarn Cache
-        run: yarn cache clean
-
       - name: Install dependencies with retry
         run: |
           retry() {
@@ -31,13 +28,13 @@ jobs:
             done
             return 1
           }
-          retry yarn install --frozen-lockfile
+          retry npm ci --legacy-peer-deps
 
       - name: Build website
         env:
           POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }} 
           CHATWOOT_WEBSITE_TOKEN: ${{ secrets.CHATWOOT_WEBSITE_TOKEN }}  # Add this line
-        run: yarn build
+        run: npm run build
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
