@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '../components/ui/select'
-import { districts } from '../data/districts'
+import { DistrictSelect } from './DistrictSelect'
 import { sanitizeString, sanitizeCSVData } from '../lib/sanitize'
 import { toast } from '../components/ui/use-toast'
 import { RadioGroup, RadioGroupItem } from '../components/ui/radio-group'
@@ -276,21 +276,10 @@ const FormSection: React.FC<FormSectionProps> = ({
             <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
               <div className='space-y-2'>
                 <Label htmlFor='districtName'>District Name</Label>
-                <Select
-                  value={districtName || undefined}
-                  onValueChange={(value) => setDistrictName(value)}
-                >
-                  <SelectTrigger className='form-input'>
-                    <SelectValue placeholder='Select district' />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {districts.map((district) => (
-                      <SelectItem key={district.value} value={district.value}>
-                        {district.display} - {district.te}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <DistrictSelect
+                  value={districtName}
+                  onValueChange={setDistrictName}
+                />
               </div>
               <div className='space-y-2'>
                 <Label htmlFor='mandalName'>Mandal Name Telugu</Label>

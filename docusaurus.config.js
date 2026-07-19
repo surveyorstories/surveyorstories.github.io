@@ -47,20 +47,20 @@ const config = {
   },
   // Enable Docusaurs Faster: https://github.com/facebook/docusaurus/issues/10556
 
+  storage: {
+    type: 'localStorage',
+    namespace: true
+  },
+
   future: {
-    experimental_faster: {
+    faster: {
       swcJsLoader: true,
       swcJsMinimizer: true,
       swcHtmlMinimizer: true,
       lightningCssMinimizer: true,
       rspackBundler: true,
       mdxCrossCompilerCache: true
-    },
-    experimental_storage: {
-      type: 'localStorage',
-      namespace: true
     }
-    // experimental_router: 'hash',
   },
 
   presets: [
