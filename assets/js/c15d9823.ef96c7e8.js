@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkresurvey=self.webpackChunkresurvey||[]).push([["6431"],{9328(e){e.exports=JSON.parse('{"metadata":{"permalink":"/blog","page":1,"postsPerPage":6,"totalPages":1,"totalCount":0,"blogDescription":"Blog description is here ...","blogTitle":"Blog"}}')}}]);
