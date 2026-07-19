@@ -1,5 +1,5 @@
-import React from 'react'
-import { motion } from 'framer-motion'
+import React from 'react';
+import { motion } from 'framer-motion';
 
 const Header = () => {
   return (
@@ -26,7 +26,7 @@ const Header = () => {
         </div>
       </motion.div>
     </motion.header>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

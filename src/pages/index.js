@@ -1,6 +1,6 @@
-import React from 'react'
-import IntroContent from '../components/Homepage/intro-content'
-import Head from '@docusaurus/Head'
+import React from 'react';
+import IntroContent from '../components/Homepage/intro-content';
+import Head from '@docusaurus/Head';
 function HomePage() {
   return (
     <>
@@ -13,7 +13,7 @@ function HomePage() {
         svamitvanineTwoLink='svamitva/ninetwonotice_svamitva'
       />
     </>
-  )
+  );
 }
 
-export default HomePage
+export default HomePage;

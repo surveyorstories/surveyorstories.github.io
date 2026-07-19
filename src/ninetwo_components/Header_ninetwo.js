@@ -1,5 +1,5 @@
-import React from 'react'
-import { motion } from 'framer-motion'
+import React from 'react';
+import { motion } from 'framer-motion';
 
 const Header = () => {
   return (
@@ -9,7 +9,6 @@ const Header = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
     >
-
       <motion.div
         className='container mx-auto px-0 sm:px-0 md:px-0'
         initial={{ opacity: 0 }}
@@ -27,7 +26,7 @@ const Header = () => {
         </div>
       </motion.div>
     </motion.header>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

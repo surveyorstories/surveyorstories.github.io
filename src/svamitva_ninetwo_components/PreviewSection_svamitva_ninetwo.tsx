@@ -1,14 +1,14 @@
-import React, { useRef, useEffect, useState } from 'react'
-import he from 'he'
-import { motion } from 'framer-motion'
-import { Card } from '../components/ui/card'
-import { Button } from '../components/ui/button'
-import { Download } from 'lucide-react'
-import PrintableNotice from './PrintableNotice_svamitva_ninetwo'
-import { toast } from '../components/ui/use-toast'
-import { officerDesignations } from './FormSection_svamitva_ninetwo'
-import { districts } from '../data/districts'
-import { sanitizeString, createSafeHTML, sanitizeAttribute } from '../lib/sanitize'
+import React, { useRef, useEffect, useState } from 'react';
+import he from 'he';
+import { motion } from 'framer-motion';
+import { Card } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { Download } from 'lucide-react';
+import PrintableNotice from './PrintableNotice_svamitva_ninetwo';
+import { toast } from '../components/ui/use-toast';
+import { officerDesignations } from './FormSection_svamitva_ninetwo';
+import { districts } from '../data/districts';
+import { sanitizeString, createSafeHTML, sanitizeAttribute } from '../lib/sanitize';
 import {
   Pagination,
   PaginationContent,
@@ -17,26 +17,26 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious
-} from '../components/ui/pagination'
+} from '../components/ui/pagination';
 interface PreviewSectionProps {
-  districtName: string
-  mandalName: string
-  panchayatName: string
-  startDate: string
-  startTime: string
-  notificationNumber: string
-  notificationDate: string
-  printedDate: string
-  show: boolean
-  headers: string[]
-  data: string[][]
-  mapping: Record<string, string>
-  noticeType: string
-  officerName: string
-  officerDesignation: string
-  noticeMode?: string
-  formNumber: string
-  habitationName?: string
+  districtName: string;
+  mandalName: string;
+  panchayatName: string;
+  startDate: string;
+  startTime: string;
+  notificationNumber: string;
+  notificationDate: string;
+  printedDate: string;
+  show: boolean;
+  headers: string[];
+  data: string[][];
+  mapping: Record<string, string>;
+  noticeType: string;
+  officerName: string;
+  officerDesignation: string;
+  noticeMode?: string;
+  formNumber: string;
+  habitationName?: string;
 }
 
 // Update the component function to include noticeMode parameter
@@ -60,18 +60,18 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
   formNumber,
   habitationName // Add this line
 }) => {
-  const printRef = useRef<HTMLDivElement>(null)
-  const [currentPage, setCurrentPage] = useState(1)
-  const [showAll, setShowAll] = useState(false)
-  const pageSize = 150
+  const printRef = useRef<HTMLDivElement>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [showAll, setShowAll] = useState(false);
+  const pageSize = 150;
 
-  const indexMapping: Record<string, number> = {}
+  const indexMapping: Record<string, number> = {};
   Object.entries(mapping).forEach(([fieldName, csvHeader]) => {
-    const headerIndex = headers.indexOf(csvHeader)
+    const headerIndex = headers.indexOf(csvHeader);
     if (headerIndex !== -1) {
-      indexMapping[fieldName] = headerIndex
+      indexMapping[fieldName] = headerIndex;
     }
-  })
+  });
 
   const requiredFields = [
     { en: 'Property Parcel Number', te: 'ప్రాపర్టీ పార్సెల్ నెంబరు' },
@@ -80,19 +80,19 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
     { en: 'Building Area', te: 'భవన విస్తీర్ణం (sq.mts)' },
     { en: 'Owner Name', te: 'భూమి/ ఆస్తి యజమాని పేరు' },
     { en: 'Relation Name', te: 'తండ్రి పేరు' }
-  ]
+  ];
 
   const optionalFields: FieldMapping[] = [
     { en: 'Remarks', te: 'రిమార్కులు' },
     { en: 'Habitation Name', te: 'గ్రామం పేరు' }
-  ]
+  ];
 
-  const fields = [...requiredFields, ...optionalFields]
+  const fields = [...requiredFields, ...optionalFields];
 
-  const hasPropertyParcelNumber = 'Property Parcel Number' in indexMapping
-  const hasAssessmentNumber = 'Assessment Number' in indexMapping
-  const hasOwnerName = 'Owner Name' in indexMapping
-  const hasRelationName = 'Relation Name' in indexMapping
+  const hasPropertyParcelNumber = 'Property Parcel Number' in indexMapping;
+  const hasAssessmentNumber = 'Assessment Number' in indexMapping;
+  const hasOwnerName = 'Owner Name' in indexMapping;
+  const hasRelationName = 'Relation Name' in indexMapping;
 
   useEffect(() => {
     if (show) {
@@ -102,30 +102,30 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           description:
             'Property Parcel Number is not mapped. Please map the column to generate notices.',
           variant: 'destructive'
-        })
+        });
       }
     }
-  }, [show, noticeMode, hasPropertyParcelNumber])
+  }, [show, noticeMode, hasPropertyParcelNumber]);
 
-  if (!show) return null
+  if (!show) return null;
 
   let notices: {
-    khataNo: string
-    rows: string[][]
-    mapping: Record<string, number>
-    fields: { en: string; te: string }[]
-  }[] = []
+    khataNo: string;
+    rows: string[][];
+    mapping: Record<string, number>;
+    fields: { en: string; te: string }[];
+  }[] = [];
 
   // Group data based on noticeMode
   if (noticeMode === 'property-parcel-number' && hasPropertyParcelNumber) {
-    const propertyParcelNumberGroups: Record<string, string[][]> = {}
+    const propertyParcelNumberGroups: Record<string, string[][]> = {};
     data.forEach((row) => {
-      const propertyParcelNumber = row[indexMapping['Property Parcel Number']] || 'Unknown'
+      const propertyParcelNumber = row[indexMapping['Property Parcel Number']] || 'Unknown';
       if (!propertyParcelNumberGroups[propertyParcelNumber]) {
-        propertyParcelNumberGroups[propertyParcelNumber] = []
+        propertyParcelNumberGroups[propertyParcelNumber] = [];
       }
-      propertyParcelNumberGroups[propertyParcelNumber].push(row)
-    })
+      propertyParcelNumberGroups[propertyParcelNumber].push(row);
+    });
 
     notices = Object.entries(propertyParcelNumberGroups).map(([propertyParcelNumber, rows]) => ({
       khataNo: propertyParcelNumber,
@@ -135,16 +135,16 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
       habitationName: indexMapping['Habitation Name']
         ? rows[0][indexMapping['Habitation Name']]
         : undefined
-    }))
+    }));
   } else if (noticeMode === 'assessment-number' && hasAssessmentNumber) {
-    const assessmentNumberGroups: Record<string, string[][]> = {}
+    const assessmentNumberGroups: Record<string, string[][]> = {};
     data.forEach((row) => {
-      const assessmentNumber = row[indexMapping['Assessment Number']] || 'Unknown'
+      const assessmentNumber = row[indexMapping['Assessment Number']] || 'Unknown';
       if (!assessmentNumberGroups[assessmentNumber]) {
-        assessmentNumberGroups[assessmentNumber] = []
+        assessmentNumberGroups[assessmentNumber] = [];
       }
-      assessmentNumberGroups[assessmentNumber].push(row)
-    })
+      assessmentNumberGroups[assessmentNumber].push(row);
+    });
 
     notices = Object.entries(assessmentNumberGroups).map(([assessmentNumber, rows]) => ({
       khataNo: assessmentNumber,
@@ -154,18 +154,18 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
       habitationName: indexMapping['Habitation Name']
         ? rows[0][indexMapping['Habitation Name']]
         : undefined
-    }))
+    }));
   } else if (noticeMode === 'pattadar-name' && hasOwnerName && hasRelationName) {
-    const pattadarNameGroups: Record<string, string[][]> = {}
+    const pattadarNameGroups: Record<string, string[][]> = {};
     data.forEach((row) => {
-      const ownerName = (row[indexMapping['Owner Name']] || '').replace(/\s/g, '')
-      const relationName = (row[indexMapping['Relation Name']] || '').replace(/\s/g, '')
-      const groupKey = ownerName + relationName || 'Unknown'
+      const ownerName = (row[indexMapping['Owner Name']] || '').replace(/\s/g, '');
+      const relationName = (row[indexMapping['Relation Name']] || '').replace(/\s/g, '');
+      const groupKey = ownerName + relationName || 'Unknown';
       if (!pattadarNameGroups[groupKey]) {
-        pattadarNameGroups[groupKey] = []
+        pattadarNameGroups[groupKey] = [];
       }
-      pattadarNameGroups[groupKey].push(row)
-    })
+      pattadarNameGroups[groupKey].push(row);
+    });
 
     notices = Object.entries(pattadarNameGroups).map(([pattadarName, rows]) => ({
       khataNo: pattadarName,
@@ -175,7 +175,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
       habitationName: indexMapping['Habitation Name']
         ? rows[0][indexMapping['Habitation Name']]
         : undefined
-    }))
+    }));
   } else {
     // Fallback - no grouping
     notices = [
@@ -188,84 +188,84 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           ? data[0][indexMapping['Habitation Name']]
           : undefined
       }
-    ]
+    ];
   }
 
   // Calculate pagination
-  const totalPages = showAll ? 1 : Math.ceil(notices.length / pageSize)
-  const startIndex = showAll ? 0 : (currentPage - 1) * pageSize
-  const endIndex = showAll ? notices.length : startIndex + pageSize
-  const currentNotices = notices.slice(startIndex, endIndex)
+  const totalPages = showAll ? 1 : Math.ceil(notices.length / pageSize);
+  const startIndex = showAll ? 0 : (currentPage - 1) * pageSize;
+  const endIndex = showAll ? notices.length : startIndex + pageSize;
+  const currentNotices = notices.slice(startIndex, endIndex);
 
   const prepareForPDF = () => {
-    if (!printRef.current) return
+    if (!printRef.current) return;
 
     // Clone the printRef content for PDF preparation
-    const pdfContent = printRef.current.cloneNode(true) as HTMLElement
+    const pdfContent = printRef.current.cloneNode(true) as HTMLElement;
 
     // Add print-specific classes to make it look like print mode
-    const noticeElements = pdfContent.querySelectorAll('.khata-group')
+    const noticeElements = pdfContent.querySelectorAll('.khata-group');
     noticeElements.forEach((notice) => {
       // Show the Telugu header in the PDF
-      const headerElement = notice.querySelector('.telugu-header-print')
+      const headerElement = notice.querySelector('.telugu-header-print');
       if (headerElement) {
-        headerElement.classList.remove('hidden-on-web')
+        headerElement.classList.remove('hidden-on-web');
       }
-    })
+    });
 
     // Create a temporary container to append our clone to
-    const tempContainer = document.createElement('div')
-    tempContainer.appendChild(pdfContent)
-    tempContainer.style.position = 'absolute'
-    tempContainer.style.left = '-9999px'
-    tempContainer.style.width = '210mm' // A4 width
-    document.body.appendChild(tempContainer)
+    const tempContainer = document.createElement('div');
+    tempContainer.appendChild(pdfContent);
+    tempContainer.style.position = 'absolute';
+    tempContainer.style.left = '-9999px';
+    tempContainer.style.width = '210mm'; // A4 width
+    document.body.appendChild(tempContainer);
 
-    return { tempContainer, pdfContent }
-  }
+    return { tempContainer, pdfContent };
+  };
 
   const formatTime = (timeString: string): string => {
-    if (!timeString) return ''
+    if (!timeString) return '';
 
     try {
-      const [hours, minutes] = timeString.split(':')
-      const time = new Date()
-      time.setHours(parseInt(hours))
-      time.setMinutes(parseInt(minutes))
+      const [hours, minutes] = timeString.split(':');
+      const time = new Date();
+      time.setHours(parseInt(hours));
+      time.setMinutes(parseInt(minutes));
       return time.toLocaleTimeString('en-US', {
         hour: 'numeric',
         minute: 'numeric',
         hour12: true
-      })
+      });
     } catch (error) {
-      return timeString
+      return timeString;
     }
-  }
+  };
 
   const formatDate = (dateString: string): string => {
-    if (!dateString) return ''
+    if (!dateString) return '';
 
     try {
-      const date = new Date(dateString)
+      const date = new Date(dateString);
       return date
         .toLocaleDateString('en-IN', {
           day: '2-digit',
           month: '2-digit',
           year: 'numeric'
         })
-        .replace(/\//g, '-')
+        .replace(/\//g, '-');
     } catch (error) {
-      return dateString
+      return dateString;
     }
-  }
+  };
 
   const handleDownloadWord = async () => {
     try {
       // Create a new HTML document for Word conversion
-      const wordContent = document.createElement('div')
+      const wordContent = document.createElement('div');
 
       // Add styles for Word document with Gautami font
-      const style = document.createElement('style')
+      const style = document.createElement('style');
       style.textContent = `
         @font-face {
           font-family: 'Gautami';
@@ -324,20 +324,20 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         .notice-section:last-child {
           page-break-after: avoid;
         }
-      `
+      `;
 
-      wordContent.appendChild(style)
+      wordContent.appendChild(style);
 
       // Process each notice (only current page)
       currentNotices.forEach((notice, index) => {
-        const noticeDiv = document.createElement('div')
-        noticeDiv.className = 'notice-section telugu-text'
+        const noticeDiv = document.createElement('div');
+        noticeDiv.className = 'notice-section telugu-text';
 
         // Add header at the very top of the page
-        const header = document.createElement('div')
-        header.className = 'header telugu-text'
-        header.style.marginTop = '0'
-        header.style.paddingTop = '0'
+        const header = document.createElement('div');
+        header.className = 'header telugu-text';
+        header.style.marginTop = '0';
+        header.style.paddingTop = '0';
         header.innerHTML = createSafeHTML(
           `
           <h1 style="font-size: 14pt; margin-top: 0;">ఫారం - ${formNumber || ' 17'} </h1>
@@ -345,12 +345,12 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           ఆంధ్రప్రదేశ్ సర్వే మరియు సరిహద్దుల చట్టం, 1923 లోని 9(2) సెక్షన్ ప్రకారము నోటీసు</h2>
 
         `
-        )
-        noticeDiv.appendChild(header)
+        );
+        noticeDiv.appendChild(header);
 
         // Add content
-        const content = document.createElement('div')
-        content.className = 'content telugu-text'
+        const content = document.createElement('div');
+        content.className = 'content telugu-text';
         content.innerHTML = createSafeHTML(
           `
           <p style="font-size: 12pt; line-height: 1.5;word-break: break-all ">
@@ -368,88 +368,88 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           
           </p>
         `
-        )
-        noticeDiv.appendChild(content)
+        );
+        noticeDiv.appendChild(content);
 
         // Create table with colgroup for fixed column widths
-        const table = document.createElement('table')
-        const colgroup = document.createElement('colgroup')
+        const table = document.createElement('table');
+        const colgroup = document.createElement('colgroup');
 
         // Set column widths
         notice.fields.forEach((field, i) => {
-          const col = document.createElement('col')
+          const col = document.createElement('col');
           if (i === 0)
-            col.style.width = '90px' // Survey No
+            col.style.width = '90px'; // Survey No
           else if (i === 1)
-            col.style.width = '80px' // Khata No
+            col.style.width = '80px'; // Khata No
           else if (i === 4)
-            col.style.width = '110px' // Mobile Number
-          else col.style.width = 'auto' // Other columns share remaining space
-          colgroup.appendChild(col)
-        })
+            col.style.width = '110px'; // Mobile Number
+          else col.style.width = 'auto'; // Other columns share remaining space
+          colgroup.appendChild(col);
+        });
 
-        table.appendChild(colgroup)
+        table.appendChild(colgroup);
 
         // Add table header
-        const thead = document.createElement('thead')
-        const headerRow = document.createElement('tr')
+        const thead = document.createElement('thead');
+        const headerRow = document.createElement('tr');
 
-        const th = document.createElement('th')
-        th.textContent = 'S.No'
-        th.style.fontWeight = 'bold'
-        headerRow.appendChild(th)
+        const th = document.createElement('th');
+        th.textContent = 'S.No';
+        th.style.fontWeight = 'bold';
+        headerRow.appendChild(th);
 
         notice.fields.forEach((field) => {
-          const th = document.createElement('th')
-          th.textContent = field.te
-          th.style.fontWeight = 'bold'
-          headerRow.appendChild(th)
-        })
+          const th = document.createElement('th');
+          th.textContent = field.te;
+          th.style.fontWeight = 'bold';
+          headerRow.appendChild(th);
+        });
 
-        thead.appendChild(headerRow)
-        table.appendChild(thead)
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
 
         // Add table body
-        const tbody = document.createElement('tbody')
+        const tbody = document.createElement('tbody');
 
         notice.rows.forEach((row, rowIndex) => {
-          const tr = document.createElement('tr')
+          const tr = document.createElement('tr');
 
-          const td = document.createElement('td')
-          td.textContent = (rowIndex + 1).toString()
-          tr.appendChild(td)
+          const td = document.createElement('td');
+          td.textContent = (rowIndex + 1).toString();
+          tr.appendChild(td);
 
           notice.fields.forEach((field, colIndex) => {
-            const td = document.createElement('td')
+            const td = document.createElement('td');
             // Get the cell content and thoroughly sanitize it
-            let cellContent = row[notice.mapping[field.en]] || ''
+            let cellContent = row[notice.mapping[field.en]] || '';
 
             // First decode any HTML entities
-            const parser = new DOMParser()
+            const parser = new DOMParser();
             const decodedContent =
               parser.parseFromString(`<!doctype html><body>${cellContent}`, 'text/html').body
-                .textContent || ''
+                .textContent || '';
 
             // Remove all quotes, backticks, and other special characters
             const cleanedContent = decodedContent
               .replace(/[\u2018\u2019\u201C\u201D]/g, '') // Remove smart quotes
               .replace(/[^\u0000-\u007F\u0C00-\u0C7F\s]/g, '') // Keep only ASCII and Telugu chars
-              .trim() // Remove leading/trailing whitespace
+              .trim(); // Remove leading/trailing whitespace
 
-            td.textContent = sanitizeString(cleanedContent)
-            tr.appendChild(td)
-          })
+            td.textContent = sanitizeString(cleanedContent);
+            tr.appendChild(td);
+          });
 
-          tbody.appendChild(tr)
-        })
+          tbody.appendChild(tr);
+        });
 
-        table.appendChild(tbody)
+        table.appendChild(tbody);
 
-        noticeDiv.appendChild(table)
+        noticeDiv.appendChild(table);
 
         // Add footer
-        const footer = document.createElement('div')
-        footer.className = 'footer telugu-text'
+        const footer = document.createElement('div');
+        footer.className = 'footer telugu-text';
         // footer.style.marginTop = '10px'
         footer.innerHTML = createSafeHTML(
           `
@@ -492,12 +492,12 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
 
           </div>
         `
-        )
+        );
 
-        noticeDiv.appendChild(footer)
+        noticeDiv.appendChild(footer);
 
-        wordContent.appendChild(noticeDiv)
-      })
+        wordContent.appendChild(noticeDiv);
+      });
 
       // Convert to Blob - use HTML format for better rendering in Word
       const htmlContent = `
@@ -511,36 +511,36 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           ${createSafeHTML(wordContent.innerHTML, false, true)}
         </body>
         </html>
-      `
+      `;
 
       // Replace any remaining HTML entities that might not be properly decoded
-      const finalHtmlContent = he.decode(htmlContent)
+      const finalHtmlContent = he.decode(htmlContent);
 
-      const blob = new Blob([finalHtmlContent], { type: 'application/msword' })
+      const blob = new Blob([finalHtmlContent], { type: 'application/msword' });
 
       // Create download link
-      const link = document.createElement('a')
-      link.href = URL.createObjectURL(blob)
-      link.download = `land-notices-${panchayatName || 'village'}.doc`
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `land-notices-${panchayatName || 'village'}.doc`;
 
       // Trigger download
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
       toast({
         title: 'Word Document Downloaded Successfully',
         description: 'Land notices have been saved to your device.'
-      })
+      });
     } catch (error) {
-      console.error('Error generating Word document:', error)
+      console.error('Error generating Word document:', error);
       toast({
         title: 'Word Document Generation Failed',
         description: 'There was an error creating the document. Please try again.',
         variant: 'destructive'
-      })
+      });
     }
-  }
+  };
 
   return (
     <motion.div
@@ -577,7 +577,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
                 {showAll ? 'Enable Pagination' : 'Show All'}
               </Button>
             )}
-            <p className='text-sm text-gray-500 text-center'>
+            <p className='text-center text-sm text-gray-500'>
               {showAll
                 ? `Showing all ${notices.length} notices`
                 : `Showing ${startIndex + 1} to ${Math.min(endIndex, notices.length)} of ${
@@ -592,8 +592,8 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
                   <PaginationPrevious
                     href='#'
                     onClick={(e) => {
-                      e.preventDefault()
-                      if (currentPage > 1) setCurrentPage(currentPage - 1)
+                      e.preventDefault();
+                      if (currentPage > 1) setCurrentPage(currentPage - 1);
                     }}
                     className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
                   />
@@ -602,42 +602,40 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
                 {Array.from({ length: totalPages }, (_, i) => i + 1)
                   .filter((page) => {
                     // Show first, last, current, and pages around current
-                    return (
-                      page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1
-                    )
+                    return page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1;
                   })
                   .map((page, index, array) => {
-                    const elements = []
+                    const elements = [];
                     if (index > 0 && page - array[index - 1] > 1) {
                       elements.push(
                         <PaginationItem key={`ellipsis-${page}`}>
                           <PaginationEllipsis />
                         </PaginationItem>
-                      )
+                      );
                     }
                     elements.push(
                       <PaginationItem key={page}>
                         <PaginationLink
                           href='#'
                           onClick={(e) => {
-                            e.preventDefault()
-                            setCurrentPage(page)
+                            e.preventDefault();
+                            setCurrentPage(page);
                           }}
                           isActive={currentPage === page}
                         >
                           {page}
                         </PaginationLink>
                       </PaginationItem>
-                    )
-                    return elements
+                    );
+                    return elements;
                   })}
 
                 <PaginationItem>
                   <PaginationNext
                     href='#'
                     onClick={(e) => {
-                      e.preventDefault()
-                      if (currentPage < totalPages) setCurrentPage(currentPage + 1)
+                      e.preventDefault();
+                      if (currentPage < totalPages) setCurrentPage(currentPage + 1);
                     }}
                     className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
                   />
@@ -711,7 +709,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         </div>
       </Card>
     </motion.div>
-  )
-}
+  );
+};
 
-export default PreviewSection
+export default PreviewSection;

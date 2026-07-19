@@ -1,14 +1,14 @@
-import React, { useRef, useState } from 'react'
-import he from 'he'
-import { motion } from 'framer-motion'
-import { Card } from '../components/ui/card'
-import { Button } from '../components/ui/button'
-import { Download } from 'lucide-react'
-import PrintableNotice from './PrintableNotice'
-import { toast } from '../components/ui/use-toast'
-import { officerDesignations } from './FormSection'
-import { districts } from '../data/districts'
-import { sanitizeString, createSafeHTML, sanitizeAttribute } from '../lib/sanitize'
+import React, { useRef, useState } from 'react';
+import he from 'he';
+import { motion } from 'framer-motion';
+import { Card } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { Download } from 'lucide-react';
+import PrintableNotice from './PrintableNotice';
+import { toast } from '../components/ui/use-toast';
+import { officerDesignations } from './FormSection';
+import { districts } from '../data/districts';
+import { sanitizeString, createSafeHTML, sanitizeAttribute } from '../lib/sanitize';
 import {
   Pagination,
   PaginationContent,
@@ -17,27 +17,27 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious
-} from './ui/pagination'
+} from './ui/pagination';
 
 interface PreviewSectionProps {
-  districtName: string
-  mandalName: string
-  villageName: string
-  useMappedDate: boolean
-  startDate: string
-  startTime: string
-  notificationNumber: string
-  notificationDate: string
-  printedDate: string
-  show: boolean
-  headers: string[]
-  data: string[][]
-  mapping: Record<string, string>
-  noticeType: string
-  officerName: string
-  officerDesignation: string
-  noticeMode?: string
-  formNumber: string
+  districtName: string;
+  mandalName: string;
+  villageName: string;
+  useMappedDate: boolean;
+  startDate: string;
+  startTime: string;
+  notificationNumber: string;
+  notificationDate: string;
+  printedDate: string;
+  show: boolean;
+  headers: string[];
+  data: string[][];
+  mapping: Record<string, string>;
+  noticeType: string;
+  officerName: string;
+  officerDesignation: string;
+  noticeMode?: string;
+  formNumber: string;
 }
 
 // Update the component function to include noticeMode parameter
@@ -61,24 +61,23 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
   noticeMode = 'khata', // Add default value
   formNumber // <-- Add this line
 }) => {
-  const printRef = useRef<HTMLDivElement>(null)
-  const [currentPage, setCurrentPage] = useState(1)
-  const [showAll, setShowAll] = useState(false)
-  const pageSize = 150
+  const printRef = useRef<HTMLDivElement>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [showAll, setShowAll] = useState(false);
+  const pageSize = 150;
 
+  if (!show) return null;
 
-  if (!show) return null
+  const dateMapping = mapping['Survey Start Date'];
+  const dateHeaderIndex = dateMapping ? headers.indexOf(dateMapping) : -1;
 
-  const dateMapping = mapping['Survey Start Date']
-  const dateHeaderIndex = dateMapping ? headers.indexOf(dateMapping) : -1
-
-  const indexMapping: Record<string, number> = {}
+  const indexMapping: Record<string, number> = {};
   Object.entries(mapping).forEach(([fieldName, csvHeader]) => {
-    const headerIndex = headers.indexOf(csvHeader)
+    const headerIndex = headers.indexOf(csvHeader);
     if (headerIndex !== -1) {
-      indexMapping[fieldName] = headerIndex
+      indexMapping[fieldName] = headerIndex;
     }
-  })
+  });
 
   const requiredFields = [
     { en: 'LPM Number', te: 'ల్యాండ్ పార్సెల్ నెంబర్' },
@@ -86,118 +85,118 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
     { en: 'Khata No', te: 'ఖాతా సంఖ్య' },
     { en: 'Pattadar Name', te: 'భూ యజమాని పేరు' },
     { en: 'Relation Name', te: 'సంబంధికులు (తండ్రి/భర్త) పేరు' }
-  ]
+  ];
 
   // Add Extent field if mapped
-  let fields = [...requiredFields]
-  const hasExtent = 'Extent' in indexMapping
+  let fields = [...requiredFields];
+  const hasExtent = 'Extent' in indexMapping;
   if (noticeType === 'GV Notice' && hasExtent) {
     // Insert Extent after Survey No
-    const surveyNoIdx = fields.findIndex((f) => f.en === 'Survey No')
-    fields.splice(surveyNoIdx + 1, 0, { en: 'Extent', te: 'విస్తీర్ణం' })
+    const surveyNoIdx = fields.findIndex((f) => f.en === 'Survey No');
+    fields.splice(surveyNoIdx + 1, 0, { en: 'Extent', te: 'విస్తీర్ణం' });
   }
 
-  const optionalFields = [{ en: 'Mobile Number', te: 'మొబైల్ నెంబరు' }]
-  fields = [...fields, ...optionalFields]
+  const optionalFields = [{ en: 'Mobile Number', te: 'మొబైల్ నెంబరు' }];
+  fields = [...fields, ...optionalFields];
 
   // Check if we have the necessary fields based on the noticeMode
-  const hasKhataNo = 'Khata No' in indexMapping
-  const hasSurveyNo = 'Survey No' in indexMapping
-  const hasPattadarName = 'Pattadar Name' in indexMapping
-  const hasRelationName = 'Relation Name' in indexMapping
+  const hasKhataNo = 'Khata No' in indexMapping;
+  const hasSurveyNo = 'Survey No' in indexMapping;
+  const hasPattadarName = 'Pattadar Name' in indexMapping;
+  const hasRelationName = 'Relation Name' in indexMapping;
 
   let notices: {
-    khataNo: string
-    rows: string[][]
-    mapping: Record<string, number>
-    fields: { en: string; te: string }[]
-  }[] = []
+    khataNo: string;
+    rows: string[][];
+    mapping: Record<string, number>;
+    fields: { en: string; te: string }[];
+  }[] = [];
 
   // Group data based on noticeMode
   if ((noticeMode === 'khata' || noticeMode === 'khata-pattadar-once') && hasKhataNo) {
     // Group by Khata No for both 'khata' and 'khata-pattadar-once' modes
-    const khataGroups: Record<string, string[][]> = {}
+    const khataGroups: Record<string, string[][]> = {};
     data.forEach((row) => {
-      const khataNo = row[indexMapping['Khata No']] || 'Unknown'
+      const khataNo = row[indexMapping['Khata No']] || 'Unknown';
       if (!khataGroups[khataNo]) {
-        khataGroups[khataNo] = []
+        khataGroups[khataNo] = [];
       }
-      khataGroups[khataNo].push(row)
-    })
+      khataGroups[khataNo].push(row);
+    });
 
     notices = Object.entries(khataGroups).map(([khataNo, rows]) => ({
       khataNo,
       rows,
       mapping: indexMapping,
       fields
-    }))
+    }));
   } else if (noticeMode === 'pattadar-relation' && hasPattadarName && hasRelationName) {
-    const pattadarGroups: Record<string, string[][]> = {}
+    const pattadarGroups: Record<string, string[][]> = {};
     data.forEach((row) => {
-      const pattadarName = (row[indexMapping['Pattadar Name']] || '').trim()
-      const relationName = (row[indexMapping['Relation Name']] || '').trim()
-      const groupKey = pattadarName || relationName ? `${pattadarName}-${relationName}` : 'Unknown'
+      const pattadarName = (row[indexMapping['Pattadar Name']] || '').trim();
+      const relationName = (row[indexMapping['Relation Name']] || '').trim();
+      const groupKey = pattadarName || relationName ? `${pattadarName}-${relationName}` : 'Unknown';
 
       if (!pattadarGroups[groupKey]) {
-        pattadarGroups[groupKey] = []
+        pattadarGroups[groupKey] = [];
       }
-      pattadarGroups[groupKey].push(row)
-    })
+      pattadarGroups[groupKey].push(row);
+    });
 
     notices = Object.entries(pattadarGroups).map(([groupKey, rows]) => ({
       khataNo: groupKey, // We use khataNo field to store the group key
       rows,
       mapping: indexMapping,
       fields
-    }))
+    }));
   } else if (noticeMode === 'survey' && hasSurveyNo) {
     // Group by Survey No - extract numeric part before any special character
-    const surveyGroups: Record<string, string[][]> = {}
+    const surveyGroups: Record<string, string[][]> = {};
     data.forEach((row) => {
-      const surveyNoFull = row[indexMapping['Survey No']] || 'Unknown'
+      const surveyNoFull = row[indexMapping['Survey No']] || 'Unknown';
       // Extract numeric part before any special character (-/\)
-      const numericPart = surveyNoFull.split(/[-/\\]/)[0].trim()
-      const groupKey = numericPart || 'Unknown'
+      const numericPart = surveyNoFull.split(/[-/\\]/)[0].trim();
+      const groupKey = numericPart || 'Unknown';
 
       if (!surveyGroups[groupKey]) {
-        surveyGroups[groupKey] = []
+        surveyGroups[groupKey] = [];
       }
-      surveyGroups[groupKey].push(row)
-    })
+      surveyGroups[groupKey].push(row);
+    });
 
     notices = Object.entries(surveyGroups).map(([surveyNo, rows]) => ({
       khataNo: surveyNo, // We use khataNo field to store the survey number for consistency
       rows,
       mapping: indexMapping,
       fields
-    }))
+    }));
   } else if (noticeMode === 'subdivision' && hasSurveyNo) {
     // Sub Division wise: each row becomes a separate notice, grouped by Survey No
     notices = data.map((row) => {
-      const surveyNo = row[indexMapping['Survey No']] || 'Unknown'
+      const surveyNo = row[indexMapping['Survey No']] || 'Unknown';
       return {
         khataNo: surveyNo,
         rows: [row],
         mapping: indexMapping,
         fields
-      }
-    })
+      };
+    });
   } else if (noticeMode === 'survey-grouped' && hasSurveyNo) {
     // New mode: group all rows with the same Survey No into one table/notice
-    const surveyGroups: Record<string, string[][]> = {}
+    const surveyGroups: Record<string, string[][]> = {};
     data.forEach((row) => {
-      const surveyNo = row[indexMapping['Survey No']] || 'Unknown'
+      const surveyNo = row[indexMapping['Survey No']] || 'Unknown';
       if (!surveyGroups[surveyNo]) {
-        surveyGroups[surveyNo] = []
+        surveyGroups[surveyNo] = [];
       }
-      surveyGroups[surveyNo].push(row)
-    })
+      surveyGroups[surveyNo].push(row);
+    });
     notices = Object.entries(surveyGroups).map(([surveyNo, rows]) => ({
       khataNo: surveyNo,
       rows,
       mapping: indexMapping,
       fields
-    }))
+    }));
   } else {
     // Fallback - no grouping
     notices = [
@@ -207,67 +206,67 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         mapping: indexMapping,
         fields
       }
-    ]
+    ];
   }
 
   // Calculate pagination
-  const totalPages = showAll ? 1 : Math.ceil(notices.length / pageSize)
-  const startIndex = showAll ? 0 : (currentPage - 1) * pageSize
-  const endIndex = showAll ? notices.length : startIndex + pageSize
-  const currentNotices = notices.slice(startIndex, endIndex)
+  const totalPages = showAll ? 1 : Math.ceil(notices.length / pageSize);
+  const startIndex = showAll ? 0 : (currentPage - 1) * pageSize;
+  const endIndex = showAll ? notices.length : startIndex + pageSize;
+  const currentNotices = notices.slice(startIndex, endIndex);
 
   const prepareForPDF = () => {
-    if (!printRef.current) return
+    if (!printRef.current) return;
 
     // Clone the printRef content for PDF preparation
-    const pdfContent = printRef.current.cloneNode(true) as HTMLElement
+    const pdfContent = printRef.current.cloneNode(true) as HTMLElement;
 
     // Add print-specific classes to make it look like print mode
-    const noticeElements = pdfContent.querySelectorAll('.khata-group')
+    const noticeElements = pdfContent.querySelectorAll('.khata-group');
     noticeElements.forEach((notice) => {
       // Show the Telugu header in the PDF
-      const headerElement = notice.querySelector('.telugu-header-print')
+      const headerElement = notice.querySelector('.telugu-header-print');
       if (headerElement) {
-        headerElement.classList.remove('hidden-on-web')
+        headerElement.classList.remove('hidden-on-web');
       }
-    })
+    });
 
     // Create a temporary container to append our clone to
-    const tempContainer = document.createElement('div')
-    tempContainer.appendChild(pdfContent)
-    tempContainer.style.position = 'absolute'
-    tempContainer.style.left = '-9999px'
-    tempContainer.style.width = '210mm' // A4 width
-    document.body.appendChild(tempContainer)
+    const tempContainer = document.createElement('div');
+    tempContainer.appendChild(pdfContent);
+    tempContainer.style.position = 'absolute';
+    tempContainer.style.left = '-9999px';
+    tempContainer.style.width = '210mm'; // A4 width
+    document.body.appendChild(tempContainer);
 
-    return { tempContainer, pdfContent }
-  }
+    return { tempContainer, pdfContent };
+  };
 
   const formatTime = (timeString: string): string => {
-    if (!timeString) return ''
+    if (!timeString) return '';
 
     try {
-      const [hours, minutes] = timeString.split(':')
-      const time = new Date()
-      time.setHours(parseInt(hours))
-      time.setMinutes(parseInt(minutes))
+      const [hours, minutes] = timeString.split(':');
+      const time = new Date();
+      time.setHours(parseInt(hours));
+      time.setMinutes(parseInt(minutes));
       return time.toLocaleTimeString('en-US', {
         hour: 'numeric',
         minute: 'numeric',
         hour12: true
-      })
+      });
     } catch (error) {
-      return timeString
+      return timeString;
     }
-  }
+  };
 
   const formatDate = (dateString: string): string => {
-    if (!dateString) return '_____________'
+    if (!dateString) return '_____________';
 
     try {
-      const date = new Date(dateString)
+      const date = new Date(dateString);
       if (isNaN(date.getTime())) {
-        return '_____________'
+        return '_____________';
       }
       return date
         .toLocaleDateString('en-IN', {
@@ -275,19 +274,19 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           month: '2-digit',
           year: 'numeric'
         })
-        .replace(/\//g, '-')
+        .replace(/\//g, '-');
     } catch (error) {
-      return '_____________'
+      return '_____________';
     }
-  }
+  };
 
   const handleDownloadWord = async () => {
     try {
       // Create a new HTML document for Word conversion
-      const wordContent = document.createElement('div')
+      const wordContent = document.createElement('div');
 
       // Add styles for Word document with Gautami font
-      const style = document.createElement('style')
+      const style = document.createElement('style');
       style.textContent = `
         @font-face {
           font-family: 'Gautami';
@@ -355,26 +354,26 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         @page {
           margin: 5mm;
         }
-      `
+      `;
 
-      wordContent.appendChild(style)
+      wordContent.appendChild(style);
 
       // Process each notice (only current page)
       currentNotices.forEach((notice, index) => {
-        const noticeDiv = document.createElement('div')
-        noticeDiv.className = 'notice-section telugu-text'
+        const noticeDiv = document.createElement('div');
+        noticeDiv.className = 'notice-section telugu-text';
 
         const noticeSpecificStartDate =
           useMappedDate && dateHeaderIndex !== -1 && notice.rows.length > 0
             ? notice.rows[0][dateHeaderIndex]
-            : startDate
-        const formattedDate = formatDate(sanitizeString(noticeSpecificStartDate))
+            : startDate;
+        const formattedDate = formatDate(sanitizeString(noticeSpecificStartDate));
 
         // Add header at the very top of the page
-        const header = document.createElement('div')
-        header.className = 'header telugu-text'
-        header.style.marginTop = '0'
-        header.style.paddingTop = '0'
+        const header = document.createElement('div');
+        header.className = 'header telugu-text';
+        header.style.marginTop = '0';
+        header.style.paddingTop = '0';
         header.innerHTML = createSafeHTML(
           noticeType === 'GT Notice'
             ? `
@@ -384,126 +383,135 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         `
             : `<h1 style="font-size: 14pt; margin-top: 0;"> ఫారం - ${formNumber || ' 26'} </h1>
               <h2 style="font-size: 14pt; margin-bottom: 10px;">ప్రైవేట్ భూముల/ప్రభుత్వా విభాగాలు/ సంస్థల భూ కమత ధ్రువీకరణ విచారణ కై నోటీసు</h2>  `
-        )
-        noticeDiv.appendChild(header)
+        );
+        noticeDiv.appendChild(header);
 
         // Add content
-        const content = document.createElement('div')
-        content.className = 'content telugu-text'
+        const content = document.createElement('div');
+        content.className = 'content telugu-text';
         content.innerHTML = createSafeHTML(
           noticeType === 'GT Notice'
             ? `
-          <p style="font-size: 12pt; line-height: 1.5;word-break: break-all ">1) సర్వే సహాయక సంచాలకులు వారి 6(1) నోటిఫికేషన్ ఆర్‌.సి నెం ${sanitizeString(notificationNumber) || '________________'
-            } తేది: ${formatDate(sanitizeString(notificationDate))}, అనుసరించి, ${districts.find((d) => d.value === districtName)?.te || '____________________'
-            }  జిల్లా, 
-           ${sanitizeString(mandalName) || '_____________________'} మండలం, ${sanitizeString(villageName) || '____________________'
-            } గ్రామములో సీమానిర్ణయం (demarcation) మరియు సర్వే పనులు
-          ${formattedDate} తేదీన ${formatTime(sanitizeString(startTime)) || '________'
-            } గం.ని.లకు ప్రారంభిచబడును అని తెలియజేయడమైనది.</p>
+          <p style="font-size: 12pt; line-height: 1.5;word-break: break-all ">1) సర్వే సహాయక సంచాలకులు వారి 6(1) నోటిఫికేషన్ ఆర్‌.సి నెం ${
+            sanitizeString(notificationNumber) || '________________'
+          } తేది: ${formatDate(sanitizeString(notificationDate))}, అనుసరించి, ${
+            districts.find((d) => d.value === districtName)?.te || '____________________'
+          }  జిల్లా, 
+           ${sanitizeString(mandalName) || '_____________________'} మండలం, ${
+             sanitizeString(villageName) || '____________________'
+           } గ్రామములో సీమానిర్ణయం (demarcation) మరియు సర్వే పనులు
+          ${formattedDate} తేదీన ${
+            formatTime(sanitizeString(startTime)) || '________'
+          } గం.ని.లకు ప్రారంభిచబడును అని తెలియజేయడమైనది.</p>
 
           <p style="font-size: 12pt; line-height: 1.5; word-break: break-all ">2) సర్వే మరియు సరిహద్దుల చట్టం, 1923లోని నియమ నిబంధనలు అనుసరించి సర్వే సమయం నందు ఈ క్రింది షెడ్యూల్ లోని భూ
           యజమానాలు భూమి వద్ద హాజరై మీ పొలము యొక్క సరిహద్దులను చూపించి, తగిన సమాచారం మరియు అవసరమైన సహాయ సహకారములు
           అందించవలసినదిగా తెలియజేయడమైనది.</p>
         `
-            : ` <p style="font-size: 12pt; line-height: 1.5; word-break: break-all ">1) సహాయ సంచాలకులు, సర్వే మరియు భూమి రికార్డ్ల వారు జారీ చేసిన 6 (1) నోటిఫికేషన్ ఆర్‌సి నెం ${sanitizeString(notificationNumber) || '________________'
-            } తేది: ${formatDate(
-              sanitizeString(notificationDate)
-            )}, మరియు ఆంధ్రప్రదేశ్ సర్వే మరియు సరిహద్దుల చట్టం, 1923 కు సంబంధించి ${districts.find((d) => d.value === districtName)?.te || '____________________'
-            } జిల్లా, 
-           ${sanitizeString(mandalName) || '_____________________'} మండలం, ${sanitizeString(villageName) || '____________________'
-            } గ్రామం యొక్క ప్రాథమిక సర్వే రికార్డులు తయారుచేయడం జరిగినది. 
-ప్రాథమిక సర్వే రికార్డులలో మీరు అభ్యంతరం తెలియచేసినందున వలన భూమి ధ్రువీకరణ (Ground Validation) నిమిత్తం తేదీ ${formattedDate
-            } న ${formatTime(sanitizeString(startTime)) || '________'
-            } గం.ని.లకు సర్వే పనులు ప్రారంభించబడును అని తెలియచేయడమైనది.</p>
+            : ` <p style="font-size: 12pt; line-height: 1.5; word-break: break-all ">1) సహాయ సంచాలకులు, సర్వే మరియు భూమి రికార్డ్ల వారు జారీ చేసిన 6 (1) నోటిఫికేషన్ ఆర్‌సి నెం ${
+                sanitizeString(notificationNumber) || '________________'
+              } తేది: ${formatDate(
+                sanitizeString(notificationDate)
+              )}, మరియు ఆంధ్రప్రదేశ్ సర్వే మరియు సరిహద్దుల చట్టం, 1923 కు సంబంధించి ${
+                districts.find((d) => d.value === districtName)?.te || '____________________'
+              } జిల్లా, 
+           ${sanitizeString(mandalName) || '_____________________'} మండలం, ${
+             sanitizeString(villageName) || '____________________'
+           } గ్రామం యొక్క ప్రాథమిక సర్వే రికార్డులు తయారుచేయడం జరిగినది. 
+ప్రాథమిక సర్వే రికార్డులలో మీరు అభ్యంతరం తెలియచేసినందున వలన భూమి ధ్రువీకరణ (Ground Validation) నిమిత్తం తేదీ ${
+                formattedDate
+              } న ${
+                formatTime(sanitizeString(startTime)) || '________'
+              } గం.ని.లకు సర్వే పనులు ప్రారంభించబడును అని తెలియచేయడమైనది.</p>
           <p style="font-size: 12pt; line-height: 1.5; word-break: break-all "> 2) సర్వే మరియు సరిహద్దుల చట్టం, 1923లోని నియమ నిబంధనలు అనుసరించి సర్వే సమయం నందు ఈ క్రింది షెడ్యూల్ లోని భూ
           యజమానాలు భూమి వద్ద హాజరై మీ పొలము యొక్క సరిహద్దులను చూపించి, తగిన సమాచారం మరియు అవసరమైన సహాయ సహకారములు
           అందించవలసినదిగా తెలియజేయడమైనది.</p>  `
-        )
-        noticeDiv.appendChild(content)
+        );
+        noticeDiv.appendChild(content);
 
         // Create table with colgroup for fixed column widths
-        const table = document.createElement('table')
-        const colgroup = document.createElement('colgroup')
+        const table = document.createElement('table');
+        const colgroup = document.createElement('colgroup');
 
         // Set column widths
         notice.fields.forEach((field, i) => {
-          const col = document.createElement('col')
+          const col = document.createElement('col');
           if (i === 0)
-            col.style.width = '90px' // Survey No
+            col.style.width = '90px'; // Survey No
           else if (i === 1)
-            col.style.width = '80px' // Khata No
+            col.style.width = '80px'; // Khata No
           else if (i === 4)
-            col.style.width = '110px' // Mobile Number
-          else col.style.width = 'auto' // Other columns share remaining space
-          colgroup.appendChild(col)
-        })
+            col.style.width = '110px'; // Mobile Number
+          else col.style.width = 'auto'; // Other columns share remaining space
+          colgroup.appendChild(col);
+        });
 
         // Add signature column
-        const signatureCol = document.createElement('col')
-        signatureCol.style.width = '120px'
-        colgroup.appendChild(signatureCol)
+        const signatureCol = document.createElement('col');
+        signatureCol.style.width = '120px';
+        colgroup.appendChild(signatureCol);
 
-        table.appendChild(colgroup)
+        table.appendChild(colgroup);
 
         // Add table header
-        const thead = document.createElement('thead')
-        const headerRow = document.createElement('tr')
+        const thead = document.createElement('thead');
+        const headerRow = document.createElement('tr');
 
         notice.fields
           .filter((field) => noticeType === 'GV Notice' || field.en !== 'LPM Number')
           .forEach((field) => {
-            const th = document.createElement('th')
-            th.textContent = field.te
-            th.style.fontWeight = 'bold'
-            headerRow.appendChild(th)
-          })
+            const th = document.createElement('th');
+            th.textContent = field.te;
+            th.style.fontWeight = 'bold';
+            headerRow.appendChild(th);
+          });
 
-        const signatureTh = document.createElement('th')
-        signatureTh.textContent = 'సంతకం'
-        signatureTh.style.fontWeight = 'bold'
-        headerRow.appendChild(signatureTh)
+        const signatureTh = document.createElement('th');
+        signatureTh.textContent = 'సంతకం';
+        signatureTh.style.fontWeight = 'bold';
+        headerRow.appendChild(signatureTh);
 
-        thead.appendChild(headerRow)
-        table.appendChild(thead)
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
 
         // Add table body
-        const tbody = document.createElement('tbody')
+        const tbody = document.createElement('tbody');
 
         notice.rows.forEach((row) => {
-          const tr = document.createElement('tr')
+          const tr = document.createElement('tr');
 
           notice.fields
             .filter((field) => noticeType === 'GV Notice' || field.en !== 'LPM Number')
             .forEach((field, colIndex) => {
-              const td = document.createElement('td')
+              const td = document.createElement('td');
               // Get the cell content and thoroughly sanitize it
-              let cellContent = row[notice.mapping[field.en]] || ''
+              let cellContent = row[notice.mapping[field.en]] || '';
 
               // For "Khata wise (Pattadar Name once)" mode, only show values in the first row
               // except for the Survey Number column and LPM Number (for GV Notice)
               if (noticeMode === 'khata-pattadar-once') {
-                const isSurveyNumberColumn = field.en === 'Survey No' || colIndex === 0
-                const isLPMNumberColumn = field.en === 'LPM Number'
+                const isSurveyNumberColumn = field.en === 'Survey No' || colIndex === 0;
+                const isLPMNumberColumn = field.en === 'LPM Number';
 
                 // Always show LPM Number for GV Notice in every row, similar to Survey Numbers
                 const shouldAlwaysShow =
                   isSurveyNumberColumn || // Always show survey numbers
-                  (noticeType === 'GV Notice' && isLPMNumberColumn) // Always show LPM Numbers for GV Notice
+                  (noticeType === 'GV Notice' && isLPMNumberColumn); // Always show LPM Numbers for GV Notice
 
                 const shouldShowValue =
                   shouldAlwaysShow || // Always show survey numbers and LPM Numbers (for GV Notice)
-                  notice.rows.indexOf(row) === 0 // Show other fields only in first row
+                  notice.rows.indexOf(row) === 0; // Show other fields only in first row
 
                 if (!shouldShowValue) {
-                  cellContent = ''
+                  cellContent = '';
                 }
               }
 
               // First decode any HTML entities
-              const parser = new DOMParser()
+              const parser = new DOMParser();
               const decodedContent =
                 parser.parseFromString(`<!doctype html><body>${cellContent}`, 'text/html').body
-                  .textContent || ''
+                  .textContent || '';
 
               // Remove all quotes, backticks, and other special characters
               const cleanedContent = decodedContent
@@ -512,35 +520,35 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
                 .replace(/&quot;/g, '') // Remove HTML quote entities
                 .replace(/&#39;/g, '') // Remove HTML single quote entities
                 .replace(/[^\u0000-\u007F\u0C00-\u0C7F\s]/g, '') // Keep only ASCII and Telugu chars
-                .trim() // Remove leading/trailing whitespace
+                .trim(); // Remove leading/trailing whitespace
 
-              td.textContent = sanitizeString(cleanedContent)
-              tr.appendChild(td)
-            })
+              td.textContent = sanitizeString(cleanedContent);
+              tr.appendChild(td);
+            });
 
-          const signatureTd = document.createElement('td')
-          signatureTd.innerHTML = createSafeHTML('&nbsp;')
-          tr.appendChild(signatureTd)
+          const signatureTd = document.createElement('td');
+          signatureTd.innerHTML = createSafeHTML('&nbsp;');
+          tr.appendChild(signatureTd);
 
-          tbody.appendChild(tr)
-        })
+          tbody.appendChild(tr);
+        });
 
-        table.appendChild(tbody)
+        table.appendChild(tbody);
 
-        noticeDiv.appendChild(table)
+        noticeDiv.appendChild(table);
         // Add notice number with proper styling
-        const noticeNumber = document.createElement('div')
+        const noticeNumber = document.createElement('div');
 
         // noticeNumber.className = 'thirdpoint'
-        noticeNumber.className = 'content telugu-text'
+        noticeNumber.className = 'content telugu-text';
         noticeNumber.innerHTML = createSafeHTML(
           '<p style="font-size: 12pt; line-height: 1.5;"> 3) నోటీసు యొక్క ప్రతిని సంతకం చేసి తిరిగి పంపించవలెను</p>'
-        )
-        noticeDiv.appendChild(noticeNumber)
+        );
+        noticeDiv.appendChild(noticeNumber);
 
         // Add footer
-        const footer = document.createElement('div')
-        footer.className = 'footer telugu-text'
+        const footer = document.createElement('div');
+        footer.className = 'footer telugu-text';
         // footer.style.marginTop = '10px'
         footer.innerHTML = createSafeHTML(
           noticeType === 'GT Notice'
@@ -564,20 +572,21 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
             <div class="right-footer">
               <p>సంతకం:</p>
               <p>పేరు: ${sanitizeString(officerName) || '_______________'}</p>
-              <p>హోదా/వృత్తి: ${officerDesignation
-              ? officerDesignations.find((d) => d.value === officerDesignation)?.te ||
-              sanitizeString(officerDesignation)
-              : '_______________'
-            }</p>
+              <p>హోదా/వృత్తి: ${
+                officerDesignation
+                  ? officerDesignations.find((d) => d.value === officerDesignation)?.te ||
+                    sanitizeString(officerDesignation)
+                  : '_______________'
+              }</p>
             </div>
           </div>
         `
-        )
+        );
 
-        noticeDiv.appendChild(footer)
+        noticeDiv.appendChild(footer);
 
-        wordContent.appendChild(noticeDiv)
-      })
+        wordContent.appendChild(noticeDiv);
+      });
 
       // Convert to Blob - use HTML format for better rendering in Word
       const htmlContent = `
@@ -591,36 +600,36 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           ${createSafeHTML(wordContent.innerHTML, false, true)}
         </body>
         </html>
-      `
+      `;
 
       // Replace any remaining HTML entities that might not be properly decoded
-      const finalHtmlContent = he.decode(htmlContent)
+      const finalHtmlContent = he.decode(htmlContent);
 
-      const blob = new Blob([finalHtmlContent], { type: 'application/msword' })
+      const blob = new Blob([finalHtmlContent], { type: 'application/msword' });
 
       // Create download link
-      const link = document.createElement('a')
-      link.href = URL.createObjectURL(blob)
-      link.download = `land-notices-${villageName || 'village'}.doc`
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `land-notices-${villageName || 'village'}.doc`;
 
       // Trigger download
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
       toast({
         title: 'Word Document Downloaded Successfully',
         description: 'Land notices have been saved to your device.'
-      })
+      });
     } catch (error) {
-      console.error('Error generating Word document:', error)
+      console.error('Error generating Word document:', error);
       toast({
         title: 'Word Document Generation Failed',
         description: 'There was an error creating the document. Please try again.',
         variant: 'destructive'
-      })
+      });
     }
-  }
+  };
 
   return (
     <motion.div
@@ -656,7 +665,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
               >
                 {showAll ? 'Enable Pagination' : 'Show All'}
               </Button>
-              <p className='text-sm text-gray-500 text-center'>
+              <p className='text-center text-sm text-gray-500'>
                 {showAll
                   ? `Showing all ${notices.length} notices`
                   : `Showing ${startIndex + 1} to ${Math.min(endIndex, notices.length)} of ${
@@ -672,8 +681,8 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
                     <PaginationPrevious
                       href='#'
                       onClick={(e) => {
-                        e.preventDefault()
-                        if (currentPage > 1) setCurrentPage(currentPage - 1)
+                        e.preventDefault();
+                        if (currentPage > 1) setCurrentPage(currentPage - 1);
                       }}
                       className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
                     />
@@ -682,42 +691,40 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
                   {Array.from({ length: totalPages }, (_, i) => i + 1)
                     .filter((page) => {
                       // Show first, last, current, and pages around current
-                      return (
-                        page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1
-                      )
+                      return page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1;
                     })
                     .map((page, index, array) => {
-                      const elements = []
+                      const elements = [];
                       if (index > 0 && page - array[index - 1] > 1) {
                         elements.push(
                           <PaginationItem key={`ellipsis-${page}`}>
                             <PaginationEllipsis />
                           </PaginationItem>
-                        )
+                        );
                       }
                       elements.push(
                         <PaginationItem key={page}>
                           <PaginationLink
                             href='#'
                             onClick={(e) => {
-                              e.preventDefault()
-                              setCurrentPage(page)
+                              e.preventDefault();
+                              setCurrentPage(page);
                             }}
                             isActive={currentPage === page}
                           >
                             {page}
                           </PaginationLink>
                         </PaginationItem>
-                      )
-                      return elements
+                      );
+                      return elements;
                     })}
 
                   <PaginationItem>
                     <PaginationNext
                       href='#'
                       onClick={(e) => {
-                        e.preventDefault()
-                        if (currentPage < totalPages) setCurrentPage(currentPage + 1)
+                        e.preventDefault();
+                        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
                       }}
                       className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
                     />
@@ -806,7 +813,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
         </div>
       </Card>
     </motion.div>
-  )
-}
+  );
+};
 
-export default PreviewSection
+export default PreviewSection;

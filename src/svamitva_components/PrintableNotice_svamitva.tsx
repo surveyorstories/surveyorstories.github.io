@@ -1,59 +1,59 @@
-import React from 'react'
-import { officerDesignations, formNumbers } from './FormSection_svamitva'
-import { districts } from '../data/districts'
-import { decodeHTMLEntities } from '../lib/sanitize'
-import KhataTable from './KhataTable_svamitva'
+import React from 'react';
+import { officerDesignations, formNumbers } from './FormSection_svamitva';
+import { districts } from '../data/districts';
+import { decodeHTMLEntities } from '../lib/sanitize';
+import KhataTable from './KhataTable_svamitva';
 
 interface NoticeData {
-  khataNo: string
-  rows: string[][]
-  mapping: Record<string, number>
-  fields: { en: string; te: string }[]
+  khataNo: string;
+  rows: string[][];
+  mapping: Record<string, number>;
+  fields: { en: string; te: string }[];
 }
 
 // Add noticeMode to the component props
 interface PrintableNoticeProps {
-  districtName: string
-  mandalName: string
-  panchayatName: string
-  startDate: string
-  startTime: string
-  notificationNumber: string
-  notificationDate: string
-  printedDate: string
-  notices: NoticeData[]
-  showHeaderOnWeb?: boolean
-  noticeType: string
-  officerName?: string
-  officerDesignation?: string
-  noticeMode?: string
-  formNumber: string
-  habitationName?: string
+  districtName: string;
+  mandalName: string;
+  panchayatName: string;
+  startDate: string;
+  startTime: string;
+  notificationNumber: string;
+  notificationDate: string;
+  printedDate: string;
+  notices: NoticeData[];
+  showHeaderOnWeb?: boolean;
+  noticeType: string;
+  officerName?: string;
+  officerDesignation?: string;
+  noticeMode?: string;
+  formNumber: string;
+  habitationName?: string;
 }
 
 const formatTime = (timeString: string): string => {
-  if (!timeString) return ''
+  if (!timeString) return '';
 
   try {
-    const [hours, minutes] = timeString.split(':')
-    const time = new Date()
-    time.setHours(parseInt(hours))
-    time.setMinutes(parseInt(minutes))
+    const [hours, minutes] = timeString.split(':');
+    const time = new Date();
+    time.setHours(parseInt(hours));
+    time.setMinutes(parseInt(minutes));
     return time.toLocaleTimeString('en-IN', {
       hour: 'numeric',
       minute: 'numeric',
       hour12: true
-    })
+    });
   } catch (error) {
-    return timeString
+    return timeString;
   }
-}
+};
 
 const formatDate = (dateString: string): string => {
-  if (!dateString) return ''
+  if (!dateString) return '';
 
   try {
-    const date = new Date(dateString)
+    const date = new Date(dateString);
     // Format as dd-mm-yyyy
     return date
       .toLocaleDateString('en-IN', {
@@ -61,11 +61,11 @@ const formatDate = (dateString: string): string => {
         month: '2-digit',
         year: 'numeric'
       })
-      .replace(/\//g, '-')
+      .replace(/\//g, '-');
   } catch (error) {
-    return dateString
+    return dateString;
   }
-}
+};
 
 // Update the component function to include noticeMode in the parameters
 const PrintableNotice: React.FC<PrintableNoticeProps> = ({
@@ -86,10 +86,10 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
   formNumber,
   habitationName // Add this line
 }) => {
-  const formattedTime = formatTime(startTime)
-  const formattedDate = formatDate(startDate)
-  const formattedNotificationDate = formatDate(notificationDate)
-  const formattedPrintedDate = formatDate(printedDate)
+  const formattedTime = formatTime(startTime);
+  const formattedDate = formatDate(startDate);
+  const formattedNotificationDate = formatDate(notificationDate);
+  const formattedPrintedDate = formatDate(printedDate);
 
   return (
     <div className='ground-truth-notice w-full max-w-full overflow-hidden'>
@@ -282,7 +282,7 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
         </div>
       ))}
     </div>
-  )
-}
+  );
+};
 
-export default PrintableNotice
+export default PrintableNotice;

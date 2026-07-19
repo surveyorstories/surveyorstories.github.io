@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 const KhataTable = ({ notice = {}, noticeType = '', noticeMode = 'khata' }) => {
   // Check if notice has the required properties
@@ -7,47 +7,48 @@ const KhataTable = ({ notice = {}, noticeType = '', noticeMode = 'khata' }) => {
       <div className='rounded border border-red-300 p-4 text-red-500'>
         Error: Notice data is missing required properties (fields, rows, or mapping).
       </div>
-    )
+    );
   }
 
   // Function to sanitize data by removing surrounding quotes and special characters
   const sanitizeData = (data) => {
-    if (!data) return ''
+    if (!data) return '';
 
     // Convert to string in case it's a number or other type
-    const str = String(data)
+    const str = String(data);
 
     // Remove surrounding quotes, backticks and other special characters
-    return str.replace(/^[`'"]+|[`'"]+$/g, '')
-  }
+    return str.replace(/^[`'"]+|[`'"]+$/g, '');
+  };
 
   // Function to decode HTML entities
   const decodeHTMLEntities = (text) => {
-    if (!text) return ''
+    if (!text) return '';
 
     // Create a textarea element to decode HTML entities
-    const textarea = document.createElement('textarea')
-    textarea.innerHTML = text
+    const textarea = document.createElement('textarea');
+    textarea.innerHTML = text;
 
     // Get the decoded value
-    const decoded = textarea.value
-    textarea.remove()
+    const decoded = textarea.value;
+    textarea.remove();
 
-    return decoded
-  }
+    return decoded;
+  };
 
   // Optionally show Survey No heading in subdivision mode
   if (noticeMode === 'subdivision') {
     // Remove the Survey No: title, just render the table
     // Insert Extent column after survey no if present
-    let fields = notice.fields
-      .filter((field) => noticeType === 'GV Notice' || field.en !== 'LPM Number')
-    const surveyNoIdx = fields.findIndex(f => f.en === 'Survey No')
-    const extentIdx = notice.fields.findIndex(f => f.en === 'Extent')
+    let fields = notice.fields.filter(
+      (field) => noticeType === 'GV Notice' || field.en !== 'LPM Number'
+    );
+    const surveyNoIdx = fields.findIndex((f) => f.en === 'Survey No');
+    const extentIdx = notice.fields.findIndex((f) => f.en === 'Extent');
     if (extentIdx !== -1 && surveyNoIdx !== -1) {
       // Remove Extent if already present, then insert after survey no
-      fields = fields.filter(f => f.en !== 'Extent')
-      fields.splice(surveyNoIdx + 1, 0, notice.fields[extentIdx])
+      fields = fields.filter((f) => f.en !== 'Extent');
+      fields.splice(surveyNoIdx + 1, 0, notice.fields[extentIdx]);
     }
     return (
       <div>
@@ -55,7 +56,10 @@ const KhataTable = ({ notice = {}, noticeType = '', noticeMode = 'khata' }) => {
           <thead>
             <tr>
               {fields.map((field, i) => (
-                <th key={`header-${i}`} className='font-gautami border border-black p-2 text-center'>
+                <th
+                  key={`header-${i}`}
+                  className='font-gautami border border-black p-2 text-center'
+                >
                   {sanitizeData(field.te)}
                 </th>
               ))}
@@ -67,19 +71,17 @@ const KhataTable = ({ notice = {}, noticeType = '', noticeMode = 'khata' }) => {
               <tr key={`row-${rowIndex}`}>
                 {fields.map((field, colIndex) => {
                   // ...existing cell rendering logic...
-                  const rawValue = row[notice.mapping[field.en]] || ''
-                  const decodedValue = decodeHTMLEntities(rawValue)
-                  const sanitizedValue = sanitizeData(decodedValue)
-                  const isSurveyNumberColumn = field.en === 'Survey No' || colIndex === 0
-                  const isLPMNumberColumn = field.en === 'LPM Number'
-                  const isExtentColumn = field.en === 'Extent'
+                  const rawValue = row[notice.mapping[field.en]] || '';
+                  const decodedValue = decodeHTMLEntities(rawValue);
+                  const sanitizedValue = sanitizeData(decodedValue);
+                  const isSurveyNumberColumn = field.en === 'Survey No' || colIndex === 0;
+                  const isLPMNumberColumn = field.en === 'LPM Number';
+                  const isExtentColumn = field.en === 'Extent';
                   const shouldAlwaysShow =
                     isSurveyNumberColumn ||
-                    (noticeType === 'GV Notice' && (isLPMNumberColumn || isExtentColumn))
+                    (noticeType === 'GV Notice' && (isLPMNumberColumn || isExtentColumn));
                   const shouldShowValue =
-                    noticeMode !== 'khata-pattadar-once' ||
-                    shouldAlwaysShow ||
-                    rowIndex === 0
+                    noticeMode !== 'khata-pattadar-once' || shouldAlwaysShow || rowIndex === 0;
                   return (
                     <td
                       key={`cell-${rowIndex}-${colIndex}`}
@@ -87,7 +89,7 @@ const KhataTable = ({ notice = {}, noticeType = '', noticeMode = 'khata' }) => {
                     >
                       {shouldShowValue ? sanitizedValue : ''}
                     </td>
-                  )
+                  );
                 })}
                 <td className='font-gautami w-[160px] border border-black p-2'>&nbsp;</td>
               </tr>
@@ -95,18 +97,19 @@ const KhataTable = ({ notice = {}, noticeType = '', noticeMode = 'khata' }) => {
           </tbody>
         </table>
       </div>
-    )
+    );
   }
 
   // Main table (non-subdivision)
   // Insert Extent column after survey no if present
-  let fields = notice.fields
-    .filter((field) => noticeType === 'GV Notice' || field.en !== 'LPM Number')
-  const surveyNoIdx = fields.findIndex(f => f.en === 'Survey No')
-  const extentIdx = notice.fields.findIndex(f => f.en === 'Extent')
+  let fields = notice.fields.filter(
+    (field) => noticeType === 'GV Notice' || field.en !== 'LPM Number'
+  );
+  const surveyNoIdx = fields.findIndex((f) => f.en === 'Survey No');
+  const extentIdx = notice.fields.findIndex((f) => f.en === 'Extent');
   if (extentIdx !== -1 && surveyNoIdx !== -1) {
-    fields = fields.filter(f => f.en !== 'Extent')
-    fields.splice(surveyNoIdx + 1, 0, notice.fields[extentIdx])
+    fields = fields.filter((f) => f.en !== 'Extent');
+    fields.splice(surveyNoIdx + 1, 0, notice.fields[extentIdx]);
   }
 
   return (
@@ -126,19 +129,17 @@ const KhataTable = ({ notice = {}, noticeType = '', noticeMode = 'khata' }) => {
           <tr key={`row-${rowIndex}`}>
             {fields.map((field, colIndex) => {
               // ...existing cell rendering logic...
-              const rawValue = row[notice.mapping[field.en]] || ''
-              const decodedValue = decodeHTMLEntities(rawValue)
-              const sanitizedValue = sanitizeData(decodedValue)
-              const isSurveyNumberColumn = field.en === 'Survey No' || colIndex === 0
-              const isLPMNumberColumn = field.en === 'LPM Number'
-              const isExtentColumn = field.en === 'Extent'
+              const rawValue = row[notice.mapping[field.en]] || '';
+              const decodedValue = decodeHTMLEntities(rawValue);
+              const sanitizedValue = sanitizeData(decodedValue);
+              const isSurveyNumberColumn = field.en === 'Survey No' || colIndex === 0;
+              const isLPMNumberColumn = field.en === 'LPM Number';
+              const isExtentColumn = field.en === 'Extent';
               const shouldAlwaysShow =
                 isSurveyNumberColumn ||
-                (noticeType === 'GV Notice' && (isLPMNumberColumn || isExtentColumn))
+                (noticeType === 'GV Notice' && (isLPMNumberColumn || isExtentColumn));
               const shouldShowValue =
-                noticeMode !== 'khata-pattadar-once' ||
-                shouldAlwaysShow ||
-                rowIndex === 0
+                noticeMode !== 'khata-pattadar-once' || shouldAlwaysShow || rowIndex === 0;
               return (
                 <td
                   key={`cell-${rowIndex}-${colIndex}`}
@@ -146,13 +147,13 @@ const KhataTable = ({ notice = {}, noticeType = '', noticeMode = 'khata' }) => {
                 >
                   {shouldShowValue ? sanitizedValue : ''}
                 </td>
-              )
+              );
             })}
             <td className='font-gautami w-[160px] border border-black p-2'>&nbsp;</td>
           </tr>
         ))}
       </tbody>
     </table>
-  )
-}
-export default KhataTable
+  );
+};
+export default KhataTable;

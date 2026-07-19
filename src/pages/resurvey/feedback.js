@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
-import Layout from '@theme/Layout'
-import styles from './feedback.module.css' // Optional: Custom CSS
+import React, { useEffect } from 'react';
+import Layout from '@theme/Layout';
+import styles from './feedback.module.css'; // Optional: Custom CSS
 
 const Feedback = () => {
   return (
@@ -29,7 +29,7 @@ const Feedback = () => {
         </section>
       </main>
     </Layout>
-  )
-}
+  );
+};
 
-export default Feedback
+export default Feedback;

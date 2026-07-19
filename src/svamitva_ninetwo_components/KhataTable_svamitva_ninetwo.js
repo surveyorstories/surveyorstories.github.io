@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 const KhataTable = ({ notice = {}, noticeType = '', noticeMode = 'khata' }) => {
   // Check if notice has the required properties
@@ -7,48 +7,46 @@ const KhataTable = ({ notice = {}, noticeType = '', noticeMode = 'khata' }) => {
       <div className='rounded border border-red-300 p-4 text-red-500'>
         Error: Notice data is missing required properties (fields, rows, or mapping).
       </div>
-    )
+    );
   }
 
   // Function to sanitize data by removing surrounding quotes and special characters
   const sanitizeData = (data) => {
-    if (!data) return ''
+    if (!data) return '';
 
     // Convert to string in case it's a number or other type
-    const str = String(data)
+    const str = String(data);
 
     // Remove surrounding quotes, backticks and other special characters
-    return str.replace(/^[`'"]+|[`'"]+$/g, '')
-  }
+    return str.replace(/^[`'"]+|[`'"]+$/g, '');
+  };
 
   // Function to decode HTML entities
   const decodeHTMLEntities = (text) => {
-    if (!text) return ''
+    if (!text) return '';
 
     // Create a textarea element to decode HTML entities
-    const textarea = document.createElement('textarea')
-    textarea.innerHTML = text
+    const textarea = document.createElement('textarea');
+    textarea.innerHTML = text;
 
     // Get the decoded value
-    const decoded = textarea.value
-    textarea.remove()
+    const decoded = textarea.value;
+    textarea.remove();
 
-    return decoded
-  }
+    return decoded;
+  };
 
   const fields = notice.fields.filter(
     (field) =>
-      field.en !== 'Owner Name' &&
-      field.en !== 'Relation Name' &&
-      field.en !== 'Habitation Name'
-  )
+      field.en !== 'Owner Name' && field.en !== 'Relation Name' && field.en !== 'Habitation Name'
+  );
 
   return (
-    <table className='khata-table mt-4 w-full border-collapse notice-paragraph'>
+    <table className='khata-table notice-paragraph mt-4 w-full border-collapse'>
       <thead>
         <tr>
           {fields.map((field, i) => (
-            <th key={`header-${i}`} className=' border border-black p-2 text-center'>
+            <th key={`header-${i}`} className='border border-black p-2 text-center'>
               {sanitizeData(field.te)}
             </th>
           ))}
@@ -58,28 +56,26 @@ const KhataTable = ({ notice = {}, noticeType = '', noticeMode = 'khata' }) => {
         {notice.rows.map((row, rowIndex) => (
           <tr key={`row-${rowIndex}`}>
             {fields.map((field, colIndex) => {
-              const rawValue = row[notice.mapping[field.en]] || ''
-              const decodedValue = decodeHTMLEntities(rawValue)
-              const sanitizedValue = sanitizeData(decodedValue)
-              const isSurveyNumberColumn = field.en === 'Survey No' || colIndex === 0
-              const shouldAlwaysShow = isSurveyNumberColumn
+              const rawValue = row[notice.mapping[field.en]] || '';
+              const decodedValue = decodeHTMLEntities(rawValue);
+              const sanitizedValue = sanitizeData(decodedValue);
+              const isSurveyNumberColumn = field.en === 'Survey No' || colIndex === 0;
+              const shouldAlwaysShow = isSurveyNumberColumn;
               const shouldShowValue =
-                noticeMode !== 'khata-pattadar-once' ||
-                shouldAlwaysShow ||
-                rowIndex === 0
+                noticeMode !== 'khata-pattadar-once' || shouldAlwaysShow || rowIndex === 0;
               return (
                 <td
                   key={`cell-${rowIndex}-${colIndex}`}
-                  className=' border border-black p-2 text-center'
+                  className='border border-black p-2 text-center'
                 >
                   {shouldShowValue ? sanitizedValue : ''}
                 </td>
-              )
+              );
             })}
           </tr>
         ))}
       </tbody>
     </table>
-  )
-}
-export default KhataTable
+  );
+};
+export default KhataTable;

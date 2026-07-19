@@ -1,18 +1,12 @@
-import React from 'react'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from './ui/select'
-import { districts } from '../data/districts'
+import React from 'react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { districts } from '../data/districts';
 
 interface DistrictSelectProps {
-  value: string
-  onValueChange: (value: string) => void
-  placeholder?: string
-  className?: string
+  value: string;
+  onValueChange: (value: string) => void;
+  placeholder?: string;
+  className?: string;
 }
 
 // ponytail: Simplified central dropdown component for selecting Andhra Pradesh districts to ensure single source of truth.
@@ -23,10 +17,7 @@ export function DistrictSelect({
   className = 'form-input'
 }: DistrictSelectProps) {
   return (
-    <Select
-      value={value || undefined}
-      onValueChange={onValueChange}
-    >
+    <Select value={value || undefined} onValueChange={onValueChange}>
       <SelectTrigger className={className}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
@@ -38,5 +29,5 @@ export function DistrictSelect({
         ))}
       </SelectContent>
     </Select>
-  )
+  );
 }

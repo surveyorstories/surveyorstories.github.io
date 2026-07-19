@@ -1,16 +1,16 @@
-import React from 'react'
-import Link from '@docusaurus/Link'
-import Image from '@theme/IdealImage'
-import useBaseUrl from '@docusaurus/useBaseUrl'
-import TagsListInline from '@theme/TagsListInline'
+import React from 'react';
+import Link from '@docusaurus/Link';
+import Image from '@theme/IdealImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+import TagsListInline from '@theme/TagsListInline';
 
-import { Avatar } from '../../components/ui/avatar'
-import { Card, CardContent, CardFooter } from '../../components/ui/card'
-import { Button } from '../../components/ui/button'
-import TimeStamp from '../TimeStamp'
+import { Avatar } from '../../components/ui/avatar';
+import { Card, CardContent, CardFooter } from '../../components/ui/card';
+import { Button } from '../../components/ui/button';
+import TimeStamp from '../TimeStamp';
 
 function RecentBlogPostCard({ recentPost }) {
-  const { blogData } = recentPost
+  const { blogData } = recentPost;
 
   return (
     <Card className='flex w-full flex-col border-0 bg-transparent shadow-none'>
@@ -68,7 +68,7 @@ function RecentBlogPostCard({ recentPost }) {
         )}
       </CardFooter>
     </Card>
-  )
+  );
 }
 
 export default function LatestNews({ homePageBlogMetadata, recentPosts }) {
@@ -95,5 +95,5 @@ export default function LatestNews({ homePageBlogMetadata, recentPosts }) {
         </Button>
       </div>
     </div>
-  )
+  );
 }

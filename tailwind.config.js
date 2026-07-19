@@ -16,7 +16,7 @@ module.exports = {
 
         heading: ['Poppins', 'sans-serif'], // Ensure Poppins is included for headings
 
-        mono: ['JetBrains Mono', 'monospace'],
+        mono: ['JetBrains Mono', 'monospace']
       },
       colors: {
         border: 'hsl(var(--border))',
@@ -61,4 +61,4 @@ module.exports = {
     }
   },
   plugins: [require('tailwindcss-animate')]
-}
+};

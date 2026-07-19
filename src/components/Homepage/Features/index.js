@@ -29,7 +29,7 @@ const FeatureList = [
       </>
     )
   }
-]
+];
 
 function Feature({ Svg, title, description }) {
   return (
@@ -42,7 +42,7 @@ function Feature({ Svg, title, description }) {
         <p className='mx-auto max-w-sm'>{description}</p>
       </div>
     </div>
-  )
+  );
 }
 
 export default function HomepageFeatures() {
@@ -56,5 +56,5 @@ export default function HomepageFeatures() {
         </div>
       </div>
     </section>
-  )
+  );
 }

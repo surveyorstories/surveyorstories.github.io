@@ -1,40 +1,40 @@
-import React from 'react'
-import clsx from 'clsx'
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
-import { PageMetadata, HtmlClassNameProvider, ThemeClassNames } from '@docusaurus/theme-common'
-import BlogLayout from '@theme/BlogLayout'
-import SearchMetadata from '@theme/SearchMetadata'
-import BlogPostItems from '@theme/BlogPostItems'
-import Image from '@theme/IdealImage'
-import useBaseUrl from '@docusaurus/useBaseUrl'
+import React from 'react';
+import clsx from 'clsx';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import { PageMetadata, HtmlClassNameProvider, ThemeClassNames } from '@docusaurus/theme-common';
+import BlogLayout from '@theme/BlogLayout';
+import SearchMetadata from '@theme/SearchMetadata';
+import BlogPostItems from '@theme/BlogPostItems';
+import Image from '@theme/IdealImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
-import { BlogPagination } from '../BlogPagination'
+import { BlogPagination } from '../BlogPagination';
 
 function BlogListPageMetadata(props) {
-  const { metadata } = props
+  const { metadata } = props;
   const {
     siteConfig: { title: siteTitle }
-  } = useDocusaurusContext()
-  const { blogDescription, blogTitle, permalink } = metadata
-  const isBlogOnlyMode = permalink === '/'
-  const title = isBlogOnlyMode ? siteTitle : blogTitle
+  } = useDocusaurusContext();
+  const { blogDescription, blogTitle, permalink } = metadata;
+  const isBlogOnlyMode = permalink === '/';
+  const title = isBlogOnlyMode ? siteTitle : blogTitle;
 
   return (
     <>
       <PageMetadata title={title} description={blogDescription} />
       <SearchMetadata tag='blog_posts_list' />
     </>
-  )
+  );
 }
 
 function BlogHomepageBanner(props) {
-  const blogMetadata = props.metadata
+  const blogMetadata = props.metadata;
   const imageDefault = {
     urlBannerBg:
       'https://res.cloudinary.com/thanhnam/image/upload/v1696174608/thanhnamnguyen.dev/blog/blog-banner_othakp.png',
     urlAvatar:
       'https://res.cloudinary.com/thanhnam/image/upload/v1715137157/project/docusaurus-material-ui-template/logo_wnw5lv.png'
-  }
+  };
 
   return (
     <div className='blog'>
@@ -59,11 +59,11 @@ function BlogHomepageBanner(props) {
         <p className=''>{blogMetadata.blogDescription}</p>
       </div>
     </div>
-  )
+  );
 }
 
 function BlogListPageContent(props) {
-  const { metadata, items, sidebar } = props
+  const { metadata, items, sidebar } = props;
 
   return (
     <BlogLayout sidebar={sidebar}>
@@ -71,7 +71,7 @@ function BlogListPageContent(props) {
       <BlogPostItems items={items} />
       <BlogPagination metadata={metadata} />
     </BlogLayout>
-  )
+  );
 }
 
 export default function BlogListPage(props) {
@@ -82,5 +82,5 @@ export default function BlogListPage(props) {
       <BlogListPageMetadata {...props} />
       <BlogListPageContent {...props} />
     </HtmlClassNameProvider>
-  )
+  );
 }

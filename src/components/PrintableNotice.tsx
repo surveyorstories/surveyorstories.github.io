@@ -1,62 +1,62 @@
-import React from 'react'
-import { officerDesignations, formNumbers } from './FormSection'
-import { districts } from '../data/districts'
-import { decodeHTMLEntities } from '../lib/sanitize'
-import KhataTable from './KhataTable'
+import React from 'react';
+import { officerDesignations, formNumbers } from './FormSection';
+import { districts } from '../data/districts';
+import { decodeHTMLEntities } from '../lib/sanitize';
+import KhataTable from './KhataTable';
 
 interface NoticeData {
-  khataNo: string
-  rows: string[][]
-  mapping: Record<string, number>
-  fields: { en: string; te: string }[]
+  khataNo: string;
+  rows: string[][];
+  mapping: Record<string, number>;
+  fields: { en: string; te: string }[];
 }
 
 // Add noticeMode to the component props
 interface PrintableNoticeProps {
-  districtName: string
-  mandalName: string
-  villageName: string
-  startDate: string
-  startTime: string
-  notificationNumber: string
-  notificationDate: string
-  printedDate: string
-  notices: NoticeData[]
-  showHeaderOnWeb?: boolean
-  noticeType: string
-  officerName?: string
-  officerDesignation?: string
-  noticeMode?: string
-  formNumber: string
-  useMappedDate?: boolean
-  dateHeaderIndex?: number
+  districtName: string;
+  mandalName: string;
+  villageName: string;
+  startDate: string;
+  startTime: string;
+  notificationNumber: string;
+  notificationDate: string;
+  printedDate: string;
+  notices: NoticeData[];
+  showHeaderOnWeb?: boolean;
+  noticeType: string;
+  officerName?: string;
+  officerDesignation?: string;
+  noticeMode?: string;
+  formNumber: string;
+  useMappedDate?: boolean;
+  dateHeaderIndex?: number;
 }
 
 const formatTime = (timeString: string): string => {
-  if (!timeString) return ''
+  if (!timeString) return '';
 
   try {
-    const [hours, minutes] = timeString.split(':')
-    const time = new Date()
-    time.setHours(parseInt(hours))
-    time.setMinutes(parseInt(minutes))
+    const [hours, minutes] = timeString.split(':');
+    const time = new Date();
+    time.setHours(parseInt(hours));
+    time.setMinutes(parseInt(minutes));
     return time.toLocaleTimeString('en-IN', {
       hour: 'numeric',
       minute: 'numeric',
       hour12: true
-    })
+    });
   } catch (error) {
-    return timeString
+    return timeString;
   }
-}
+};
 
 const formatDate = (dateString: string): string => {
-  if (!dateString) return '_____________'
+  if (!dateString) return '_____________';
 
   try {
-    const date = new Date(dateString)
+    const date = new Date(dateString);
     if (isNaN(date.getTime())) {
-      return '_____________'
+      return '_____________';
     }
     return date
       .toLocaleDateString('en-IN', {
@@ -64,11 +64,11 @@ const formatDate = (dateString: string): string => {
         month: '2-digit',
         year: 'numeric'
       })
-      .replace(/\//g, '-')
+      .replace(/\//g, '-');
   } catch (error) {
-    return '_____________'
+    return '_____________';
   }
-}
+};
 
 // Update the component function to include noticeMode in the parameters
 const PrintableNotice: React.FC<PrintableNoticeProps> = ({
@@ -90,9 +90,9 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
   useMappedDate = false,
   dateHeaderIndex = -1
 }) => {
-  const formattedTime = formatTime(startTime)
-  const formattedNotificationDate = formatDate(notificationDate)
-  const formattedPrintedDate = formatDate(printedDate)
+  const formattedTime = formatTime(startTime);
+  const formattedNotificationDate = formatDate(notificationDate);
+  const formattedPrintedDate = formatDate(printedDate);
 
   return (
     <div className='ground-truth-notice w-full max-w-full overflow-hidden'>
@@ -100,8 +100,8 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
         const noticeSpecificStartDate =
           useMappedDate && dateHeaderIndex !== -1 && notice.rows.length > 0
             ? notice.rows[0][dateHeaderIndex]
-            : startDate
-        const formattedDate = formatDate(noticeSpecificStartDate)
+            : startDate;
+        const formattedDate = formatDate(noticeSpecificStartDate);
 
         return (
           <div key={`notice-${noticeIndex}`} className='khata-group w-full'>
@@ -215,10 +215,10 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
               </div>
             </div>
           </div>
-        )
+        );
       })}
     </div>
-  )
-}
+  );
+};
 
-export default PrintableNotice
+export default PrintableNotice;

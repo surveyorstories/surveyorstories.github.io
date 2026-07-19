@@ -1,89 +1,89 @@
-import React, { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import Header from '../../svamitva_ninetwo_components/Header_svamitva_ninetwo'
-import FormSection from '../../svamitva_ninetwo_components/FormSection_svamitva_ninetwo'
-import { formNumbers } from '../../svamitva_ninetwo_components/FormSection_svamitva_ninetwo'
-import MappingTable from '../../svamitva_ninetwo_components/MappingTable_svamitva_ninetwo'
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import Header from '../../svamitva_ninetwo_components/Header_svamitva_ninetwo';
+import FormSection from '../../svamitva_ninetwo_components/FormSection_svamitva_ninetwo';
+import { formNumbers } from '../../svamitva_ninetwo_components/FormSection_svamitva_ninetwo';
+import MappingTable from '../../svamitva_ninetwo_components/MappingTable_svamitva_ninetwo';
 
-import PreviewSection from '../../svamitva_ninetwo_components/PreviewSection_svamitva_ninetwo'
-import { toast } from '../../svamitva_ninetwo_components/ui/use-toast'
-import { Button } from '../../svamitva_ninetwo_components/ui/button'
-import { Printer } from 'lucide-react'
-import Layout from '@theme/Layout'
-import { Toaster } from '../../svamitva_ninetwo_components/ui/toaster'
+import PreviewSection from '../../svamitva_ninetwo_components/PreviewSection_svamitva_ninetwo';
+import { toast } from '../../svamitva_ninetwo_components/ui/use-toast';
+import { Button } from '../../svamitva_ninetwo_components/ui/button';
+import { Printer } from 'lucide-react';
+import Layout from '@theme/Layout';
+import { Toaster } from '../../svamitva_ninetwo_components/ui/toaster';
 
 function Index() {
   // Form state
-  const [districtName, setDistrictName] = useState('')
-  const [mandalName, setMandalName] = useState('')
-  const [panchayatName, setPanchayatName] = useState('')
-  const [startDate, setStartDate] = useState('')
-  const [startTime, setStartTime] = useState('')
-  const [notificationNumber, setNotificationNumber] = useState('')
-  const [notificationDate, setNotificationDate] = useState('')
-  const [printedDate, setPrintedDate] = useState('')
-  const [noticeType, setNoticeType] = useState('GT Notice')
-  const [officerName, setOfficerName] = useState('')
-  const [officerDesignation, setOfficerDesignation] = useState('')
+  const [districtName, setDistrictName] = useState('');
+  const [mandalName, setMandalName] = useState('');
+  const [panchayatName, setPanchayatName] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [notificationNumber, setNotificationNumber] = useState('');
+  const [notificationDate, setNotificationDate] = useState('');
+  const [printedDate, setPrintedDate] = useState('');
+  const [noticeType, setNoticeType] = useState('GT Notice');
+  const [officerName, setOfficerName] = useState('');
+  const [officerDesignation, setOfficerDesignation] = useState('');
   // Add noticeMode state
-  const [noticeMode, setNoticeMode] = useState('property-parcel-number')
+  const [noticeMode, setNoticeMode] = useState('property-parcel-number');
   // Add formNumber state here
-  const [formNumber, setFormNumber] = useState('')
+  const [formNumber, setFormNumber] = useState('');
 
   // Reset formNumber when noticeType changes
   useEffect(() => {
-    setFormNumber('')
-  }, [noticeType])
+    setFormNumber('');
+  }, [noticeType]);
 
   // CSV data state
-  const [headers, setHeaders] = useState<string[]>([])
-  const [data, setData] = useState<string[][]>([])
-  const [showMapping, setShowMapping] = useState(false)
+  const [headers, setHeaders] = useState<string[]>([]);
+  const [data, setData] = useState<string[][]>([]);
+  const [showMapping, setShowMapping] = useState(false);
 
   // Mapping and preview state
-  const [mapping, setMapping] = useState<Record<string, string>>({})
-  const [showPreview, setShowPreview] = useState(false)
-  const [showArrow, setShowArrow] = useState(false)
+  const [mapping, setMapping] = useState<Record<string, string>>({});
+  const [showPreview, setShowPreview] = useState(false);
+  const [showArrow, setShowArrow] = useState(false);
 
   // Show arrow for 30 seconds when preview is shown
   useEffect(() => {
     if (showPreview) {
-      setShowArrow(true)
+      setShowArrow(true);
       const timer = setTimeout(() => {
-        setShowArrow(false)
-      }, 30000) // 30 seconds
-      return () => clearTimeout(timer)
+        setShowArrow(false);
+      }, 30000); // 30 seconds
+      return () => clearTimeout(timer);
     } else {
-      setShowArrow(false)
+      setShowArrow(false);
     }
-  }, [showPreview])
+  }, [showPreview]);
 
   const handleFileUpload = (headers, data) => {
-    const filteredHeaders = headers.filter((header) => header && header.trim() !== '')
-    setHeaders(filteredHeaders)
-    setData(data)
-    setShowMapping(true)
-    setShowPreview(false)
+    const filteredHeaders = headers.filter((header) => header && header.trim() !== '');
+    setHeaders(filteredHeaders);
+    setData(data);
+    setShowMapping(true);
+    setShowPreview(false);
 
     toast({
       title: 'File Uploaded Successfully',
       description: `${data.length} rows loaded. Please map the columns.`
-    })
-  }
+    });
+  };
 
   const handleMappingSubmit = (mapping) => {
-    setMapping(mapping)
-    setShowPreview(true)
+    setMapping(mapping);
+    setShowPreview(true);
 
     toast({
       title: 'Column Mapping Complete',
       description: 'Preview generated. You can now print the notices.'
-    })
-  }
+    });
+  };
 
   const handlePrint = () => {
-    window.print()
-  }
+    window.print();
+  };
 
   return (
     <Layout title='Resurvey Notice Generator' description='Generate Resurvey Notices with ease.'>
@@ -133,13 +133,13 @@ function Index() {
               headers={headers}
               show={showMapping}
               onMappingSubmit={(mapping) => {
-                setMapping(mapping)
-                setShowPreview(true)
+                setMapping(mapping);
+                setShowPreview(true);
 
                 toast({
                   title: 'Column Mapping Complete',
                   description: 'Preview generated. You can now print the notices.'
-                })
+                });
               }}
               onPreview={() => setShowPreview(true)}
               noticeType={noticeType}
@@ -196,7 +196,7 @@ function Index() {
       </motion.div>
       <Toaster />
     </Layout>
-  )
+  );
 }
 
-export default Index
+export default Index;

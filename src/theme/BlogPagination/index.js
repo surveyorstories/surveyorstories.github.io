@@ -1,5 +1,5 @@
-import React from 'react'
-import { useHistory } from '@docusaurus/router'
+import React from 'react';
+import { useHistory } from '@docusaurus/router';
 import {
   Pagination,
   PaginationContent,
@@ -8,37 +8,37 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious
-} from '../../components/ui/pagination.tsx'
+} from '../../components/ui/pagination.tsx';
 
 export const BlogPagination = ({ metadata }) => {
-  const history = useHistory()
+  const history = useHistory();
 
   const handleParams = () => {
-    const path = history.location.pathname
-    const parts = path.split('/')
-    const pageNumber = parts[parts.length - 1]
-    return isNaN(pageNumber) ? 1 : parseInt(pageNumber)
-  }
+    const path = history.location.pathname;
+    const parts = path.split('/');
+    const pageNumber = parts[parts.length - 1];
+    return isNaN(pageNumber) ? 1 : parseInt(pageNumber);
+  };
 
-  const page = handleParams()
+  const page = handleParams();
 
   const handlePageChange = (value) => {
     if (value === page) {
-      return
+      return;
     }
-    const newPagePath = value === 1 ? '/blog' : `/blog/page/${value}`
-    history.push(newPagePath)
-  }
+    const newPagePath = value === 1 ? '/blog' : `/blog/page/${value}`;
+    history.push(newPagePath);
+  };
 
   // Generate array of page numbers
   const generatePagination = (currentPage, totalPages) => {
-    let pages = []
+    let pages = [];
 
     // Always show first page
-    pages.push(1)
+    pages.push(1);
 
     if (currentPage > 3) {
-      pages.push('ellipsis')
+      pages.push('ellipsis');
     }
 
     // Show pages around current page
@@ -47,26 +47,26 @@ export const BlogPagination = ({ metadata }) => {
       i <= Math.min(totalPages - 1, currentPage + 1);
       i++
     ) {
-      pages.push(i)
+      pages.push(i);
     }
 
     if (currentPage < totalPages - 2) {
-      pages.push('ellipsis')
+      pages.push('ellipsis');
     }
 
     // Always show last page
     if (totalPages > 1) {
-      pages.push(totalPages)
+      pages.push(totalPages);
     }
 
-    return pages
-  }
+    return pages;
+  };
 
   if (metadata.totalPages <= 1) {
-    return null
+    return null;
   }
 
-  const pages = generatePagination(page, metadata.totalPages)
+  const pages = generatePagination(page, metadata.totalPages);
 
   return (
     <Pagination className='mt-8'>
@@ -102,7 +102,7 @@ export const BlogPagination = ({ metadata }) => {
         </PaginationItem>
       </PaginationContent>
     </Pagination>
-  )
-}
+  );
+};
 
-export default BlogPagination
+export default BlogPagination;

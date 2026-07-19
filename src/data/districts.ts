@@ -28,4 +28,4 @@ export const districts = [
   { value: 'Vizianagaram', display: 'Vizianagaram', te: 'విజయనగరం' },
   { value: 'West Godavari', display: 'West Godavari', te: 'పశ్చిమ గోదావరి' },
   { value: 'YSR Kadapa', display: 'YSR Kadapa', te: 'వై.యస్.ర్ కడప' }
-]
+];

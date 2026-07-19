@@ -37,7 +37,8 @@ const FlashAnnouncement = () => {
     const sparkles = [];
     const colors = ['#FFD700', '#FFA500', '#FF6347', '#ADFF2F', '#87CEEB', '#EE82EE']; // Gold, Orange, Tomato, GreenYellow, SkyBlue, Violet
 
-    for (let i = 0; i < 30; i++) { // Generate 30 stars
+    for (let i = 0; i < 30; i++) {
+      // Generate 30 stars
       const delay = Math.random() * 4; // Random delay up to 4 seconds
       const xOffset = (Math.random() - 0.5) * 300; // Random X offset for different directions, increased range
       const rotation = Math.random() * 720; // Random rotation, increased range
@@ -48,14 +49,14 @@ const FlashAnnouncement = () => {
       sparkles.push(
         <div
           key={i}
-          className="sparkle"
+          className='sparkle'
           style={{
-            animationDelay: `${delay}s`,
-            left: `${left}%`,
-            top: `${top}%`,
-            backgroundColor: color,
+            'animationDelay': `${delay}s`,
+            'left': `${left}%`,
+            'top': `${top}%`,
+            'backgroundColor': color,
             '--star-x-offset': `${xOffset}px`,
-            '--star-rotation': `${rotation}deg`,
+            '--star-rotation': `${rotation}deg`
           }}
         ></div>
       );
@@ -64,14 +65,20 @@ const FlashAnnouncement = () => {
   };
 
   return (
-    <div className="flash-announcement-overlay">
-      <div className="flash-announcement-card">
-        <button className="flash-announcement-close" onClick={handleClose}>&times;</button>
-        <h2><span className="animated-star">✨</span> New Notices Available! <span className="animated-star">✨</span></h2>
-        <p><span className="animated-rocket">🚀</span> Svamitva GT GV and 9/2 Notices are now available! Check them out! <span className="animated-star">🌟</span></p>
-        <div className="sparkle-container">
-          {renderSparkles()}
-        </div>
+    <div className='flash-announcement-overlay'>
+      <div className='flash-announcement-card'>
+        <button className='flash-announcement-close' onClick={handleClose}>
+          &times;
+        </button>
+        <h2>
+          <span className='animated-star'>✨</span> New Notices Available!{' '}
+          <span className='animated-star'>✨</span>
+        </h2>
+        <p>
+          <span className='animated-rocket'>🚀</span> Svamitva GT GV and 9/2 Notices are now
+          available! Check them out! <span className='animated-star'>🌟</span>
+        </p>
+        <div className='sparkle-container'>{renderSparkles()}</div>
       </div>
     </div>
   );

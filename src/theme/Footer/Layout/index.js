@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 export default function FooterLayout({ style, links, logo, copyright }) {
   return (
@@ -13,5 +13,5 @@ export default function FooterLayout({ style, links, logo, copyright }) {
         )}
       </div>
     </footer>
-  )
+  );
 }

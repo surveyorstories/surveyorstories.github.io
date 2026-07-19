@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import Header from '../../ninetwo_components/Header_ninetwo'
-import FormSection from '../../ninetwo_components/FormSection_ninetwo'
-import MappingTable from '../../ninetwo_components/MappingTable_ninetwo'
-import PreviewSection from '../../ninetwo_components/PreviewSection_ninetwo'
-import { toast } from '../../components/ui/use-toast'
-import { Button } from '../../components/ui/button'
-import { Printer, AlertTriangle } from 'lucide-react'
-import Layout from '@theme/Layout'
-import { Toaster } from '../../components/ui/toaster'
-import ErrorBoundary from '../../components/ErrorBoundary'
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import Header from '../../ninetwo_components/Header_ninetwo';
+import FormSection from '../../ninetwo_components/FormSection_ninetwo';
+import MappingTable from '../../ninetwo_components/MappingTable_ninetwo';
+import PreviewSection from '../../ninetwo_components/PreviewSection_ninetwo';
+import { toast } from '../../components/ui/use-toast';
+import { Button } from '../../components/ui/button';
+import { Printer, AlertTriangle } from 'lucide-react';
+import Layout from '@theme/Layout';
+import { Toaster } from '../../components/ui/toaster';
+import ErrorBoundary from '../../components/ErrorBoundary';
 
 const Disclaimer = ({ onAccept }) => (
   <div className='fixed inset-0 z-[100] flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm'>
@@ -72,7 +72,7 @@ const Disclaimer = ({ onAccept }) => (
       </div>
     </motion.div>
   </div>
-)
+);
 
 const MappingWarningModal = ({ onAccept, onCancel }) => (
   <div className='fixed inset-0 z-[100] flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm'>
@@ -135,81 +135,81 @@ const MappingWarningModal = ({ onAccept, onCancel }) => (
       </div>
     </motion.div>
   </div>
-)
+);
 
 function Index() {
-  const [disclaimerAccepted, setDisclaimerAccepted] = useState(false)
-  const [showMappingWarning, setShowMappingWarning] = useState(false)
+  const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
+  const [showMappingWarning, setShowMappingWarning] = useState(false);
 
   // Form state
-  const [districtName, setDistrictName] = useState('')
-  const [mandalName, setMandalName] = useState('')
-  const [villageName, setVillageName] = useState('')
-  const [startDate, setStartDate] = useState('')
-  const [startTime, setStartTime] = useState('')
-  const [notificationNumber, setNotificationNumber] = useState('')
-  const [notificationDate, setNotificationDate] = useState('')
-  const [printedDate, setPrintedDate] = useState('')
-  const [officerName, setOfficerName] = useState('')
-  const [officerDesignation, setOfficerDesignation] = useState('')
+  const [districtName, setDistrictName] = useState('');
+  const [mandalName, setMandalName] = useState('');
+  const [villageName, setVillageName] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [notificationNumber, setNotificationNumber] = useState('');
+  const [notificationDate, setNotificationDate] = useState('');
+  const [printedDate, setPrintedDate] = useState('');
+  const [officerName, setOfficerName] = useState('');
+  const [officerDesignation, setOfficerDesignation] = useState('');
   // Add new state for notice type
-  const [noticeType, setNoticeType] = useState('khata')
-  const [formNumber, setFormNumber] = useState('') // <-- Add this line
+  const [noticeType, setNoticeType] = useState('khata');
+  const [formNumber, setFormNumber] = useState(''); // <-- Add this line
 
   // CSV data state
-  const [headers, setHeaders] = useState<string[]>([])
-  const [data, setData] = useState<string[][]>([])
-  const [showMapping, setShowMapping] = useState(false)
+  const [headers, setHeaders] = useState<string[]>([]);
+  const [data, setData] = useState<string[][]>([]);
+  const [showMapping, setShowMapping] = useState(false);
 
   // Mapping and preview state
-  const [mapping, setMapping] = useState<Record<string, string>>({})
-  const [showPreview, setShowPreview] = useState(false)
-  const [showArrow, setShowArrow] = useState(false)
+  const [mapping, setMapping] = useState<Record<string, string>>({});
+  const [showPreview, setShowPreview] = useState(false);
+  const [showArrow, setShowArrow] = useState(false);
 
   // Show arrow for 30 seconds when preview is shown
   useEffect(() => {
     if (showPreview) {
-      setShowArrow(true)
+      setShowArrow(true);
       const timer = setTimeout(() => {
-        setShowArrow(false)
-      }, 30000) // 30 seconds
-      return () => clearTimeout(timer)
+        setShowArrow(false);
+      }, 30000); // 30 seconds
+      return () => clearTimeout(timer);
     } else {
-      setShowArrow(false)
+      setShowArrow(false);
     }
-  }, [showPreview])
+  }, [showPreview]);
 
   const handleFileUpload = (headers, data) => {
-    const filteredHeaders = headers.filter((header) => header && header.trim() !== '')
-    setHeaders(filteredHeaders)
-    setData(data)
-    setShowMapping(true)
-    setShowPreview(false)
+    const filteredHeaders = headers.filter((header) => header && header.trim() !== '');
+    setHeaders(filteredHeaders);
+    setData(data);
+    setShowMapping(true);
+    setShowPreview(false);
 
     toast({
       title: 'File Uploaded Successfully',
       description: `${data.length} rows loaded. Please map the columns.`
-    })
-  }
+    });
+  };
 
   const handleMappingSubmit = (mapping) => {
-    setMapping(mapping)
-    setShowMappingWarning(true)
-  }
+    setMapping(mapping);
+    setShowMappingWarning(true);
+  };
 
   const handleMappingWarningAccept = () => {
-    setShowMappingWarning(false)
-    setShowPreview(true)
+    setShowMappingWarning(false);
+    setShowPreview(true);
 
     toast({
       title: 'Column Mapping Complete',
       description: 'Preview generated. You can now print the notices.'
-    })
-  }
+    });
+  };
 
   const handlePrint = () => {
-    window.print()
-  }
+    window.print();
+  };
 
   return (
     <Layout title='Resurvey Notice Generator' description='Generate Resurvey Notices with ease.'>
@@ -322,7 +322,7 @@ function Index() {
       </ErrorBoundary>
       <Toaster />
     </Layout>
-  )
+  );
 }
 
-export default Index
+export default Index;

@@ -1,55 +1,55 @@
-import React from 'react'
-import { officerDesignations, formNumbers } from './FormSection_ninetwo'
-import { districts } from '../data/districts'
-import { decodeHTMLEntities } from '../lib/sanitize'
-import NoticeTable from './NoticeTable_ninetwo'
+import React from 'react';
+import { officerDesignations, formNumbers } from './FormSection_ninetwo';
+import { districts } from '../data/districts';
+import { decodeHTMLEntities } from '../lib/sanitize';
+import NoticeTable from './NoticeTable_ninetwo';
 
 interface NoticeData {
-  khataNo: string
-  rows: string[][]
-  mapping: Record<string, number>
-  fields: { en: string; te: string }[]
+  khataNo: string;
+  rows: string[][];
+  mapping: Record<string, number>;
+  fields: { en: string; te: string }[];
 }
 
 interface PrintableNoticeProps {
-  districtName: string
-  mandalName: string
-  villageName: string
-  startDate: string
-  startTime: string
-  notificationNumber: string
-  notificationDate: string
-  printedDate: string
-  notices: NoticeData[]
-  showHeaderOnWeb?: boolean
-  officerName?: string
-  officerDesignation?: string
-  formNumber: string
+  districtName: string;
+  mandalName: string;
+  villageName: string;
+  startDate: string;
+  startTime: string;
+  notificationNumber: string;
+  notificationDate: string;
+  printedDate: string;
+  notices: NoticeData[];
+  showHeaderOnWeb?: boolean;
+  officerName?: string;
+  officerDesignation?: string;
+  formNumber: string;
 }
 
 const formatTime = (timeString: string): string => {
-  if (!timeString) return ''
+  if (!timeString) return '';
 
   try {
-    const [hours, minutes] = timeString.split(':')
-    const time = new Date()
-    time.setHours(parseInt(hours))
-    time.setMinutes(parseInt(minutes))
+    const [hours, minutes] = timeString.split(':');
+    const time = new Date();
+    time.setHours(parseInt(hours));
+    time.setMinutes(parseInt(minutes));
     return time.toLocaleTimeString('en-IN', {
       hour: 'numeric',
       minute: 'numeric',
       hour12: true
-    })
+    });
   } catch (error) {
-    return timeString
+    return timeString;
   }
-}
+};
 
 const formatDate = (dateString: string): string => {
-  if (!dateString) return ''
+  if (!dateString) return '';
 
   try {
-    const date = new Date(dateString)
+    const date = new Date(dateString);
     // Format as dd-mm-yyyy
     return date
       .toLocaleDateString('en-IN', {
@@ -57,11 +57,11 @@ const formatDate = (dateString: string): string => {
         month: '2-digit',
         year: 'numeric'
       })
-      .replace(/\//g, '-')
+      .replace(/\//g, '-');
   } catch (error) {
-    return dateString
+    return dateString;
   }
-}
+};
 
 const PrintableNotice: React.FC<PrintableNoticeProps> = ({
   districtName,
@@ -79,10 +79,10 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
   officerDesignation,
   formNumber
 }) => {
-  const formattedTime = formatTime(startTime)
-  const formattedDate = formatDate(startDate)
-  const formattedNotificationDate = formatDate(notificationDate)
-  const formattedPrintedDate = formatDate(printedDate)
+  const formattedTime = formatTime(startTime);
+  const formattedDate = formatDate(startDate);
+  const formattedNotificationDate = formatDate(notificationDate);
+  const formattedPrintedDate = formatDate(printedDate);
 
   // Define all possible fields that should appear in the table
   const allFields = [
@@ -94,10 +94,10 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
     { en: 'Resurvey extent (Acres)', te: 'రీ సర్వే విస్తీర్ణం (ఎకరం)' },
     { en: 'Resurvey extent (Hect)', te: 'రీ సర్వే విస్తీర్ణం (హెక్టార్లు)' },
     { en: 'Remark', te: 'రిమార్క్స్' }
-  ]
+  ];
 
   const formatLPMNumbers = (rows: string[][], mapping: Record<string, number>): string => {
-    if (!rows || !rows.length) return '_____________'
+    if (!rows || !rows.length) return '_____________';
 
     // Use a Set to ensure unique LPM numbers
     const uniqueLpmNumbers = new Set(
@@ -105,36 +105,36 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
         .map((row) => row[mapping['LPM Number']] || '')
         .filter(Boolean)
         .map((lpm) => decodeHTMLEntities(lpm).replace(/[^\d,.-]/g, ''))
-    )
+    );
 
     // Convert Set back to string with comma separation
-    const lpmNumbers = Array.from(uniqueLpmNumbers).join(', ')
+    const lpmNumbers = Array.from(uniqueLpmNumbers).join(', ');
 
-    return lpmNumbers || '_____________'
-  }
+    return lpmNumbers || '_____________';
+  };
 
   return (
     <div className='ground-truth-notice w-full max-w-full overflow-hidden'>
       {notices.map((notice, noticeIndex) => {
         // Check if subdivision is mapped - only show if it's actually mapped in the data
-        const hasSubdivision = 'Sub Division No' in notice.mapping
+        const hasSubdivision = 'Sub Division No' in notice.mapping;
 
         // Include only fields that should be shown
         const tableFields = allFields
           .filter((field) => {
             if (field.en === 'Sub Division No' && !hasSubdivision) {
-              return false
+              return false;
             }
-            return true
+            return true;
           })
           .map((field) => ({
             ...field,
             // Change Survey No column name based on subdivision presence
             te: field.en === 'Survey No' && !hasSubdivision ? 'సర్వే నెంబరు-subdivision' : field.te,
             mappedIndex: notice.mapping[field.en]
-          }))
+          }));
 
-        const lpmNumbersList = formatLPMNumbers(notice.rows, notice.mapping)
+        const lpmNumbersList = formatLPMNumbers(notice.rows, notice.mapping);
 
         return (
           <div key={`notice-${noticeIndex}`} className='khata-group w-full'>
@@ -190,7 +190,12 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
               </>
             </div>
 
-            <NoticeTable fields={tableFields} rows={notice.rows} hasSubdivision={hasSubdivision} isMerged={notice.isMerged} />
+            <NoticeTable
+              fields={tableFields}
+              rows={notice.rows}
+              hasSubdivision={hasSubdivision}
+              isMerged={notice.isMerged}
+            />
 
             <div className='footer-signature-row print:text-sm'>
               <div className='left-column'>
@@ -257,10 +262,10 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
               </div>
             </div>
           </div>
-        )
+        );
       })}
     </div>
-  )
-}
+  );
+};
 
-export default PrintableNotice
+export default PrintableNotice;

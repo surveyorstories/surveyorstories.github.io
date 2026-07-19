@@ -6,8 +6,8 @@ module.exports = function tailwindPlugin(context, options) {
         require('postcss-import'),
         require('tailwindcss'),
         require('autoprefixer')
-      ]
-      return postcssOptions
+      ];
+      return postcssOptions;
     }
-  }
-}
+  };
+};

@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Button } from '../components/ui/button'
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Button } from '../components/ui/button';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '../components/ui/select'
+} from '../components/ui/select';
 import {
   Table,
   TableBody,
@@ -15,21 +15,21 @@ import {
   TableHead,
   TableHeader,
   TableRow
-} from '../components/ui/table'
-import { Card, CardContent } from '../components/ui/card'
-import { CheckCircle2 } from 'lucide-react'
+} from '../components/ui/table';
+import { Card, CardContent } from '../components/ui/card';
+import { CheckCircle2 } from 'lucide-react';
 
 interface FieldMapping {
-  en: string
-  te: string
+  en: string;
+  te: string;
 }
 
 interface MappingTableProps {
-  headers: string[]
-  show: boolean
-  onMappingSubmit: (mapping: Record<string, string>) => void
-  onPreview: (mapping: Record<string, string>) => void
-  noticeType?: string
+  headers: string[];
+  show: boolean;
+  onMappingSubmit: (mapping: Record<string, string>) => void;
+  onPreview: (mapping: Record<string, string>) => void;
+  noticeType?: string;
 }
 
 const MappingTable: React.FC<MappingTableProps> = ({
@@ -40,11 +40,11 @@ const MappingTable: React.FC<MappingTableProps> = ({
   noticeType
 }) => {
   const [mappings, setMappings] = useState<Record<string, string>>(() => {
-    const initialMappings: Record<string, string> = {}
-    return initialMappings
-  })
+    const initialMappings: Record<string, string> = {};
+    return initialMappings;
+  });
 
-  const [isComplete, setIsComplete] = useState(false)
+  const [isComplete, setIsComplete] = useState(false);
 
   const requiredFields: FieldMapping[] = [
     { en: 'LPM Number', te: 'ల్యాండ్ పార్సెల్ నెంబర్' },
@@ -54,7 +54,7 @@ const MappingTable: React.FC<MappingTableProps> = ({
     { en: 'Relation Name', te: 'సంబంధికులు (తండ్రి/భర్త) పేరు' },
     { en: 'Resurvey extent (Acres)', te: 'రీ సర్వే విస్తీర్ణం (ఎకరం)' },
     { en: 'Resurvey extent (Hect)', te: 'రీ సర్వే విస్తీర్ణం (హెక్టార్లు)' }
-  ]
+  ];
 
   const isMergedMode = noticeType === 'khata_merged_synos' || noticeType === 'lpm_merged_synos';
 
@@ -63,26 +63,26 @@ const MappingTable: React.FC<MappingTableProps> = ({
     { en: 'Old extent (Acres)', te: 'పూర్వపు విస్తీర్ణం (ఎకరం)' },
     { en: 'Old extent (Hect)', te: 'పూర్వపు విస్తీర్ణం (హెక్టార్లు)' },
     { en: 'Remark', te: 'రిమార్క్స్' }
-  ].filter(field => !(isMergedMode && field.en === 'Sub Division No'));
+  ].filter((field) => !(isMergedMode && field.en === 'Sub Division No'));
 
   useEffect(() => {
-    const requiredFieldsMapped = requiredFields.every((field) => mappings[field.en])
-    setIsComplete(requiredFieldsMapped)
-  }, [mappings])
+    const requiredFieldsMapped = requiredFields.every((field) => mappings[field.en]);
+    setIsComplete(requiredFieldsMapped);
+  }, [mappings]);
 
   const handleMappingChange = (field: string, value: string) => {
-    setMappings((prev) => ({ ...prev, [field]: value }))
-  }
+    setMappings((prev) => ({ ...prev, [field]: value }));
+  };
 
   const handleSubmit = () => {
-    onMappingSubmit(mappings)
-  }
+    onMappingSubmit(mappings);
+  };
 
   const handlePreview = () => {
-    onPreview(mappings)
-  }
+    onPreview(mappings);
+  };
 
-  if (!show) return null
+  if (!show) return null;
 
   return (
     <AnimatePresence>
@@ -212,7 +212,7 @@ const MappingTable: React.FC<MappingTableProps> = ({
         </motion.div>
       )}
     </AnimatePresence>
-  )
-}
+  );
+};
 
-export default MappingTable
+export default MappingTable;

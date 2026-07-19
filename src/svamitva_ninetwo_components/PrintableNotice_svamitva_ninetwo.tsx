@@ -1,59 +1,59 @@
-import React from 'react'
-import { officerDesignations, formNumbers } from './FormSection_svamitva_ninetwo'
-import { districts } from '../data/districts'
-import { decodeHTMLEntities } from '../lib/sanitize'
-import KhataTable from './KhataTable_svamitva_ninetwo'
+import React from 'react';
+import { officerDesignations, formNumbers } from './FormSection_svamitva_ninetwo';
+import { districts } from '../data/districts';
+import { decodeHTMLEntities } from '../lib/sanitize';
+import KhataTable from './KhataTable_svamitva_ninetwo';
 
 interface NoticeData {
-  khataNo: string
-  rows: string[][]
-  mapping: Record<string, number>
-  fields: { en: string; te: string }[]
+  khataNo: string;
+  rows: string[][];
+  mapping: Record<string, number>;
+  fields: { en: string; te: string }[];
 }
 
 // Add noticeMode to the component props
 interface PrintableNoticeProps {
-  districtName: string
-  mandalName: string
-  panchayatName: string
-  startDate: string
-  startTime: string
-  notificationNumber: string
-  notificationDate: string
-  printedDate: string
-  notices: NoticeData[]
-  showHeaderOnWeb?: boolean
-  noticeType: string
-  officerName?: string
-  officerDesignation?: string
-  noticeMode?: string
-  formNumber: string
-  habitationName?: string
+  districtName: string;
+  mandalName: string;
+  panchayatName: string;
+  startDate: string;
+  startTime: string;
+  notificationNumber: string;
+  notificationDate: string;
+  printedDate: string;
+  notices: NoticeData[];
+  showHeaderOnWeb?: boolean;
+  noticeType: string;
+  officerName?: string;
+  officerDesignation?: string;
+  noticeMode?: string;
+  formNumber: string;
+  habitationName?: string;
 }
 
 const formatTime = (timeString: string): string => {
-  if (!timeString) return ''
+  if (!timeString) return '';
 
   try {
-    const [hours, minutes] = timeString.split(':')
-    const time = new Date()
-    time.setHours(parseInt(hours))
-    time.setMinutes(parseInt(minutes))
+    const [hours, minutes] = timeString.split(':');
+    const time = new Date();
+    time.setHours(parseInt(hours));
+    time.setMinutes(parseInt(minutes));
     return time.toLocaleTimeString('en-IN', {
       hour: 'numeric',
       minute: 'numeric',
       hour12: true
-    })
+    });
   } catch (error) {
-    return timeString
+    return timeString;
   }
-}
+};
 
 const formatDate = (dateString: string): string => {
-  if (!dateString) return ''
+  if (!dateString) return '';
 
   try {
-    const date = new Date(dateString)
+    const date = new Date(dateString);
     // Format as dd-mm-yyyy
     return date
       .toLocaleDateString('en-IN', {
@@ -61,40 +61,40 @@ const formatDate = (dateString: string): string => {
         month: '2-digit',
         year: 'numeric'
       })
-      .replace(/\//g, '-')
+      .replace(/\//g, '-');
   } catch (error) {
-    return dateString
+    return dateString;
   }
-}
+};
 
 const stripQuotes = (text: string) => {
-  if (!text) return ''
-  return text.replace(/^['"](.*)['"]$/, '$1')
-}
+  if (!text) return '';
+  return text.replace(/^['"](.*)['"]$/, '$1');
+};
 
 const formatLPMNumbers = (rows: string[][], mapping: Record<string, number>): string => {
   if (!rows || !mapping) {
-    return ''
+    return '';
   }
-  const propertyParcelNumberKey = 'Property Parcel Number'
-  const lpmNoKey = 'LPM No'
+  const propertyParcelNumberKey = 'Property Parcel Number';
+  const lpmNoKey = 'LPM No';
 
-  let parcelNumberIndex = mapping[propertyParcelNumberKey]
+  let parcelNumberIndex = mapping[propertyParcelNumberKey];
 
   if (typeof parcelNumberIndex !== 'number') {
-    parcelNumberIndex = mapping[lpmNoKey]
+    parcelNumberIndex = mapping[lpmNoKey];
   }
 
   if (typeof parcelNumberIndex !== 'number') {
     console.log(
       `Warning: '${propertyParcelNumberKey}' or '${lpmNoKey}' not found in mapping.`,
       mapping
-    )
-    return ''
+    );
+    return '';
   }
-  const lpmNumbers = rows.map((row) => stripQuotes(decodeHTMLEntities(row[parcelNumberIndex])))
-  return lpmNumbers.join(', ')
-}
+  const lpmNumbers = rows.map((row) => stripQuotes(decodeHTMLEntities(row[parcelNumberIndex])));
+  return lpmNumbers.join(', ');
+};
 
 // Update the component function to include noticeMode in the parameters
 const PrintableNotice: React.FC<PrintableNoticeProps> = ({
@@ -115,15 +115,15 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
   formNumber,
   habitationName // Add this line
 }) => {
-  const formattedTime = formatTime(startTime)
-  const formattedDate = formatDate(startDate)
-  const formattedNotificationDate = formatDate(notificationDate)
-  const formattedPrintedDate = formatDate(printedDate)
+  const formattedTime = formatTime(startTime);
+  const formattedDate = formatDate(startDate);
+  const formattedNotificationDate = formatDate(notificationDate);
+  const formattedPrintedDate = formatDate(printedDate);
 
   return (
     <div className='ground-truth-notice w-full max-w-full overflow-hidden'>
       {notices.map((notice, noticeIndex) => {
-        const lpmNumbersList = formatLPMNumbers(notice.rows, notice.mapping)
+        const lpmNumbersList = formatLPMNumbers(notice.rows, notice.mapping);
         return (
           <div key={`notice-${noticeIndex}`} className='khata-group w-full'>
             {/* Telugu header - only visible in print view, hidden in web view if showHeaderOnWeb is false */}
@@ -289,10 +289,10 @@ const PrintableNotice: React.FC<PrintableNoticeProps> = ({
               </div>
             </div>
           </div>
-        )
+        );
       })}
     </div>
-  )
-}
+  );
+};
 
-export default PrintableNotice
+export default PrintableNotice;

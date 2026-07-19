@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Button } from '../components/ui/button'
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Button } from '../components/ui/button';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '../components/ui/select'
+} from '../components/ui/select';
 import {
   Table,
   TableBody,
@@ -15,25 +15,25 @@ import {
   TableHead,
   TableHeader,
   TableRow
-} from '../components/ui/table'
-import { Card, CardContent } from '../components/ui/card'
-import { CheckCircle2 } from 'lucide-react'
-import { RadioGroup, RadioGroupItem } from '../components/ui/radio-group'
-import { Label } from '../components/ui/label'
+} from '../components/ui/table';
+import { Card, CardContent } from '../components/ui/card';
+import { CheckCircle2 } from 'lucide-react';
+import { RadioGroup, RadioGroupItem } from '../components/ui/radio-group';
+import { Label } from '../components/ui/label';
 
 interface FieldMapping {
-  en: string
-  te: string
+  en: string;
+  te: string;
 }
 
 // Update the component props to remove setNoticeMode
 interface MappingTableProps {
-  headers: string[]
-  show: boolean
-  onMappingSubmit: (mapping: Record<string, string>) => void
-  onPreview: (mapping: Record<string, string>) => void
-  noticeType?: string
-  noticeMode?: string
+  headers: string[];
+  show: boolean;
+  onMappingSubmit: (mapping: Record<string, string>) => void;
+  onPreview: (mapping: Record<string, string>) => void;
+  noticeType?: string;
+  noticeMode?: string;
 }
 
 // Update the component to remove the radio buttons
@@ -45,10 +45,10 @@ const MappingTable: React.FC<MappingTableProps> = ({
   noticeType = 'GT Notice',
   noticeMode = 'khata'
 }) => {
-  const [mappings, setMappings] = useState<Record<string, string>>({})
-  const [isComplete, setIsComplete] = useState(false)
+  const [mappings, setMappings] = useState<Record<string, string>>({});
+  const [isComplete, setIsComplete] = useState(false);
   // Add state for extent column
-  const [showExtent, setShowExtent] = useState(false)
+  const [showExtent, setShowExtent] = useState(false);
 
   const requiredFields: FieldMapping[] = [
     { en: 'Property Parcel Number', te: 'ప్రాపర్టీ పార్సెల్ నెంబరు' },
@@ -57,34 +57,34 @@ const MappingTable: React.FC<MappingTableProps> = ({
     { en: 'Building Area', te: 'భవన విస్తీర్ణం (sq.mts)' },
     { en: 'Owner Name', te: 'భూమి/ ఆస్తి యజమాని పేరు' },
     { en: 'Relation Name', te: 'తండ్రి పేరు' }
-  ]
+  ];
 
   const optionalFields: FieldMapping[] = [
     { en: 'Habitation Name', te: 'గ్రామం పేరు' },
     { en: 'Remarks', te: 'రిమార్కులు' }
-  ]
+  ];
 
-  let mappingFields = [...requiredFields, ...optionalFields]
+  let mappingFields = [...requiredFields, ...optionalFields];
 
   useEffect(() => {
     // Check if all required fields (excluding optional ones) have been mapped
-    const requiredFieldsMapped = requiredFields.every((field) => mappings[field.en])
-    setIsComplete(requiredFieldsMapped)
-  }, [mappings])
+    const requiredFieldsMapped = requiredFields.every((field) => mappings[field.en]);
+    setIsComplete(requiredFieldsMapped);
+  }, [mappings]);
 
   const handleMappingChange = (field: string, value: string) => {
-    setMappings((prev) => ({ ...prev, [field]: value }))
-  }
+    setMappings((prev) => ({ ...prev, [field]: value }));
+  };
 
   const handleSubmit = () => {
-    onMappingSubmit(mappings)
-  }
+    onMappingSubmit(mappings);
+  };
 
   const handlePreview = () => {
-    onPreview(mappings)
-  }
+    onPreview(mappings);
+  };
 
-  if (!show) return null
+  if (!show) return null;
 
   return (
     <AnimatePresence>
@@ -111,8 +111,8 @@ const MappingTable: React.FC<MappingTableProps> = ({
                   </TableHeader>
                   <TableBody>
                     {mappingFields.map((field, index) => {
-                      const isRequired = requiredFields.some((f) => f.en === field.en)
-                      const borderColorClass = isRequired ? 'border-blue-500' : 'border-green-500'
+                      const isRequired = requiredFields.some((f) => f.en === field.en);
+                      const borderColorClass = isRequired ? 'border-blue-500' : 'border-green-500';
                       return (
                         <motion.tr
                           key={field.en}
@@ -158,7 +158,7 @@ const MappingTable: React.FC<MappingTableProps> = ({
                             )}
                           </TableCell>
                         </motion.tr>
-                      )
+                      );
                     })}
                   </TableBody>
                 </Table>
@@ -178,7 +178,7 @@ const MappingTable: React.FC<MappingTableProps> = ({
         </motion.div>
       )}
     </AnimatePresence>
-  )
-}
+  );
+};
 
-export default MappingTable
+export default MappingTable;

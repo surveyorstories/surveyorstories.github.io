@@ -4,8 +4,8 @@
 // There are various equivalent ways to declare your Docusaurus config.
 // See: https://docusaurus.io/docs/api/docusaurus-config
 
-import { themes as prismThemes } from 'prism-react-renderer'
-require('dotenv').config()
+import { themes as prismThemes } from 'prism-react-renderer';
+require('dotenv').config();
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 /** @type {import('@docusaurus/types').Config} */
@@ -85,9 +85,9 @@ const config = {
           ignorePatterns: ['/tags/**'],
           filename: 'sitemap.xml',
           createSitemapItems: async (params) => {
-            const { defaultCreateSitemapItems, ...rest } = params
-            const items = await defaultCreateSitemapItems(rest)
-            return items.filter((item) => !item.url.includes('/page/'))
+            const { defaultCreateSitemapItems, ...rest } = params;
+            const items = await defaultCreateSitemapItems(rest);
+            return items.filter((item) => !item.url.includes('/page/'));
           }
         },
 
@@ -114,7 +114,7 @@ const config = {
           {
             type: 'search',
             position: 'right'
-          },
+          }
           // {
           //   type: 'docSidebar',
           //   sidebarId: 'tutorialSidebar',
@@ -182,9 +182,7 @@ const config = {
       prism: {
         theme: prismThemes.github,
         darkTheme: prismThemes.dracula
-      },
-
-
+      }
     }),
   // scripts: [
   //   {
@@ -204,10 +202,7 @@ const config = {
         highlightSearchTermsOnTargetPage: true,
         searchResultContextMaxLength: 50,
         searchResultLimits: 8,
-        indexPages: true,
-
-
-
+        indexPages: true
       }
     ]
   ],
@@ -269,6 +264,6 @@ const config = {
       }
     ]
   ]
-}
+};
 
-export default config
+export default config;

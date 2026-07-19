@@ -1,15 +1,15 @@
-import React, { useEffect } from 'react'
-import IntroContent from '../../components/Homepage/intro-content'
-import Head from '@docusaurus/Head'
-import { useHistory } from '@docusaurus/router'
+import React, { useEffect } from 'react';
+import IntroContent from '../../components/Homepage/intro-content';
+import Head from '@docusaurus/Head';
+import { useHistory } from '@docusaurus/router';
 
 function HomePage() {
-  const history = useHistory()
+  const history = useHistory();
 
   useEffect(() => {
     // Redirect to root path
-    history.replace('/')
-  }, [])
+    history.replace('/');
+  }, []);
 
   // return (
   //   <>
@@ -20,7 +20,7 @@ function HomePage() {
   //   </>
   // )
 
-  return null
+  return null;
 }
 
-export default HomePage
+export default HomePage;

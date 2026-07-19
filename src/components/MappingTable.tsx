@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Button } from '../components/ui/button'
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Button } from '../components/ui/button';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '../components/ui/select'
+} from '../components/ui/select';
 import {
   Table,
   TableBody,
@@ -15,26 +15,26 @@ import {
   TableHead,
   TableHeader,
   TableRow
-} from '../components/ui/table'
-import { Card, CardContent } from '../components/ui/card'
-import { CheckCircle2 } from 'lucide-react'
-import { RadioGroup, RadioGroupItem } from '../components/ui/radio-group'
-import { Label } from '../components/ui/label'
+} from '../components/ui/table';
+import { Card, CardContent } from '../components/ui/card';
+import { CheckCircle2 } from 'lucide-react';
+import { RadioGroup, RadioGroupItem } from '../components/ui/radio-group';
+import { Label } from '../components/ui/label';
 
 interface FieldMapping {
-  en: string
-  te: string
+  en: string;
+  te: string;
 }
 
 // Update the component props to remove setNoticeMode
 interface MappingTableProps {
-  headers: string[]
-  show: boolean
-  onMappingSubmit: (mapping: Record<string, string>) => void
-  onPreview: (mapping: Record<string, string>) => void
-  noticeType?: string
-  noticeMode?: string
-  useMappedDate?: boolean
+  headers: string[];
+  show: boolean;
+  onMappingSubmit: (mapping: Record<string, string>) => void;
+  onPreview: (mapping: Record<string, string>) => void;
+  noticeType?: string;
+  noticeMode?: string;
+  useMappedDate?: boolean;
 }
 
 // Update the component to remove the radio buttons
@@ -47,10 +47,10 @@ const MappingTable: React.FC<MappingTableProps> = ({
   noticeMode = 'khata',
   useMappedDate = false
 }) => {
-  const [mappings, setMappings] = useState<Record<string, string>>({})
-  const [isComplete, setIsComplete] = useState(false)
+  const [mappings, setMappings] = useState<Record<string, string>>({});
+  const [isComplete, setIsComplete] = useState(false);
   // Add state for extent column
-  const [showExtent, setShowExtent] = useState(false)
+  const [showExtent, setShowExtent] = useState(false);
 
   const allRequiredFields: FieldMapping[] = [
     { en: 'LPM Number', te: 'ల్యాండ్ పార్సెల్ నెంబర్' },
@@ -58,54 +58,54 @@ const MappingTable: React.FC<MappingTableProps> = ({
     { en: 'Khata No', te: 'ఖాతా సంఖ్య' },
     { en: 'Pattadar Name', te: 'భూ యజమాని పేరు' },
     { en: 'Relation Name', te: 'సంబంధికులు (తండ్రి/భర్త) పేరు' }
-  ]
+  ];
 
   // These are the fields that will be displayed in the mapping table.
   let mappingFields: FieldMapping[] = allRequiredFields.filter(
     (field) => noticeType === 'GV Notice' || field.en !== 'LPM Number'
-  )
+  );
 
   // From the fields in the table, determine which are actually required for validation.
-  let requiredFields = [...mappingFields]
+  let requiredFields = [...mappingFields];
   if (noticeMode === 'pattadar-relation') {
-    requiredFields = requiredFields.filter((f) => f.en !== 'Khata No')
+    requiredFields = requiredFields.filter((f) => f.en !== 'Khata No');
   }
 
   // Add Extent field if checkbox is checked and noticeType is GV Notice
-  const extentField: FieldMapping = { en: 'Extent', te: 'విస్తీర్ణం' }
+  const extentField: FieldMapping = { en: 'Extent', te: 'విస్తీర్ణం' };
   if (noticeType === 'GV Notice' && showExtent) {
     // Insert Extent after Relation Name (before Mobile Number)
-    const relIdx = mappingFields.findIndex((f) => f.en === 'Relation Name')
-    mappingFields.splice(relIdx + 1, 0, extentField)
+    const relIdx = mappingFields.findIndex((f) => f.en === 'Relation Name');
+    mappingFields.splice(relIdx + 1, 0, extentField);
   }
 
-  const optionalFields: FieldMapping[] = [{ en: 'Mobile Number', te: 'మొబైల్ నెంబరు' }]
+  const optionalFields: FieldMapping[] = [{ en: 'Mobile Number', te: 'మొబైల్ నెంబరు' }];
 
   // Add Survey Start Date only if useMappedDate is true
   if (useMappedDate) {
-    optionalFields.push({ en: 'Survey Start Date', te: 'సర్వే ప్రారంభ తేదీ' })
+    optionalFields.push({ en: 'Survey Start Date', te: 'సర్వే ప్రారంభ తేదీ' });
   }
-  mappingFields = [...mappingFields, ...optionalFields]
+  mappingFields = [...mappingFields, ...optionalFields];
 
   useEffect(() => {
     // Check if all required fields (excluding optional ones) have been mapped
-    const requiredFieldsMapped = requiredFields.every((field) => mappings[field.en])
-    setIsComplete(requiredFieldsMapped)
-  }, [mappings, requiredFields])
+    const requiredFieldsMapped = requiredFields.every((field) => mappings[field.en]);
+    setIsComplete(requiredFieldsMapped);
+  }, [mappings, requiredFields]);
 
   const handleMappingChange = (field: string, value: string) => {
-    setMappings((prev) => ({ ...prev, [field]: value }))
-  }
+    setMappings((prev) => ({ ...prev, [field]: value }));
+  };
 
   const handleSubmit = () => {
-    onMappingSubmit(mappings)
-  }
+    onMappingSubmit(mappings);
+  };
 
   const handlePreview = () => {
-    onPreview(mappings)
-  }
+    onPreview(mappings);
+  };
 
-  if (!show) return null
+  if (!show) return null;
 
   return (
     <AnimatePresence>
@@ -221,7 +221,7 @@ const MappingTable: React.FC<MappingTableProps> = ({
         </motion.div>
       )}
     </AnimatePresence>
-  )
-}
+  );
+};
 
-export default MappingTable
+export default MappingTable;

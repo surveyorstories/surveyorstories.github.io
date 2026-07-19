@@ -1,14 +1,14 @@
-import React from 'react'
-import Link from '@docusaurus/Link'
+import React from 'react';
+import Link from '@docusaurus/Link';
 // import Image from '@theme/IdealImage'
-import useBaseUrl from '@docusaurus/useBaseUrl'
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
-import BlogPostItem from '@theme/BlogPostItem'
-import TagsListInline from '@theme/TagsListInline'
+import BlogPostItem from '@theme/BlogPostItem';
+import TagsListInline from '@theme/TagsListInline';
 
-import TimeStamp from '../../components/TimeStamp'
-import { Avatar } from '../../components/ui/avatar'
-import { Card, CardContent, CardFooter } from '../../components/ui/card'
+import TimeStamp from '../../components/TimeStamp';
+import { Avatar } from '../../components/ui/avatar';
+import { Card, CardContent, CardFooter } from '../../components/ui/card';
 
 export default function BlogPostItems({ items, component: BlogPostItemComponent = BlogPostItem }) {
   return (
@@ -75,5 +75,5 @@ export default function BlogPostItems({ items, component: BlogPostItemComponent 
         </div>
       ))}
     </div>
-  )
+  );
 }
